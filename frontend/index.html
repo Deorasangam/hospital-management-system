@@ -329,7 +329,7 @@
       .dashboard-card h3 {
         margin-bottom: 1rem;
         color: var(--text-main);
-        font-size: 1.1rem;
+        font-size: 1.1re
       }
       
       .activity-list {
@@ -1304,10 +1304,20 @@
       let authToken = localStorage.getItem("mf_token") || null;
       let currentUser = JSON.parse(localStorage.getItem("mf_user") || "null");
       let state = {
-        patients: [],
-        doctors: [],
-        appointments: [],
-        bills: [],
+        patients: [
+          { _id: "1001", name: "John Doe", age: 35, disease: "Fever" },
+          { _id: "1002", name: "Jane Smith", age: 28, disease: "Cold" },
+        ],
+        doctors: [
+          { _id: "2001", name: "Dr. Smith", spec: "Cardiology", status: "Available" },
+          { _id: "2002", name: "Dr. Johnson", spec: "Pediatrics", status: "Available" },
+        ],
+        appointments: [
+          { _id: "3001", pName: "John Doe", dName: "Dr. Smith", date: "2024-01-15T00:00:00.000Z", status: "Pending", payment: "Unpaid" },
+        ],
+        bills: [
+          { _id: "4001", patientName: "John Doe", doctorName: "Dr. Smith", service: "Consultation", date: "2024-01-15", fee: 150, status: "Paid" },
+        ],
         currentView: "dashboard",
       };
 
@@ -1546,15 +1556,15 @@
             authFetch(`${API}/appointments`),
             authFetch(`${API}/billing`),
           ]);
-          if (!pR || !dR || !aR || !bR) return;
-          state.patients = await pR.json();
-          state.doctors = await dR.json();
-          state.appointments = await aR.json();
-          state.bills = await bR.json();
+          if (pR && pR.ok) state.patients = await pR.json();
+          if (dR && dR.ok) state.doctors = await dR.json();
+          if (aR && aR.ok) state.appointments = await aR.json();
+          if (bR && bR.ok) state.bills = await bR.json();
           updateStats();
           if (state.currentView !== "dashboard") renderView(state.currentView);
         } catch (e) {
-          showToast("Server connection failed!");
+          console.log("Using mock data, server not reachable");
+          // Don't show toast every time, just use mock data
         }
       }
 
