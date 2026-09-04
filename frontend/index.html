@@ -1629,105 +1629,142 @@
         document
           .querySelectorAll(".nav-links a")
           .forEach((a) => a.classList.remove("active"));
-        el.classList.add("active");
+        if (el) el.classList.add("active");
+
+        const titleMap = {
+          dashboard: "Dashboard Overview",
+          patients: "Patient Records",
+          doctors: "Specialists & Doctors",
+          appointments: "Appointment Schedule",
+          billing: "Billing & Invoices"
+        };
         document.getElementById("page-title").innerText =
-          view.charAt(0).toUpperCase() + view.slice(1);
+          titleMap[view] || (view.charAt(0).toUpperCase() + view.slice(1));
+
         document.getElementById("sec-dashboard").style.display =
           view === "dashboard" ? "block" : "none";
         document.getElementById("sec-data").style.display =
           view === "dashboard" ? "none" : "block";
         document.getElementById("global-search").value = "";
-        await fetchAllData();
+
+        // Render immediately so user never sees a blank screen
         if (view !== "dashboard") {
           renderView(view);
         }
+
+        // Fetch fresh data in the background
+        fetchAllData().then(() => {
+          if (state.currentView === view && view !== "dashboard") {
+            renderView(view);
+          }
+        }).catch(() => {});
       }
 
       function renderView(view) {
         const head = document.getElementById("table-head");
         const body = document.getElementById("table-body");
         const addBtn = document.getElementById("add-btn");
+        if (!head || !body || !addBtn) return;
         body.innerHTML = "";
         addBtn.style.display = "inline-flex";
 
         if (view === "patients") {
-          head.innerHTML = `<tr><th>ID</th><th>Name</th><th>Age</th><th>Condition</th><th>Actions</th></tr>`;
-          state.patients.forEach((p) => {
-            body.innerHTML += `<tr><td>#${p._id.slice(-5)}</td><td><strong>${
-              p.name
-            }</strong></td><td>${p.age}</td><td>${p.disease}</td>
-            <td><button class="btn-outline" style="color:var(--danger)" onclick="deleteItem('patients','${
-              p._id
-            }')"><i class="fas fa-trash"></i></button></td></tr>`;
-          });
+          head.innerHTML = `<tr><th>ID</th><th>Name</th><th>Age</th><th>Condition</th><th>Phone</th><th>Actions</th></tr>`;
+          addBtn.innerText = "+ Register Patient";
           addBtn.onclick = () => openForm("patient");
+
+          if (!state.patients || state.patients.length === 0) {
+            body.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:3rem;color:var(--text-muted)"><i class="fas fa-user-injured" style="font-size:2.5rem;display:block;margin-bottom:0.8rem;opacity:.4"></i>No patients recorded yet.<br><button class="btn btn-primary" style="margin-top:1rem;" onclick="openForm('patient')"><i class="fas fa-plus"></i> Register First Patient</button></td></tr>`;
+          } else {
+            state.patients.forEach((p, idx) => {
+              const pid = p._id ? String(p._id).slice(-5) : String(idx + 1).padStart(3, "0");
+              body.innerHTML += `<tr>
+                <td><span style="font-family:monospace;font-weight:600;color:var(--primary);">#${pid}</span></td>
+                <td><strong>${p.name || "Unknown"}</strong></td>
+                <td>${p.age || "N/A"}</td>
+                <td><span class="badge badge-warning" style="background:#fef3c7;color:#92400e;">${p.disease || p.condition || "General"}</span></td>
+                <td>${p.phone || "—"}</td>
+                <td>
+                  <button class="btn-outline" style="color:var(--danger);padding:.4rem .7rem;border-radius:8px;" onclick="deleteItem('patients','${p._id || idx}')">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </td>
+              </tr>`;
+            });
+          }
         } else if (view === "doctors") {
-          head.innerHTML = `<tr><th>ID</th><th>Specialist</th><th>Department</th><th>Status</th><th>Actions</th></tr>`;
-          state.doctors.forEach((d) => {
-            body.innerHTML += `<tr><td>#${d._id.slice(-5)}</td><td><strong>${
-              d.name
-            }</strong></td><td>${d.spec}</td>
-            <td><span class="badge ${
-              d.status === "Available" ? "badge-success" : "badge-warning"
-            }">${d.status}</span></td>
-            <td><button class="btn-outline" style="color:var(--danger)" onclick="deleteItem('doctors','${
-              d._id
-            }')"><i class="fas fa-trash"></i></button></td></tr>`;
-          });
+          head.innerHTML = `<tr><th>ID</th><th>Specialist</th><th>Department</th><th>Status</th><th>Contact</th><th>Actions</th></tr>`;
+          addBtn.innerText = "+ Add Specialist";
           addBtn.onclick = () => openForm("doctor");
+
+          if (!state.doctors || state.doctors.length === 0) {
+            body.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:3rem;color:var(--text-muted)"><i class="fas fa-user-md" style="font-size:2.5rem;display:block;margin-bottom:0.8rem;opacity:.4"></i>No doctors or specialists listed yet.<br><button class="btn btn-primary" style="margin-top:1rem;" onclick="openForm('doctor')"><i class="fas fa-plus"></i> Add First Specialist</button></td></tr>`;
+          } else {
+            state.doctors.forEach((d, idx) => {
+              const did = d._id ? String(d._id).slice(-5) : String(idx + 1).padStart(3, "0");
+              const isAvail = (d.status || "Available") === "Available";
+              body.innerHTML += `<tr>
+                <td><span style="font-family:monospace;font-weight:600;color:var(--primary);">#${did}</span></td>
+                <td><strong>${d.name || "Dr. Specialist"}</strong></td>
+                <td>${d.spec || "General Practice"}</td>
+                <td><span class="badge ${isAvail ? "badge-success" : "badge-warning"}">${d.status || "Available"}</span></td>
+                <td>${d.phone || d.email || "—"}</td>
+                <td>
+                  <button class="btn-outline" style="color:var(--danger);padding:.4rem .7rem;border-radius:8px;" onclick="deleteItem('doctors','${d._id || idx}')">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </td>
+              </tr>`;
+            });
+          }
         } else if (view === "appointments") {
-          head.innerHTML = `<tr><th>Patient</th><th>Doctor</th><th>Date</th><th>Status</th><th>Payment</th></tr>`;
-          state.appointments.forEach((a) => {
-            body.innerHTML += `<tr><td>${a.pName}</td><td>${a.dName}</td><td>${
-              a.date.split("T")[0]
-            }</td>
-            <td><span class="badge ${
-              a.status === "Completed" ? "badge-success" : "badge-warning"
-            }" onclick="toggleStatus('${a._id}','status')">${
-              a.status
-            }</span></td>
-            <td><span class="badge ${
-              a.payment === "Paid" ? "badge-success" : "badge-danger"
-            }" onclick="toggleStatus('${a._id}','payment')">${
-              a.payment
-            }</span></td></tr>`;
-          });
+          head.innerHTML = `<tr><th>Patient</th><th>Specialist</th><th>Date</th><th>Status</th><th>Payment</th><th>Actions</th></tr>`;
+          addBtn.innerText = "+ Schedule Visit";
           addBtn.onclick = () => openForm("appointment");
+
+          if (!state.appointments || state.appointments.length === 0) {
+            body.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:3rem;color:var(--text-muted)"><i class="fas fa-calendar-check" style="font-size:2.5rem;display:block;margin-bottom:0.8rem;opacity:.4"></i>No appointments scheduled yet.<br><button class="btn btn-primary" style="margin-top:1rem;" onclick="openForm('appointment')"><i class="fas fa-plus"></i> Schedule Appointment</button></td></tr>`;
+          } else {
+            state.appointments.forEach((a, idx) => {
+              const rawDate = a.date ? (typeof a.date === 'string' && a.date.includes('T') ? a.date.split('T')[0] : String(a.date)) : 'Today';
+              body.innerHTML += `<tr>
+                <td><strong>${a.pName || a.patientName || "Patient"}</strong></td>
+                <td>${a.dName || a.doctorName || "Specialist"}</td>
+                <td>${rawDate}</td>
+                <td><span class="badge ${a.status === "Completed" ? "badge-success" : "badge-warning"}" style="cursor:pointer;" onclick="toggleStatus('${a._id || idx}','status')">${a.status || "Pending"}</span></td>
+                <td><span class="badge ${a.payment === "Paid" ? "badge-success" : "badge-danger"}" style="cursor:pointer;" onclick="toggleStatus('${a._id || idx}','payment')">${a.payment || "Unpaid"}</span></td>
+                <td>
+                  <button class="btn-outline" style="color:var(--danger);padding:.4rem .7rem;border-radius:8px;" onclick="deleteItem('appointments','${a._id || idx}')">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </td>
+              </tr>`;
+            });
+          }
         } else if (view === "billing") {
           head.innerHTML = `<tr><th>#</th><th>Patient</th><th>Doctor</th><th>Service</th><th>Date</th><th>Fee</th><th>Status</th><th>Actions</th></tr>`;
-          if (state.bills.length === 0) {
-            body.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:2.5rem;color:var(--text-muted)"><i class="fas fa-file-invoice-dollar" style="font-size:2rem;display:block;margin-bottom:.5rem;opacity:.4"></i>No bills yet. Click <strong>+ Add Bill</strong> to create one.</td></tr>`;
+          addBtn.innerText = "+ Add Bill";
+          addBtn.onclick = () => openForm("bill");
+
+          if (!state.bills || state.bills.length === 0) {
+            body.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:3rem;color:var(--text-muted)"><i class="fas fa-file-invoice-dollar" style="font-size:2.5rem;display:block;margin-bottom:0.8rem;opacity:.4"></i>No bills yet.<br><button class="btn btn-primary" style="margin-top:1rem;" onclick="openForm('bill')"><i class="fas fa-plus"></i> Create Invoice</button></td></tr>`;
           } else {
             state.bills.forEach((b, i) => {
               body.innerHTML += `<tr>
-                    <td style="color:var(--text-muted)">#${String(
-                      i + 1
-                    ).padStart(3, "0")}</td>
-                    <td><strong>${b.patientName}</strong></td>
-                    <td>${b.doctorName}</td>
-                    <td>${b.service}</td>
-                    <td>${b.date}</td>
-                    <td><strong style="color:var(--success)">$${Number(
-                      b.fee
-                    ).toFixed(2)}</strong></td>
-                    <td><span class="badge ${
-                      b.status === "Paid" ? "badge-success" : "badge-danger"
-                    }" onclick="toggleBillStatus('${b._id}','${b.status}')">${
-                b.status
-              }</span></td>
-                    <td style="display:flex;gap:6px;align-items:center;">
-                        <button class="btn btn-primary" style="padding:.4rem .8rem;font-size:.8rem;" onclick="printBill('${
-                          b._id
-                        }')"><i class="fas fa-print"></i> Print</button>
-                        <button class="btn-outline" style="color:var(--danger);padding:.4rem .7rem;border-radius:8px;" onclick="deleteBill('${
-                          b._id
-                        }')"><i class="fas fa-trash"></i></button>
-                    </td>
-                </tr>`;
+                <td style="color:var(--text-muted);font-family:monospace;">#${String(i + 1).padStart(3, "0")}</td>
+                <td><strong>${b.patientName || "Patient"}</strong></td>
+                <td>${b.doctorName || "Doctor"}</td>
+                <td>${b.service || "Consultation"}</td>
+                <td>${b.date || "Today"}</td>
+                <td><strong style="color:var(--success)">$${Number(b.fee || 0).toFixed(2)}</strong></td>
+                <td><span class="badge ${b.status === "Paid" ? "badge-success" : "badge-danger"}" style="cursor:pointer;" onclick="toggleBillStatus('${b._id || i}','${b.status}')">${b.status || "Unpaid"}</span></td>
+                <td style="display:flex;gap:6px;align-items:center;">
+                  <button class="btn btn-primary" style="padding:.4rem .8rem;font-size:.8rem;" onclick="printBill('${b._id || i}')"><i class="fas fa-print"></i> Print</button>
+                  <button class="btn-outline" style="color:var(--danger);padding:.4rem .7rem;border-radius:8px;" onclick="deleteBill('${b._id || i}')"><i class="fas fa-trash"></i></button>
+                </td>
+              </tr>`;
             });
           }
-          addBtn.innerText = "+ Add Bill";
-          addBtn.onclick = () => openForm("bill");
         }
       }
 
