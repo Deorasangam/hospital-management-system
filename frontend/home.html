@@ -890,10 +890,15 @@
     </footer>
 
     <script>
+      const API =
+        window.location.hostname === "localhost" && window.location.port === "5000"
+          ? "/api"
+          : "https://hospital-management-system1-cmyf.onrender.com/api";
+
       // Load live stats from the API (public endpoint, no auth needed)
       async function loadLiveStats() {
         try {
-          const res = await fetch("/api/home/stats");
+          const res = await fetch(`${API}/home/stats`);
           if (!res.ok) return;
           const data = await res.json();
           document.getElementById("lv-patients").innerText = data.patients;

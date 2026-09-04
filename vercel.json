@@ -1,0 +1,11 @@
+{
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/", "destination": "/frontend/home.html" },
+    { "source": "/home", "destination": "/frontend/home.html" },
+    { "source": "/index", "destination": "/frontend/index.html" },
+    { "source": "/dashboard", "destination": "/frontend/index.html" },
+    { "source": "/about", "destination": "/frontend/about.html" },
+    { "source": "/api/:path*", "destination": "https://hospital-management-system1-cmyf.onrender.com/api/:path*" }
+  ]
+}

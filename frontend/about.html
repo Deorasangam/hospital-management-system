@@ -1083,8 +1083,13 @@
         btn.disabled = true;
         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
 
+        const API =
+          window.location.hostname === "localhost" && window.location.port === "5000"
+            ? "/api"
+            : "https://hospital-management-system1-cmyf.onrender.com/api";
+
         try {
-          const res = await fetch("/api/about/contact", {
+          const res = await fetch(`${API}/about/contact`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ name, email, subject, message }),

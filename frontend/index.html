@@ -1300,7 +1300,10 @@
     <div id="toast">Operation Successful</div>
 
     <script>
-      const API = window.location.port === "5500" || window.location.port === "3000" ? "http://localhost:5000/api" : "/api";
+      const API =
+        window.location.hostname === "localhost" && window.location.port === "5000"
+          ? "/api"
+          : "https://hospital-management-system1-cmyf.onrender.com/api";
       let authToken = localStorage.getItem("mf_token") || null;
       let currentUser = JSON.parse(localStorage.getItem("mf_user") || "null");
       let state = {
