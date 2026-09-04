@@ -1317,8 +1317,9 @@
     <div id="toast">Operation Successful</div>
 
     <script>
+      // Detect local dev: any localhost/127.0.0.1 port uses relative /api path
       const API =
-        window.location.hostname === "localhost" && window.location.port === "5000"
+        (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
           ? "/api"
           : "https://hospital-management-system1-cmyf.onrender.com/api";
       let authToken = localStorage.getItem("mf_token") || null;
@@ -1359,6 +1360,11 @@
       /* ── SESSION RESTORE ON LOAD ──────────────────────────────────── */
       window.addEventListener("DOMContentLoaded", async () => {
         if (authToken && currentUser) {
+          // Demo token: skip server verify, boot directly into app
+          if (authToken === "demo-token") {
+            bootApp();
+            return;
+          }
           try {
             const res = await fetch(`${API}/auth/me`, {
               headers: { Authorization: `Bearer ${authToken}` },
@@ -1367,7 +1373,11 @@
               bootApp();
               return;
             }
-          } catch (_) {}
+          } catch (_) {
+            // Server unreachable — still boot with cached session
+            bootApp();
+            return;
+          }
         }
         clearSession();
         // If coming from home.html "Get Started" button, auto-open register tab
@@ -1589,18 +1599,25 @@
       }
 
       /* ── AUTH FETCH ───────────────────────────────────────────────── */
-      async function authFetch(url, opts = {}) {
-        const headers = {
-          "Content-Type": "application/json",
-          ...(opts.headers || {}),
-          Authorization: `Bearer ${authToken}`,
-        };
-        const res = await fetch(url, { ...opts, headers });
-        if (res.status === 401) {
-          logout();
+      async function authFetch(url, opts = {}, autoLogout = false) {
+        try {
+          const headers = {
+            "Content-Type": "application/json",
+            ...(opts.headers || {}),
+          };
+          if (authToken && authToken !== "demo-token") {
+            headers["Authorization"] = `Bearer ${authToken}`;
+          }
+          const res = await fetch(url, { ...opts, headers });
+          if (res.status === 401) {
+            // Only force logout if explicitly requested (e.g. session restore check)
+            if (autoLogout) logout();
+            return null;
+          }
+          return res;
+        } catch (e) {
           return null;
         }
-        return res;
       }
 
       /* ── DATA ─────────────────────────────────────────────────────── */
@@ -1612,16 +1629,17 @@
             authFetch(`${API}/appointments`),
             authFetch(`${API}/billing`),
           ]);
-          if (pR && pR.ok) state.patients = await pR.json();
-          if (dR && dR.ok) state.doctors = await dR.json();
-          if (aR && aR.ok) state.appointments = await aR.json();
-          if (bR && bR.ok) state.bills = await bR.json();
-          updateStats();
-          if (state.currentView !== "dashboard") renderView(state.currentView);
+          // Only overwrite state if we got real data back from the server
+          if (pR && pR.ok) { const d = await pR.json(); if (Array.isArray(d)) state.patients = d; }
+          if (dR && dR.ok) { const d = await dR.json(); if (Array.isArray(d)) state.doctors = d; }
+          if (aR && aR.ok) { const d = await aR.json(); if (Array.isArray(d)) state.appointments = d; }
+          if (bR && bR.ok) { const d = await bR.json(); if (Array.isArray(d)) state.bills = d; }
         } catch (e) {
-          console.log("Using mock data, server not reachable");
-          // Don't show toast every time, just use mock data
+          console.log("Server not reachable — displaying local data");
         }
+        // Always update stats and current view regardless of server availability
+        updateStats();
+        if (state.currentView !== "dashboard") renderView(state.currentView);
       }
 
       async function navigate(view, el) {
