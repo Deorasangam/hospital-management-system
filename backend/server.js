@@ -60,7 +60,7 @@ app.get("*", (req, res) => {
 
 // ─── MongoDB + Server Start ───────────────────────────────────────────────────
 const PORT = process.env.PORT || 5000;
-const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/kite";
+const MONGO_URI = process.env.MONGO_URI || "mongodb+srv://sangamdeora622:wanted@cluster0.gqqhk.mongodb.net/hospital";
 
 // Start server first so Render detects the open port immediately
 app.listen(PORT, () => {
