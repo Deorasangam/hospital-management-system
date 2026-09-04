@@ -75,8 +75,9 @@ if (process.env.NODE_ENV === "production" && MONGO_URI.includes("localhost")) {
 // Connect to MongoDB
 mongoose
   .connect(MONGO_URI)
-  .then(() => {
+  .then(async () => {
     console.log("✅ MongoDB connected successfully");
+    await seedInitialData();
   })
   .catch((err) => {
     console.error("❌ MongoDB connection error:", err.message);
@@ -86,3 +87,67 @@ mongoose
       );
     }
   });
+
+// ─── Initial Data Seeder ──────────────────────────────────────────────────────
+async function seedInitialData() {
+  try {
+    const Patient = require("./models/Patient");
+    const Doctor = require("./models/Doctor");
+    const Appointment = require("./models/Appointment");
+    const Bill = require("./models/Bill");
+    const User = require("./models/User");
+
+    const patientCount = await Patient.countDocuments();
+    if (patientCount === 0) {
+      console.log("🌱 Seeding initial hospital data...");
+      await Patient.create([
+        { name: "John Doe", age: 35, gender: "Male", phone: "555-0101", disease: "Hypertension", address: "123 Main St" },
+        { name: "Jane Smith", age: 28, gender: "Female", phone: "555-0102", disease: "Asthma", address: "456 Oak Ave" },
+        { name: "Robert Taylor", age: 52, gender: "Male", phone: "555-0103", disease: "Type 2 Diabetes", address: "789 Pine Rd" },
+        { name: "Sarah Williams", age: 41, gender: "Female", phone: "555-0104", disease: "Migraine", address: "321 Elm St" },
+        { name: "Michael Brown", age: 64, gender: "Male", phone: "555-0105", disease: "Cardiac Arrhythmia", address: "654 Maple Dr" }
+      ]);
+    }
+
+    const doctorCount = await Doctor.countDocuments();
+    if (doctorCount === 0) {
+      await Doctor.create([
+        { name: "Dr. Alexander Wright", spec: "Cardiology", phone: "555-1001", email: "wright@hospital.com", status: "Available" },
+        { name: "Dr. Emily Watson", spec: "Pediatrics", phone: "555-1002", email: "watson@hospital.com", status: "Available" },
+        { name: "Dr. Marcus Vance", spec: "Neurology", phone: "555-1003", email: "vance@hospital.com", status: "Available" },
+        { name: "Dr. Sarah Jenkins", spec: "Orthopedics", phone: "555-1004", email: "jenkins@hospital.com", status: "Available" },
+        { name: "Dr. Robert Chen", spec: "General Medicine", phone: "555-1005", email: "chen@hospital.com", status: "Available" }
+      ]);
+    }
+
+    const apptCount = await Appointment.countDocuments();
+    if (apptCount === 0) {
+      await Appointment.create([
+        { pName: "John Doe", dName: "Dr. Alexander Wright", date: new Date().toISOString(), status: "Completed", payment: "Paid", notes: "Routine checkup" },
+        { pName: "Jane Smith", dName: "Dr. Emily Watson", date: new Date(Date.now() + 86400000).toISOString(), status: "Pending", payment: "Unpaid", notes: "Follow-up visit" },
+        { pName: "Robert Taylor", dName: "Dr. Robert Chen", date: new Date(Date.now() + 172800000).toISOString(), status: "Pending", payment: "Paid", notes: "Blood sugar test" }
+      ]);
+    }
+
+    const billCount = await Bill.countDocuments();
+    if (billCount === 0) {
+      await Bill.create([
+        { patientName: "John Doe", doctorName: "Dr. Alexander Wright", service: "Consultation", fee: 150, date: new Date().toISOString().split("T")[0], status: "Paid", notes: "Full checkup" },
+        { patientName: "Jane Smith", doctorName: "Dr. Emily Watson", service: "Lab Test", fee: 220, date: new Date().toISOString().split("T")[0], status: "Unpaid", notes: "Blood panel" },
+        { patientName: "Robert Taylor", doctorName: "Dr. Robert Chen", service: "Follow-up Visit", fee: 90, date: new Date().toISOString().split("T")[0], status: "Paid", notes: "Medication review" }
+      ]);
+    }
+
+    const userCount = await User.countDocuments();
+    if (userCount === 0) {
+      await User.create([
+        { name: "System Administrator", email: "admin@hospital.com", password: "mediflow123", role: "admin" },
+        { name: "Dr. Alexander Wright", email: "doctor@hospital.com", password: "mediflow123", role: "doctor" },
+        { name: "Front Desk Staff", email: "frontdesk@hospital.com", password: "mediflow123", role: "front_desk" }
+      ]);
+    }
+  } catch (seedErr) {
+    console.warn("Notice: Data seed check skipped:", seedErr.message);
+  }
+}
+
