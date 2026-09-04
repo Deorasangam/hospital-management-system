@@ -1300,7 +1300,7 @@
     <div id="toast">Operation Successful</div>
 
     <script>
-      const API = "http://localhost:5000/api";
+      const API = window.location.port === "5500" || window.location.port === "3000" ? "http://localhost:5000/api" : "/api";
       let authToken = localStorage.getItem("mf_token") || null;
       let currentUser = JSON.parse(localStorage.getItem("mf_user") || "null");
       let state = {

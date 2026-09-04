@@ -29,6 +29,16 @@ app.use("/api/billing", require("./routes/billing"));
 app.use("/api/home", require("./routes/home"));
 app.use("/api/about", require("./routes/about"));
 
+// ─── Health Check ─────────────────────────────────────────────────────────────
+app.get("/api/health", (req, res) => {
+  const isDbConnected = mongoose.connection.readyState === 1;
+  res.status(isDbConnected ? 200 : 503).json({
+    status: isDbConnected ? "healthy" : "database_disconnected",
+    dbState: mongoose.connection.readyState,
+    timestamp: new Date().toISOString(),
+  });
+});
+
 // ─── Catch-all: serve index.html for any unknown route ───────────────────────
 app.get("*", (req, res) => {
   // Try frontend/index.html first, then root index.html
@@ -52,14 +62,27 @@ app.get("*", (req, res) => {
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/kite";
 
+// Start server first so Render detects the open port immediately
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+});
+
+// Check if trying to connect to localhost in production
+if (process.env.NODE_ENV === "production" && MONGO_URI.includes("localhost")) {
+  console.warn("⚠️ Warning: MONGO_URI is pointing to localhost in production! Please set MONGO_URI in your Render environment variables.");
+}
+
+// Connect to MongoDB
 mongoose
   .connect(MONGO_URI)
   .then(() => {
     console.log("✅ MongoDB connected successfully");
-    app.listen(PORT, () => {
-      console.log(`🚀 Server running on http://localhost:${PORT}`);
-    });
   })
   .catch((err) => {
-    console.error("❌ MongoDB connection error:", err);
+    console.error("❌ MongoDB connection error:", err.message);
+    if (MONGO_URI.includes("localhost") || MONGO_URI.includes("127.0.0.1")) {
+      console.error(
+        "💡 Hint: On Render/cloud host, you must provide a cloud MongoDB connection string (e.g., MongoDB Atlas) in your environment variables as MONGO_URI."
+      );
+    }
   });
