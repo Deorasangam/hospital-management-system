@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MediFlow Pro | Patients Management & Registration</title>
+    <title>MediFlow Pro | Patients Management & Directory</title>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
@@ -211,74 +211,7 @@
         text-transform: uppercase;
       }
 
-      /* Form Container */
-      .form-card {
-        background: var(--card);
-        border: 1px solid var(--border);
-        border-radius: 20px;
-        padding: 2rem;
-        margin-bottom: 2.5rem;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.04);
-        position: relative;
-        transition: all 0.3s ease;
-      }
-      .form-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1.5rem;
-        padding-bottom: 1rem;
-        border-bottom: 1px solid var(--border);
-      }
-      .form-header h2 {
-        font-size: 1.25rem;
-        font-weight: 700;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        color: var(--primary);
-      }
-      .form-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-        gap: 1.2rem;
-      }
-      .form-group {
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-      }
-      .form-group label {
-        font-size: 0.85rem;
-        font-weight: 600;
-        color: var(--muted);
-      }
-      .form-control {
-        width: 100%;
-        padding: 0.75rem 1rem;
-        border-radius: 10px;
-        border: 1px solid var(--border);
-        background: var(--bg);
-        color: var(--text);
-        font-size: 0.92rem;
-        font-family: inherit;
-        outline: none;
-        transition: border-color 0.2s;
-      }
-      .form-control:focus {
-        border-color: var(--primary);
-        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
-      }
-      .form-actions {
-        display: flex;
-        justify-content: flex-end;
-        gap: 12px;
-        margin-top: 1.5rem;
-        padding-top: 1.2rem;
-        border-top: 1px solid var(--border);
-      }
-
-      /* Table and Directory */
+      /* Table and Directory Card */
       .content-card {
         background: var(--card);
         border: 1px solid var(--border);
@@ -364,6 +297,113 @@
       .badge-success { background: #dcfce7; color: #166534; }
       .badge-danger { background: #fee2e2; color: #991b1b; }
 
+      /* Modal Overlay */
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.6);
+        backdrop-filter: blur(8px);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 2500;
+        padding: 1rem;
+      }
+      .modal-backdrop.open {
+        display: flex;
+      }
+      .modal-content {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        width: 100%;
+        max-width: 680px;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        animation: modalFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      @keyframes modalFadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px) scale(0.96);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.5rem 1.8rem;
+        border-bottom: 1px solid var(--border);
+      }
+      .modal-header h2 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--primary);
+      }
+      .modal-close-btn {
+        background: transparent;
+        border: none;
+        color: var(--muted);
+        font-size: 1.4rem;
+        cursor: pointer;
+        padding: 4px;
+        line-height: 1;
+        transition: color 0.2s;
+      }
+      .modal-close-btn:hover {
+        color: var(--danger);
+      }
+      .modal-body {
+        padding: 1.8rem;
+      }
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1.2rem;
+      }
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .form-group label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--muted);
+      }
+      .form-control {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: var(--bg);
+        color: var(--text);
+        font-size: 0.92rem;
+        font-family: inherit;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+      .form-control:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+      }
+      .modal-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        padding: 1.2rem 1.8rem;
+        border-top: 1px solid var(--border);
+        background: rgba(0,0,0,0.01);
+      }
+
       /* Toast Notification */
       #toast {
         position: fixed;
@@ -377,7 +417,7 @@
         box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         transform: translateY(150%);
         transition: transform 0.3s ease;
-        z-index: 2000;
+        z-index: 3000;
         display: flex;
         align-items: center;
         gap: 10px;
@@ -441,11 +481,11 @@
       <div class="page-header">
         <div class="page-title">
           <h1><i class="fas fa-user-injured" style="color: var(--primary)"></i> Patient Records & Registration</h1>
-          <p>Register new patients, manage medical histories, and track admission status in real-time.</p>
+          <p>Manage real-time medical histories, admission status, and register new patients instantly.</p>
         </div>
         <div>
-          <button class="btn btn-primary" onclick="toggleForm()">
-            <i class="fas fa-user-plus"></i> <span id="toggle-form-btn-text">Register New Patient</span>
+          <button class="btn btn-primary" onclick="openPatientModal()">
+            <i class="fas fa-user-plus"></i> Register New Patient
           </button>
         </div>
       </div>
@@ -490,83 +530,12 @@
         </div>
       </div>
 
-      <!-- Registration Form -->
-      <div class="form-card" id="patient-form-card">
-        <div class="form-header">
-          <h2><i class="fas fa-id-card"></i> Patient Intake & Registration Form</h2>
-          <span style="font-size: 0.85rem; color: var(--muted);"><span style="color: var(--danger)">*</span> Required Fields</span>
-        </div>
-        <form id="patient-form" onsubmit="handlePatientSubmit(event)">
-          <div class="form-grid">
-            <div class="form-group">
-              <label>Full Legal Name *</label>
-              <input type="text" id="p-name" class="form-control" placeholder="e.g. John Doe" required />
-            </div>
-            <div class="form-group">
-              <label>Age *</label>
-              <input type="number" id="p-age" class="form-control" min="0" max="130" placeholder="e.g. 35" required />
-            </div>
-            <div class="form-group">
-              <label>Gender *</label>
-              <select id="p-gender" class="form-control" required>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Blood Group</label>
-              <select id="p-blood" class="form-control">
-                <option value="A+">A+</option>
-                <option value="A-">A-</option>
-                <option value="B+">B+</option>
-                <option value="B-">B-</option>
-                <option value="O+" selected>O+</option>
-                <option value="O-">O-</option>
-                <option value="AB+">AB+</option>
-                <option value="AB-">AB-</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Phone Number *</label>
-              <input type="tel" id="p-phone" class="form-control" placeholder="e.g. 555-0199" required />
-            </div>
-            <div class="form-group">
-              <label>Email Address</label>
-              <input type="email" id="p-email" class="form-control" placeholder="patient@example.com" />
-            </div>
-            <div class="form-group">
-              <label>Medical Diagnosis / Primary Condition *</label>
-              <input type="text" id="p-disease" class="form-control" placeholder="e.g. Hypertension, Fever, Asthma" required />
-            </div>
-            <div class="form-group">
-              <label>Assigned Specialist / Department</label>
-              <select id="p-doctor" class="form-control">
-                <option value="Dr. Alexander Wright (Cardiology)">Dr. Alexander Wright (Cardiology)</option>
-                <option value="Dr. Emily Watson (Pediatrics)">Dr. Emily Watson (Pediatrics)</option>
-                <option value="Dr. Marcus Vance (Neurology)">Dr. Marcus Vance (Neurology)</option>
-                <option value="Dr. Sarah Jenkins (Orthopedics)">Dr. Sarah Jenkins (Orthopedics)</option>
-                <option value="Dr. Robert Chen (General Medicine)">Dr. Robert Chen (General Medicine)</option>
-              </select>
-            </div>
-            <div class="form-group" style="grid-column: 1 / -1">
-              <label>Address / Residential City</label>
-              <input type="text" id="p-address" class="form-control" placeholder="e.g. 123 Health Ave, New York, NY" />
-            </div>
-          </div>
-          <div class="form-actions">
-            <button type="button" class="btn btn-outline" onclick="resetForm()"><i class="fas fa-undo"></i> Clear Form</button>
-            <button type="submit" class="btn btn-primary" id="submit-btn"><i class="fas fa-check-circle"></i> Save Patient Record</button>
-          </div>
-        </form>
-      </div>
-
-      <!-- Patient Table Directory -->
+      <!-- Patient Table Directory (Immediately Visible!) -->
       <div class="content-card">
         <div class="toolbar">
           <div class="search-box">
             <i class="fas fa-search"></i>
-            <input type="text" id="search-input" placeholder="Search patients by name, condition, or ID..." onkeyup="filterPatients()" />
+            <input type="text" id="search-input" placeholder="Search patients by name, condition, phone, or ID..." onkeyup="filterPatients()" />
           </div>
           <div class="filter-group">
             <select id="filter-gender" class="form-control" style="width: 140px" onchange="filterPatients()">
@@ -575,6 +544,7 @@
               <option value="Female">Female</option>
             </select>
             <button class="btn btn-outline" onclick="loadPatients()"><i class="fas fa-sync-alt"></i> Refresh</button>
+            <button class="btn btn-primary" onclick="openPatientModal()"><i class="fas fa-plus"></i> Add Patient</button>
           </div>
         </div>
 
@@ -583,11 +553,12 @@
             <thead>
               <tr>
                 <th>Patient ID</th>
-                <th>Name</th>
+                <th>Patient Name</th>
                 <th>Age / Gender</th>
-                <th>Condition</th>
+                <th>Blood Group</th>
+                <th>Primary Diagnosis</th>
                 <th>Contact</th>
-                <th>Location</th>
+                <th>Location / Ward</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -596,6 +567,81 @@
             </tbody>
           </table>
         </div>
+      </div>
+    </div>
+
+    <!-- Modal Dialog for Patient Intake -->
+    <div class="modal-backdrop" id="patient-modal" onclick="if(event.target===this) closePatientModal()">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2><i class="fas fa-id-card"></i> Register New Patient</h2>
+          <button class="modal-close-btn" onclick="closePatientModal()"><i class="fas fa-times"></i></button>
+        </div>
+        <form id="patient-form" onsubmit="handlePatientSubmit(event)">
+          <div class="modal-body">
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Full Legal Name *</label>
+                <input type="text" id="p-name" class="form-control" placeholder="e.g. John Doe" required />
+              </div>
+              <div class="form-group">
+                <label>Age *</label>
+                <input type="number" id="p-age" class="form-control" min="0" max="130" placeholder="e.g. 35" required />
+              </div>
+              <div class="form-group">
+                <label>Gender *</label>
+                <select id="p-gender" class="form-control" required>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Blood Group</label>
+                <select id="p-blood" class="form-control">
+                  <option value="A+">A+</option>
+                  <option value="A-">A-</option>
+                  <option value="B+">B+</option>
+                  <option value="B-">B-</option>
+                  <option value="O+" selected>O+</option>
+                  <option value="O-">O-</option>
+                  <option value="AB+">AB+</option>
+                  <option value="AB-">AB-</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Phone Number *</label>
+                <input type="tel" id="p-phone" class="form-control" placeholder="e.g. 555-0199" required />
+              </div>
+              <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="p-email" class="form-control" placeholder="patient@example.com" />
+              </div>
+              <div class="form-group">
+                <label>Medical Diagnosis / Condition *</label>
+                <input type="text" id="p-disease" class="form-control" placeholder="e.g. Hypertension, Fever, Asthma" required />
+              </div>
+              <div class="form-group">
+                <label>Assigned Specialist</label>
+                <select id="p-doctor" class="form-control">
+                  <option value="Dr. Alexander Wright (Cardiology)">Dr. Alexander Wright (Cardiology)</option>
+                  <option value="Dr. Emily Watson (Pediatrics)">Dr. Emily Watson (Pediatrics)</option>
+                  <option value="Dr. Marcus Vance (Neurology)">Dr. Marcus Vance (Neurology)</option>
+                  <option value="Dr. Sarah Jenkins (Orthopedics)">Dr. Sarah Jenkins (Orthopedics)</option>
+                  <option value="Dr. Robert Chen (General Medicine)">Dr. Robert Chen (General Medicine)</option>
+                </select>
+              </div>
+              <div class="form-group" style="grid-column: 1 / -1">
+                <label>Address / Residential Area</label>
+                <input type="text" id="p-address" class="form-control" placeholder="e.g. 123 Health Ave, New York, NY" />
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline" onclick="closePatientModal()"><i class="fas fa-times"></i> Cancel</button>
+            <button type="submit" class="btn btn-primary" id="submit-btn"><i class="fas fa-check-circle"></i> Save Patient Record</button>
+          </div>
+        </form>
       </div>
     </div>
 
@@ -608,16 +654,30 @@
           : "https://hospital-management-system1-cmyf.onrender.com/api";
 
       let patientsList = [
-        { _id: "p1001", name: "John Doe", age: 35, gender: "Male", phone: "555-0101", disease: "Hypertension", address: "123 Main St" },
-        { _id: "p1002", name: "Jane Smith", age: 28, gender: "Female", phone: "555-0102", disease: "Asthma", address: "456 Oak Ave" },
-        { _id: "p1003", name: "Robert Taylor", age: 52, gender: "Male", phone: "555-0103", disease: "Diabetes", address: "789 Pine Rd" },
-        { _id: "p1004", name: "Sarah Williams", age: 41, gender: "Female", phone: "555-0104", disease: "Migraine", address: "321 Elm St" }
+        { _id: "p1001", name: "John Doe", age: 35, gender: "Male", blood: "O+", phone: "555-0101", disease: "Hypertension", address: "123 Main St, Ward 3A" },
+        { _id: "p1002", name: "Jane Smith", age: 28, gender: "Female", blood: "A+", phone: "555-0102", disease: "Asthma", address: "456 Oak Ave, Room 102" },
+        { _id: "p1003", name: "Robert Taylor", age: 52, gender: "Male", blood: "B+", phone: "555-0103", disease: "Type 2 Diabetes", address: "789 Pine Rd, Ward 2B" },
+        { _id: "p1004", name: "Sarah Williams", age: 41, gender: "Female", blood: "AB+", phone: "555-0104", disease: "Chronic Migraine", address: "321 Elm St, OPD" }
       ];
 
-      // Load on start
       window.addEventListener("DOMContentLoaded", () => {
         loadPatients();
       });
+
+      // Escape key to close modal
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closePatientModal();
+      });
+
+      function openPatientModal() {
+        document.getElementById("patient-modal").classList.add("open");
+        document.getElementById("p-name").focus();
+      }
+
+      function closePatientModal() {
+        document.getElementById("patient-modal").classList.remove("open");
+        document.getElementById("patient-form").reset();
+      }
 
       async function loadPatients() {
         try {
@@ -638,19 +698,21 @@
       function renderTable(list) {
         const tbody = document.getElementById("patient-tbody");
         if (!list || list.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:3rem;color:var(--muted);"><i class="fas fa-folder-open" style="font-size:2.5rem;display:block;margin-bottom:0.8rem;opacity:0.4;"></i>No patient records found. Use the form above to add one.</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:3.5rem;color:var(--muted);"><i class="fas fa-folder-open" style="font-size:2.5rem;display:block;margin-bottom:0.8rem;opacity:0.4;"></i>No patient records found. <button class="btn btn-primary" style="margin-top:1rem;" onclick="openPatientModal()"><i class="fas fa-plus"></i> Register Patient</button></td></tr>`;
           return;
         }
 
         tbody.innerHTML = list.map((p, idx) => {
           const pid = p._id ? String(p._id).slice(-5).toUpperCase() : String(idx + 1).padStart(4, "0");
+          const bloodBadge = p.blood ? `<span class="badge badge-primary">${p.blood}</span>` : '<span style="color:var(--muted);">O+</span>';
           return `
             <tr>
               <td><span style="font-family:monospace;font-weight:700;color:var(--primary);">#${pid}</span></td>
               <td><strong>${p.name || "Unknown"}</strong></td>
               <td>${p.age || "N/A"} yrs • <span style="color:var(--muted);">${p.gender || "—"}</span></td>
+              <td>${bloodBadge}</td>
               <td><span class="badge badge-warning">${p.disease || p.condition || "General"}</span></td>
-              <td>${p.phone || "—"}</td>
+              <td><i class="fas fa-phone-alt" style="font-size:0.75rem;color:var(--muted);margin-right:4px;"></i>${p.phone || "—"}</td>
               <td><span style="color:var(--muted);font-size:0.85rem;">${p.address || "General Ward"}</span></td>
               <td>
                 <button class="btn btn-outline" style="color:var(--danger);padding:0.35rem 0.7rem;" onclick="deletePatient('${p._id || idx}')" title="Delete record">
@@ -679,6 +741,7 @@
           name: document.getElementById("p-name").value.trim(),
           age: Number(document.getElementById("p-age").value),
           gender: document.getElementById("p-gender").value,
+          blood: document.getElementById("p-blood").value,
           phone: document.getElementById("p-phone").value.trim(),
           disease: document.getElementById("p-disease").value.trim(),
           address: document.getElementById("p-address").value.trim() || "Local Clinic",
@@ -695,14 +758,13 @@
             const saved = await res.json();
             patientsList.unshift(saved);
           } else {
-            // Local storage fallback
             patientsList.unshift({ ...patientData, _id: "local_" + Date.now() });
           }
         } catch (err) {
           patientsList.unshift({ ...patientData, _id: "local_" + Date.now() });
         }
 
-        resetForm();
+        closePatientModal();
         renderTable(patientsList);
         updateStats();
         showToast("Patient registered successfully!");
@@ -727,28 +789,12 @@
         const filtered = patientsList.filter(p => {
           const matchQ = (p.name && p.name.toLowerCase().includes(q)) ||
                          (p.disease && p.disease.toLowerCase().includes(q)) ||
+                         (p.phone && p.phone.toLowerCase().includes(q)) ||
                          (p._id && String(p._id).toLowerCase().includes(q));
           const matchG = gender === "all" || p.gender === gender;
           return matchQ && matchG;
         });
         renderTable(filtered);
-      }
-
-      function resetForm() {
-        document.getElementById("patient-form").reset();
-      }
-
-      function toggleForm() {
-        const card = document.getElementById("patient-form-card");
-        const btnText = document.getElementById("toggle-form-btn-text");
-        if (card.style.display === "none") {
-          card.style.display = "block";
-          btnText.innerText = "Hide Form";
-          card.scrollIntoView({ behavior: "smooth" });
-        } else {
-          card.style.display = "none";
-          btnText.innerText = "Register New Patient";
-        }
       }
 
       function showToast(msg) {

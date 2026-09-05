@@ -198,98 +198,9 @@
         color: var(--muted);
         font-size: 0.8rem;
         font-weight: 600;
-        text-transform: uppercase;
       }
 
-      /* Form Card */
-      .form-card {
-        background: var(--card);
-        border: 1px solid var(--border);
-        border-radius: 20px;
-        padding: 2rem;
-        margin-bottom: 2.5rem;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.04);
-      }
-      .form-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1.5rem;
-        padding-bottom: 1rem;
-        border-bottom: 1px solid var(--border);
-      }
-      .form-header h2 {
-        font-size: 1.25rem;
-        font-weight: 700;
-        color: var(--primary);
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-      .form-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-        gap: 1.2rem;
-      }
-      .form-group {
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-      }
-      .form-group label {
-        font-size: 0.85rem;
-        font-weight: 600;
-        color: var(--muted);
-      }
-      .form-control {
-        width: 100%;
-        padding: 0.75rem 1rem;
-        border-radius: 10px;
-        border: 1px solid var(--border);
-        background: var(--bg);
-        color: var(--text);
-        font-size: 0.92rem;
-        font-family: inherit;
-        outline: none;
-      }
-      .form-control:focus {
-        border-color: var(--primary);
-        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
-      }
-      .form-actions {
-        display: flex;
-        justify-content: flex-end;
-        gap: 12px;
-        margin-top: 1.5rem;
-        padding-top: 1.2rem;
-        border-top: 1px solid var(--border);
-      }
-
-      /* Time Slots */
-      .time-slots {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-        margin-top: 4px;
-      }
-      .time-slot {
-        padding: 6px 12px;
-        border-radius: 8px;
-        border: 1px solid var(--border);
-        background: var(--bg);
-        font-size: 0.8rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: 0.2s;
-      }
-      .time-slot.selected,
-      .time-slot:hover {
-        background: var(--primary);
-        color: white;
-        border-color: var(--primary);
-      }
-
-      /* Table */
+      /* Content Card */
       .content-card {
         background: var(--card);
         border: 1px solid var(--border);
@@ -332,6 +243,7 @@
         display: flex;
         align-items: center;
         gap: 8px;
+        flex-wrap: wrap;
       }
 
       .table-wrapper {
@@ -365,20 +277,153 @@
         display: inline-flex;
         align-items: center;
         gap: 4px;
-        padding: 5px 12px;
+        padding: 4px 10px;
         border-radius: 99px;
         font-size: 0.75rem;
         font-weight: 700;
         cursor: pointer;
-        user-select: none;
         transition: transform 0.15s;
       }
-      .badge:hover { transform: scale(1.05); }
+      .badge:hover {
+        transform: scale(1.05);
+      }
       .badge-success { background: #dcfce7; color: #166534; }
       .badge-warning { background: #fef3c7; color: #92400e; }
       .badge-danger { background: #fee2e2; color: #991b1b; }
-      .badge-info { background: #e0e7ff; color: #4338ca; }
+      .badge-info { background: var(--primary-light); color: var(--primary); }
 
+      /* Time Slots Selector */
+      .time-slots {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        margin-top: 4px;
+      }
+      .time-slot {
+        padding: 0.5rem;
+        text-align: center;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        font-size: 0.82rem;
+        font-weight: 600;
+        cursor: pointer;
+        background: var(--bg);
+        color: var(--text);
+        transition: all 0.2s;
+      }
+      .time-slot:hover,
+      .time-slot.selected {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+      }
+
+      /* Modal Backdrop */
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.6);
+        backdrop-filter: blur(8px);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 2500;
+        padding: 1rem;
+      }
+      .modal-backdrop.open {
+        display: flex;
+      }
+      .modal-content {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        width: 100%;
+        max-width: 680px;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        animation: modalFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      @keyframes modalFadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px) scale(0.96);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.5rem 1.8rem;
+        border-bottom: 1px solid var(--border);
+      }
+      .modal-header h2 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--primary);
+      }
+      .modal-close-btn {
+        background: transparent;
+        border: none;
+        color: var(--muted);
+        font-size: 1.4rem;
+        cursor: pointer;
+        padding: 4px;
+        line-height: 1;
+      }
+      .modal-close-btn:hover {
+        color: var(--danger);
+      }
+      .modal-body {
+        padding: 1.8rem;
+      }
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1.2rem;
+      }
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .form-group label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--muted);
+      }
+      .form-control {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: var(--bg);
+        color: var(--text);
+        font-size: 0.92rem;
+        font-family: inherit;
+        outline: none;
+      }
+      .form-control:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+      }
+      .modal-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        padding: 1.2rem 1.8rem;
+        border-top: 1px solid var(--border);
+        background: rgba(0,0,0,0.01);
+      }
+
+      /* Toast */
       #toast {
         position: fixed;
         bottom: 24px;
@@ -391,9 +436,14 @@
         box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         transform: translateY(150%);
         transition: transform 0.3s ease;
-        z-index: 2000;
+        z-index: 3000;
+        display: flex;
+        align-items: center;
+        gap: 10px;
       }
-      #toast.show { transform: translateY(0); }
+      #toast.show {
+        transform: translateY(0);
+      }
 
       /* Responsive */
       .menu-toggle {
@@ -423,6 +473,7 @@
     </style>
   </head>
   <body>
+    <!-- Navbar -->
     <nav>
       <div class="nav-logo">
         <i class="fas fa-shield-virus"></i> MediFlow Pro
@@ -448,11 +499,11 @@
       <div class="page-header">
         <div class="page-title">
           <h1><i class="fas fa-calendar-check" style="color: var(--primary)"></i> Appointment Scheduling</h1>
-          <p>Book patient consultations, manage doctor time slots, and toggle visit status in real-time.</p>
+          <p>Schedule consultations, manage specialist bookings, and update visit statuses in real-time.</p>
         </div>
         <div>
-          <button class="btn btn-primary" onclick="toggleForm()">
-            <i class="fas fa-calendar-plus"></i> <span id="toggle-form-btn-text">Schedule New Visit</span>
+          <button class="btn btn-primary" onclick="openApptModal()">
+            <i class="fas fa-calendar-plus"></i> Schedule New Visit
           </button>
         </div>
       </div>
@@ -497,77 +548,7 @@
         </div>
       </div>
 
-      <!-- Booking Form -->
-      <div class="form-card" id="appt-form-card">
-        <div class="form-header">
-          <h2><i class="fas fa-calendar-plus"></i> Book Consultation Appointment</h2>
-          <span style="font-size: 0.85rem; color: var(--muted);"><span style="color: var(--danger)">*</span> Required</span>
-        </div>
-        <form id="appt-form" onsubmit="handleApptSubmit(event)">
-          <div class="form-grid">
-            <div class="form-group">
-              <label>Patient Name *</label>
-              <input type="text" id="a-patient" class="form-control" list="patients-datalist" placeholder="Select or type patient name..." required />
-              <datalist id="patients-datalist">
-                <option value="John Doe"></option>
-                <option value="Jane Smith"></option>
-                <option value="Robert Taylor"></option>
-                <option value="Sarah Williams"></option>
-              </datalist>
-            </div>
-            <div class="form-group">
-              <label>Specialist / Doctor *</label>
-              <select id="a-doctor" class="form-control" required>
-                <option value="Dr. Alexander Wright">Dr. Alexander Wright (Cardiology)</option>
-                <option value="Dr. Emily Watson">Dr. Emily Watson (Pediatrics)</option>
-                <option value="Dr. Marcus Vance">Dr. Marcus Vance (Neurology)</option>
-                <option value="Dr. Sarah Jenkins">Dr. Sarah Jenkins (Orthopedics)</option>
-                <option value="Dr. Robert Chen">Dr. Robert Chen (General Medicine)</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Appointment Date *</label>
-              <input type="date" id="a-date" class="form-control" required />
-            </div>
-            <div class="form-group">
-              <label>Preferred Time Slot</label>
-              <input type="hidden" id="a-time" value="09:00 AM" />
-              <div class="time-slots" id="time-slots-container">
-                <div class="time-slot selected" onclick="selectTime('09:00 AM', this)">09:00 AM</div>
-                <div class="time-slot" onclick="selectTime('10:30 AM', this)">10:30 AM</div>
-                <div class="time-slot" onclick="selectTime('11:45 AM', this)">11:45 AM</div>
-                <div class="time-slot" onclick="selectTime('02:00 PM', this)">02:00 PM</div>
-                <div class="time-slot" onclick="selectTime('03:30 PM', this)">03:30 PM</div>
-                <div class="time-slot" onclick="selectTime('05:00 PM', this)">05:00 PM</div>
-              </div>
-            </div>
-            <div class="form-group">
-              <label>Consultation Status</label>
-              <select id="a-status" class="form-control">
-                <option value="Pending" selected>Pending</option>
-                <option value="Completed">Completed</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Payment Status</label>
-              <select id="a-payment" class="form-control">
-                <option value="Unpaid" selected>Unpaid</option>
-                <option value="Paid">Paid</option>
-              </select>
-            </div>
-            <div class="form-group" style="grid-column: 1 / -1">
-              <label>Symptoms / Clinical Notes</label>
-              <input type="text" id="a-notes" class="form-control" placeholder="e.g. Follow up on blood test, recurring headache" />
-            </div>
-          </div>
-          <div class="form-actions">
-            <button type="button" class="btn btn-outline" onclick="resetForm()"><i class="fas fa-undo"></i> Reset</button>
-            <button type="submit" class="btn btn-primary" id="appt-submit-btn"><i class="fas fa-check-circle"></i> Confirm Appointment</button>
-          </div>
-        </form>
-      </div>
-
-      <!-- Appointments List -->
+      <!-- Appointments List (Immediately Visible!) -->
       <div class="content-card">
         <div class="toolbar">
           <div class="search-box">
@@ -586,6 +567,7 @@
               <option value="Unpaid">Unpaid</option>
             </select>
             <button class="btn btn-outline" onclick="loadAppts()"><i class="fas fa-sync-alt"></i> Refresh</button>
+            <button class="btn btn-primary" onclick="openApptModal()"><i class="fas fa-plus"></i> Book Visit</button>
           </div>
         </div>
 
@@ -593,12 +575,12 @@
           <table>
             <thead>
               <tr>
-                <th>Patient</th>
-                <th>Specialist</th>
-                <th>Date & Slot</th>
-                <th>Visit Status</th>
-                <th>Payment</th>
-                <th>Notes</th>
+                <th>Patient Name</th>
+                <th>Specialist / Department</th>
+                <th>Date & Time</th>
+                <th>Consultation Status</th>
+                <th>Payment Status</th>
+                <th>Clinical Notes</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -607,6 +589,80 @@
             </tbody>
           </table>
         </div>
+      </div>
+    </div>
+
+    <!-- Modal for Booking Appointments -->
+    <div class="modal-backdrop" id="appt-modal" onclick="if(event.target===this) closeApptModal()">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2><i class="fas fa-calendar-plus"></i> Schedule Patient Consultation</h2>
+          <button class="modal-close-btn" onclick="closeApptModal()"><i class="fas fa-times"></i></button>
+        </div>
+        <form id="appt-form" onsubmit="handleApptSubmit(event)">
+          <div class="modal-body">
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Patient Full Name *</label>
+                <input type="text" id="a-patient" class="form-control" list="patients-datalist" placeholder="Select or type patient name..." required />
+                <datalist id="patients-datalist">
+                  <option value="John Doe"></option>
+                  <option value="Jane Smith"></option>
+                  <option value="Robert Taylor"></option>
+                  <option value="Sarah Williams"></option>
+                </datalist>
+              </div>
+              <div class="form-group">
+                <label>Specialist / Doctor *</label>
+                <select id="a-doctor" class="form-control" required>
+                  <option value="Dr. Alexander Wright">Dr. Alexander Wright (Cardiology)</option>
+                  <option value="Dr. Emily Watson">Dr. Emily Watson (Pediatrics)</option>
+                  <option value="Dr. Marcus Vance">Dr. Marcus Vance (Neurology)</option>
+                  <option value="Dr. Sarah Jenkins">Dr. Sarah Jenkins (Orthopedics)</option>
+                  <option value="Dr. Robert Chen">Dr. Robert Chen (General Medicine)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Appointment Date *</label>
+                <input type="date" id="a-date" class="form-control" required />
+              </div>
+              <div class="form-group">
+                <label>Preferred Time Slot</label>
+                <input type="hidden" id="a-time" value="09:00 AM" />
+                <div class="time-slots" id="time-slots-container">
+                  <div class="time-slot selected" onclick="selectTime('09:00 AM', this)">09:00 AM</div>
+                  <div class="time-slot" onclick="selectTime('10:30 AM', this)">10:30 AM</div>
+                  <div class="time-slot" onclick="selectTime('11:45 AM', this)">11:45 AM</div>
+                  <div class="time-slot" onclick="selectTime('02:00 PM', this)">02:00 PM</div>
+                  <div class="time-slot" onclick="selectTime('03:30 PM', this)">03:30 PM</div>
+                  <div class="time-slot" onclick="selectTime('05:00 PM', this)">05:00 PM</div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Consultation Status</label>
+                <select id="a-status" class="form-control">
+                  <option value="Pending" selected>Pending</option>
+                  <option value="Completed">Completed</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Payment Status</label>
+                <select id="a-payment" class="form-control">
+                  <option value="Unpaid" selected>Unpaid</option>
+                  <option value="Paid">Paid</option>
+                </select>
+              </div>
+              <div class="form-group" style="grid-column: 1 / -1">
+                <label>Symptoms / Clinical Notes</label>
+                <input type="text" id="a-notes" class="form-control" placeholder="e.g. Regular review, blood test results, follow-up" />
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline" onclick="closeApptModal()"><i class="fas fa-times"></i> Cancel</button>
+            <button type="submit" class="btn btn-primary" id="appt-submit-btn"><i class="fas fa-check-circle"></i> Confirm Appointment</button>
+          </div>
+        </form>
       </div>
     </div>
 
@@ -638,10 +694,26 @@
               break;
             }
           }
+          openApptModal();
         }
         
         loadAppts();
       });
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeApptModal();
+      });
+
+      function openApptModal() {
+        document.getElementById("appt-modal").classList.add("open");
+        document.getElementById("a-patient").focus();
+      }
+
+      function closeApptModal() {
+        document.getElementById("appt-modal").classList.remove("open");
+        document.getElementById("appt-form").reset();
+        document.getElementById("a-date").value = new Date().toISOString().split("T")[0];
+      }
 
       async function loadAppts() {
         try {
@@ -662,7 +734,7 @@
       function renderTable(list) {
         const tbody = document.getElementById("appt-tbody");
         if (!list || list.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:3rem;color:var(--muted);"><i class="fas fa-calendar-times" style="font-size:2.5rem;display:block;margin-bottom:0.8rem;opacity:0.4;"></i>No appointment schedules found. Book one using the form above.</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:3.5rem;color:var(--muted);"><i class="fas fa-calendar-times" style="font-size:2.5rem;display:block;margin-bottom:0.8rem;opacity:0.4;"></i>No appointment schedules found. <button class="btn btn-primary" style="margin-top:1rem;" onclick="openApptModal()"><i class="fas fa-plus"></i> Book Consultation</button></td></tr>`;
           return;
         }
 
@@ -674,7 +746,7 @@
             <tr>
               <td><strong>${a.pName || a.patientName || "Patient"}</strong></td>
               <td><span style="color:var(--primary);font-weight:600;"><i class="fas fa-user-md"></i> ${a.dName || a.doctorName || "Specialist"}</span></td>
-              <td><span class="badge badge-info"><i class="fas fa-clock"></i> ${dateStr}</span></td>
+              <td><span class="badge badge-info"><i class="fas fa-calendar-day"></i> ${dateStr}</span></td>
               <td>
                 <span class="badge ${isComplete ? 'badge-success' : 'badge-warning'}" onclick="toggleStatus('${a._id || idx}', 'status')" title="Click to toggle status">
                   <i class="fas ${isComplete ? 'fa-check' : 'fa-hourglass-half'}"></i> ${a.status || "Pending"}
@@ -687,7 +759,7 @@
               </td>
               <td><span style="color:var(--muted);font-size:0.85rem;">${a.notes || "—"}</span></td>
               <td>
-                <button class="btn btn-outline" style="color:var(--danger);padding:0.35rem 0.7rem;" onclick="deleteAppt('${a._id || idx}')" title="Delete appointment">
+                <button class="btn btn-outline" style="color:var(--danger);padding:0.35rem 0.7rem;" onclick="deleteAppt('${a._id || idx}')" title="Cancel booking">
                   <i class="fas fa-trash"></i>
                 </button>
               </td>
@@ -741,7 +813,7 @@
           apptsList.unshift({ ...apptData, _id: "local_" + Date.now() });
         }
 
-        resetForm();
+        closeApptModal();
         renderTable(apptsList);
         updateStats();
         showToast("Appointment booked successfully!");
@@ -793,24 +865,6 @@
           return matchQ && matchS && matchP;
         });
         renderTable(filtered);
-      }
-
-      function resetForm() {
-        document.getElementById("appt-form").reset();
-        document.getElementById("a-date").value = new Date().toISOString().split("T")[0];
-      }
-
-      function toggleForm() {
-        const card = document.getElementById("appt-form-card");
-        const btnText = document.getElementById("toggle-form-btn-text");
-        if (card.style.display === "none") {
-          card.style.display = "block";
-          btnText.innerText = "Hide Form";
-          card.scrollIntoView({ behavior: "smooth" });
-        } else {
-          card.style.display = "none";
-          btnText.innerText = "Schedule New Visit";
-        }
       }
 
       function showToast(msg) {

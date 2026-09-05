@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MediFlow Pro | Specialists & Departments Directory</title>
+    <title>MediFlow Pro | Medical Specializations & Doctors Directory</title>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
@@ -201,22 +201,65 @@
         text-transform: uppercase;
       }
 
-      /* Department Pill Filter */
+      /* Filter Toolbar & Pills */
+      .dept-filter-section {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 1.25rem 1.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+      .dept-toolbar-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+      .search-box {
+        position: relative;
+        flex: 1;
+        min-width: 250px;
+        max-width: 420px;
+      }
+      .search-box i {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--muted);
+      }
+      .search-box input {
+        width: 100%;
+        padding: 0.75rem 1rem 0.75rem 40px;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: var(--bg);
+        color: var(--text);
+        font-family: inherit;
+        outline: none;
+      }
       .dept-pills {
         display: flex;
         gap: 8px;
-        flex-wrap: wrap;
-        margin-bottom: 1.5rem;
+        overflow-x: auto;
+        padding-bottom: 4px;
+        scrollbar-width: thin;
       }
       .dept-pill {
-        padding: 8px 16px;
+        padding: 0.55rem 1.1rem;
         border-radius: 99px;
+        border: 1px solid var(--border);
+        background: var(--bg);
+        color: var(--muted);
         font-size: 0.85rem;
         font-weight: 600;
-        border: 1px solid var(--border);
-        background: var(--card);
-        color: var(--muted);
         cursor: pointer;
+        white-space: nowrap;
         transition: all 0.2s;
       }
       .dept-pill:hover,
@@ -226,34 +269,155 @@
         border-color: var(--primary);
       }
 
-      /* Form Card */
-      .form-card {
+      /* Doctors Grid */
+      .doctors-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 1.5rem;
+      }
+      .doctor-card {
         background: var(--card);
         border: 1px solid var(--border);
         border-radius: 20px;
-        padding: 2rem;
-        margin-bottom: 2.5rem;
+        padding: 1.5rem;
         box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+        transition: transform 0.2s, box-shadow 0.2s;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
       }
-      .form-header {
+      .doctor-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 30px rgba(79, 70, 229, 0.1);
+        border-color: var(--primary-light);
+      }
+      .doc-top {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        margin-bottom: 1.2rem;
+      }
+      .doc-avatar {
+        width: 56px;
+        height: 56px;
+        border-radius: 16px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+        font-weight: 800;
+        flex-shrink: 0;
+        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+      }
+      .doc-info h3 {
+        font-size: 1.15rem;
+        font-weight: 700;
+        margin-bottom: 2px;
+      }
+      .doc-info p {
+        color: var(--primary);
+        font-size: 0.85rem;
+        font-weight: 600;
+      }
+      .doc-details {
+        background: var(--bg);
+        border-radius: 12px;
+        padding: 1rem;
+        margin-bottom: 1.2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        font-size: 0.86rem;
+      }
+      .doc-details-row {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 1.5rem;
-        padding-bottom: 1rem;
+      }
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 10px;
+        border-radius: 99px;
+        font-size: 0.75rem;
+        font-weight: 700;
+      }
+      .badge-success { background: #dcfce7; color: #166534; }
+      .badge-warning { background: #fef3c7; color: #92400e; }
+      .badge-primary { background: var(--primary-light); color: var(--primary); }
+
+      /* Modal Backdrop */
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.6);
+        backdrop-filter: blur(8px);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 2500;
+        padding: 1rem;
+      }
+      .modal-backdrop.open {
+        display: flex;
+      }
+      .modal-content {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        width: 100%;
+        max-width: 680px;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        animation: modalFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      @keyframes modalFadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px) scale(0.96);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.5rem 1.8rem;
         border-bottom: 1px solid var(--border);
       }
-      .form-header h2 {
+      .modal-header h2 {
         font-size: 1.25rem;
         font-weight: 700;
-        color: var(--primary);
         display: flex;
         align-items: center;
         gap: 10px;
+        color: var(--primary);
+      }
+      .modal-close-btn {
+        background: transparent;
+        border: none;
+        color: var(--muted);
+        font-size: 1.4rem;
+        cursor: pointer;
+        padding: 4px;
+        line-height: 1;
+      }
+      .modal-close-btn:hover {
+        color: var(--danger);
+      }
+      .modal-body {
+        padding: 1.8rem;
       }
       .form-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
         gap: 1.2rem;
       }
       .form-group {
@@ -281,90 +445,16 @@
         border-color: var(--primary);
         box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
       }
-      .form-actions {
+      .modal-footer {
         display: flex;
         justify-content: flex-end;
         gap: 12px;
-        margin-top: 1.5rem;
-        padding-top: 1.2rem;
+        padding: 1.2rem 1.8rem;
         border-top: 1px solid var(--border);
+        background: rgba(0,0,0,0.01);
       }
 
-      /* Doctors Grid */
-      .doctors-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-        gap: 1.5rem;
-        margin-top: 1.5rem;
-      }
-      .doctor-card {
-        background: var(--card);
-        border: 1px solid var(--border);
-        border-radius: 18px;
-        padding: 1.5rem;
-        box-shadow: 0 2px 12px rgba(0,0,0,0.03);
-        transition: all 0.25s;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-      }
-      .doctor-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 24px rgba(79, 70, 229, 0.1);
-        border-color: var(--primary);
-      }
-      .doc-top {
-        display: flex;
-        gap: 1rem;
-        align-items: center;
-        margin-bottom: 1rem;
-      }
-      .doc-avatar {
-        width: 56px;
-        height: 56px;
-        border-radius: 16px;
-        background: linear-gradient(135deg, var(--primary), var(--secondary));
-        color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.4rem;
-        font-weight: 800;
-      }
-      .doc-info h3 {
-        font-size: 1.15rem;
-        font-weight: 700;
-      }
-      .doc-info p {
-        color: var(--primary);
-        font-size: 0.85rem;
-        font-weight: 600;
-      }
-      .doc-details {
-        margin: 1rem 0;
-        padding: 0.8rem;
-        background: var(--bg);
-        border-radius: 12px;
-        font-size: 0.85rem;
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-      }
-      .doc-details-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-      .badge {
-        padding: 4px 10px;
-        border-radius: 99px;
-        font-size: 0.75rem;
-        font-weight: 700;
-      }
-      .badge-success { background: #dcfce7; color: #166534; }
-      .badge-warning { background: #fef3c7; color: #92400e; }
-      .badge-danger { background: #fee2e2; color: #991b1b; }
-
+      /* Toast */
       #toast {
         position: fixed;
         bottom: 24px;
@@ -377,8 +467,15 @@
         box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         transform: translateY(150%);
         transition: transform 0.3s ease;
-        z-index: 2000;
+        z-index: 3000;
+        display: flex;
+        align-items: center;
+        gap: 10px;
       }
+      #toast.show {
+        transform: translateY(0);
+      }
+
       /* Responsive */
       .menu-toggle {
         display: none;
@@ -407,6 +504,7 @@
     </style>
   </head>
   <body>
+    <!-- Navbar -->
     <nav>
       <div class="nav-logo">
         <i class="fas fa-shield-virus"></i> MediFlow Pro
@@ -432,11 +530,11 @@
       <div class="page-header">
         <div class="page-title">
           <h1><i class="fas fa-user-md" style="color: var(--primary)"></i> Medical Specializations & Doctors</h1>
-          <p>Browse specialists by medical department, check real-time availability, and onboard new practitioners.</p>
+          <p>Explore medical departments, view doctor schedules, and onboard certified specialists.</p>
         </div>
         <div>
-          <button class="btn btn-primary" onclick="toggleForm()">
-            <i class="fas fa-plus"></i> <span id="toggle-form-btn-text">Add New Specialist</span>
+          <button class="btn btn-primary" onclick="openDoctorModal()">
+            <i class="fas fa-plus"></i> Add New Specialist
           </button>
         </div>
       </div>
@@ -481,86 +579,103 @@
         </div>
       </div>
 
-      <!-- Form Card -->
-      <div class="form-card" id="doctor-form-card">
-        <div class="form-header">
-          <h2><i class="fas fa-user-plus"></i> Specialist Onboarding & Department Registration</h2>
-          <span style="font-size: 0.85rem; color: var(--muted);"><span style="color: var(--danger)">*</span> Required</span>
+      <!-- Department Filter Pills & Search Section (Immediately Visible!) -->
+      <div class="dept-filter-section">
+        <div class="dept-toolbar-top">
+          <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="search-input" placeholder="Search by doctor name, department, or email..." onkeyup="filterDoctorsSearch()" />
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn btn-outline" onclick="loadDoctors()"><i class="fas fa-sync-alt"></i> Refresh</button>
+            <button class="btn btn-primary" onclick="openDoctorModal()"><i class="fas fa-plus"></i> Add Specialist</button>
+          </div>
+        </div>
+
+        <div class="dept-pills" id="dept-pills">
+          <button class="dept-pill active" onclick="filterDept('all', this)">All Specializations</button>
+          <button class="dept-pill" onclick="filterDept('Cardiology', this)">Cardiology</button>
+          <button class="dept-pill" onclick="filterDept('Pediatrics', this)">Pediatrics</button>
+          <button class="dept-pill" onclick="filterDept('Neurology', this)">Neurology</button>
+          <button class="dept-pill" onclick="filterDept('Orthopedics', this)">Orthopedics</button>
+          <button class="dept-pill" onclick="filterDept('General Medicine', this)">General Medicine</button>
+          <button class="dept-pill" onclick="filterDept('Dermatology', this)">Dermatology</button>
+          <button class="dept-pill" onclick="filterDept('Oncology', this)">Oncology</button>
+          <button class="dept-pill" onclick="filterDept('Emergency Care', this)">Emergency Care</button>
+        </div>
+      </div>
+
+      <!-- Specialist Cards Grid -->
+      <div class="doctors-grid" id="doctors-grid">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+
+    <!-- Modal for Specialist Registration -->
+    <div class="modal-backdrop" id="doctor-modal" onclick="if(event.target===this) closeDoctorModal()">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2><i class="fas fa-user-plus"></i> Specialist Onboarding & Registration</h2>
+          <button class="modal-close-btn" onclick="closeDoctorModal()"><i class="fas fa-times"></i></button>
         </div>
         <form id="doctor-form" onsubmit="handleDoctorSubmit(event)">
-          <div class="form-grid">
-            <div class="form-group">
-              <label>Doctor Full Name *</label>
-              <input type="text" id="d-name" class="form-control" placeholder="e.g. Dr. Alexander Wright" required />
-            </div>
-            <div class="form-group">
-              <label>Specialization / Department *</label>
-              <select id="d-spec" class="form-control" required>
-                <option value="Cardiology">Cardiology</option>
-                <option value="Pediatrics">Pediatrics</option>
-                <option value="Neurology">Neurology</option>
-                <option value="Orthopedics">Orthopedics</option>
-                <option value="General Medicine">General Medicine</option>
-                <option value="Dermatology">Dermatology</option>
-                <option value="Oncology">Oncology</option>
-                <option value="Emergency Care">Emergency Care</option>
-                <option value="ENT Specialist">ENT Specialist</option>
-                <option value="Radiology">Radiology</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Qualifications / Degrees</label>
-              <input type="text" id="d-degree" class="form-control" placeholder="e.g. MBBS, MD (Cardio), FACC" />
-            </div>
-            <div class="form-group">
-              <label>Experience (Years)</label>
-              <input type="number" id="d-exp" class="form-control" min="1" max="50" placeholder="e.g. 12" />
-            </div>
-            <div class="form-group">
-              <label>Contact Phone *</label>
-              <input type="tel" id="d-phone" class="form-control" placeholder="e.g. 555-1001" required />
-            </div>
-            <div class="form-group">
-              <label>Official Email Address</label>
-              <input type="email" id="d-email" class="form-control" placeholder="doctor@hospital.com" />
-            </div>
-            <div class="form-group">
-              <label>Consultation Fee ($)</label>
-              <input type="number" id="d-fee" class="form-control" min="0" placeholder="e.g. 150" value="150" />
-            </div>
-            <div class="form-group">
-              <label>Availability Status *</label>
-              <select id="d-status" class="form-control">
-                <option value="Available">Available (On Duty)</option>
-                <option value="Busy">Busy (In Consult / Ward)</option>
-                <option value="In Surgery">In Surgery</option>
-                <option value="Off Duty">Off Duty</option>
-              </select>
+          <div class="modal-body">
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Doctor Full Name *</label>
+                <input type="text" id="d-name" class="form-control" placeholder="e.g. Dr. Alexander Wright" required />
+              </div>
+              <div class="form-group">
+                <label>Specialization / Department *</label>
+                <select id="d-spec" class="form-control" required>
+                  <option value="Cardiology">Cardiology</option>
+                  <option value="Pediatrics">Pediatrics</option>
+                  <option value="Neurology">Neurology</option>
+                  <option value="Orthopedics">Orthopedics</option>
+                  <option value="General Medicine">General Medicine</option>
+                  <option value="Dermatology">Dermatology</option>
+                  <option value="Oncology">Oncology</option>
+                  <option value="Emergency Care">Emergency Care</option>
+                  <option value="ENT Specialist">ENT Specialist</option>
+                  <option value="Radiology">Radiology</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Qualifications / Degrees</label>
+                <input type="text" id="d-degree" class="form-control" placeholder="e.g. MBBS, MD (Cardio), FACC" />
+              </div>
+              <div class="form-group">
+                <label>Experience (Years)</label>
+                <input type="number" id="d-exp" class="form-control" min="1" max="50" placeholder="e.g. 12" />
+              </div>
+              <div class="form-group">
+                <label>Contact Phone *</label>
+                <input type="tel" id="d-phone" class="form-control" placeholder="e.g. 555-1001" required />
+              </div>
+              <div class="form-group">
+                <label>Official Email Address</label>
+                <input type="email" id="d-email" class="form-control" placeholder="doctor@hospital.com" />
+              </div>
+              <div class="form-group">
+                <label>Consultation Fee ($)</label>
+                <input type="number" id="d-fee" class="form-control" min="0" placeholder="e.g. 150" value="150" />
+              </div>
+              <div class="form-group">
+                <label>Availability Status *</label>
+                <select id="d-status" class="form-control">
+                  <option value="Available">Available (On Duty)</option>
+                  <option value="Busy">Busy (In Consult / Ward)</option>
+                  <option value="In Surgery">In Surgery</option>
+                  <option value="Off Duty">Off Duty</option>
+                </select>
+              </div>
             </div>
           </div>
-          <div class="form-actions">
-            <button type="button" class="btn btn-outline" onclick="resetForm()"><i class="fas fa-undo"></i> Reset</button>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline" onclick="closeDoctorModal()"><i class="fas fa-times"></i> Cancel</button>
             <button type="submit" class="btn btn-primary" id="doc-submit-btn"><i class="fas fa-save"></i> Register Specialist</button>
           </div>
         </form>
-      </div>
-
-      <!-- Department Filter Pills -->
-      <div class="dept-pills" id="dept-pills">
-        <button class="dept-pill active" onclick="filterDept('all', this)">All Specializations</button>
-        <button class="dept-pill" onclick="filterDept('Cardiology', this)">Cardiology</button>
-        <button class="dept-pill" onclick="filterDept('Pediatrics', this)">Pediatrics</button>
-        <button class="dept-pill" onclick="filterDept('Neurology', this)">Neurology</button>
-        <button class="dept-pill" onclick="filterDept('Orthopedics', this)">Orthopedics</button>
-        <button class="dept-pill" onclick="filterDept('General Medicine', this)">General Medicine</button>
-        <button class="dept-pill" onclick="filterDept('Dermatology', this)">Dermatology</button>
-        <button class="dept-pill" onclick="filterDept('Oncology', this)">Oncology</button>
-        <button class="dept-pill" onclick="filterDept('Emergency Care', this)">Emergency Care</button>
-      </div>
-
-      <!-- Specialist Cards -->
-      <div class="doctors-grid" id="doctors-grid">
-        <!-- Rendered dynamically -->
       </div>
     </div>
 
@@ -573,16 +688,32 @@
           : "https://hospital-management-system1-cmyf.onrender.com/api";
 
       let doctorsList = [
-        { _id: "d2001", name: "Dr. Alexander Wright", spec: "Cardiology", phone: "555-1001", email: "wright@hospital.com", status: "Available", fee: 150 },
-        { _id: "d2002", name: "Dr. Emily Watson", spec: "Pediatrics", phone: "555-1002", email: "watson@hospital.com", status: "Available", fee: 120 },
-        { _id: "d2003", name: "Dr. Marcus Vance", spec: "Neurology", phone: "555-1003", email: "vance@hospital.com", status: "Available", fee: 180 },
-        { _id: "d2004", name: "Dr. Sarah Jenkins", spec: "Orthopedics", phone: "555-1004", email: "jenkins@hospital.com", status: "Available", fee: 140 },
-        { _id: "d2005", name: "Dr. Robert Chen", spec: "General Medicine", phone: "555-1005", email: "chen@hospital.com", status: "Available", fee: 100 }
+        { _id: "d2001", name: "Dr. Alexander Wright", spec: "Cardiology", degree: "MD, FACC", phone: "555-1001", email: "wright@hospital.com", status: "Available", fee: 150 },
+        { _id: "d2002", name: "Dr. Emily Watson", spec: "Pediatrics", degree: "MD, FAAP", phone: "555-1002", email: "watson@hospital.com", status: "Available", fee: 120 },
+        { _id: "d2003", name: "Dr. Marcus Vance", spec: "Neurology", degree: "MD, PhD", phone: "555-1003", email: "vance@hospital.com", status: "Available", fee: 180 },
+        { _id: "d2004", name: "Dr. Sarah Jenkins", spec: "Orthopedics", degree: "MS, Ortho", phone: "555-1004", email: "jenkins@hospital.com", status: "Available", fee: 140 },
+        { _id: "d2005", name: "Dr. Robert Chen", spec: "General Medicine", degree: "MBBS, MD", phone: "555-1005", email: "chen@hospital.com", status: "Available", fee: 100 }
       ];
+
+      let selectedDept = "all";
 
       window.addEventListener("DOMContentLoaded", () => {
         loadDoctors();
       });
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeDoctorModal();
+      });
+
+      function openDoctorModal() {
+        document.getElementById("doctor-modal").classList.add("open");
+        document.getElementById("d-name").focus();
+      }
+
+      function closeDoctorModal() {
+        document.getElementById("doctor-modal").classList.remove("open");
+        document.getElementById("doctor-form").reset();
+      }
 
       async function loadDoctors() {
         try {
@@ -596,14 +727,14 @@
         } catch (e) {
           console.log("Using cached/local specialists list");
         }
-        renderDoctors(doctorsList);
+        applyFilters();
         updateStats();
       }
 
       function renderDoctors(list) {
         const grid = document.getElementById("doctors-grid");
         if (!list || list.length === 0) {
-          grid.innerHTML = `<div style="grid-column: 1/-1;text-align:center;padding:3rem;color:var(--muted);background:var(--card);border-radius:16px;border:1px solid var(--border);"><i class="fas fa-user-md" style="font-size:2.5rem;display:block;margin-bottom:0.8rem;opacity:0.4;"></i>No specialists found for this specialization.</div>`;
+          grid.innerHTML = `<div style="grid-column: 1/-1;text-align:center;padding:3.5rem;color:var(--muted);background:var(--card);border-radius:20px;border:1px solid var(--border);"><i class="fas fa-user-md" style="font-size:2.5rem;display:block;margin-bottom:0.8rem;opacity:0.4;"></i>No specialists found. <button class="btn btn-primary" style="margin-top:1rem;" onclick="openDoctorModal()"><i class="fas fa-plus"></i> Add Specialist</button></div>`;
           return;
         }
 
@@ -631,11 +762,15 @@
                   </div>
                   <div class="doc-details-row">
                     <span style="color:var(--muted);"><i class="fas fa-envelope"></i> Email:</span>
-                    <span>${d.email || "staff@hospital.com"}</span>
+                    <span style="font-size:0.8rem;">${d.email || "staff@hospital.com"}</span>
+                  </div>
+                  <div class="doc-details-row">
+                    <span style="color:var(--muted);"><i class="fas fa-tag"></i> Consult Fee:</span>
+                    <strong style="color:var(--primary);">$${d.fee || 150}</strong>
                   </div>
                 </div>
               </div>
-              <div style="display:flex;gap:8px;margin-top:1rem;">
+              <div style="display:flex;gap:8px;margin-top:0.5rem;">
                 <a href="appointments.html?doctor=${encodeURIComponent(d.name)}" class="btn btn-primary" style="flex:1;justify-content:center;font-size:0.82rem;">
                   <i class="fas fa-calendar-plus"></i> Book Consult
                 </a>
@@ -664,8 +799,10 @@
         const doctorData = {
           name: document.getElementById("d-name").value.trim(),
           spec: document.getElementById("d-spec").value,
+          degree: document.getElementById("d-degree").value.trim(),
           phone: document.getElementById("d-phone").value.trim(),
           email: document.getElementById("d-email").value.trim() || "staff@hospital.com",
+          fee: Number(document.getElementById("d-fee").value) || 150,
           status: document.getElementById("d-status").value,
         };
 
@@ -686,8 +823,8 @@
           doctorsList.unshift({ ...doctorData, _id: "local_" + Date.now() });
         }
 
-        resetForm();
-        renderDoctors(doctorsList);
+        closeDoctorModal();
+        applyFilters();
         updateStats();
         showToast("Specialist added successfully!");
         btn.disabled = false;
@@ -700,37 +837,36 @@
           await fetch(`${API}/doctors/${id}`, { method: "DELETE" });
         } catch (e) {}
         doctorsList = doctorsList.filter(d => d._id !== id && String(d._id) !== String(id));
-        renderDoctors(doctorsList);
+        applyFilters();
         updateStats();
         showToast("Specialist removed.");
       }
 
       function filterDept(dept, el) {
+        selectedDept = dept;
         document.querySelectorAll(".dept-pill").forEach(p => p.classList.remove("active"));
         if (el) el.classList.add("active");
-        if (dept === "all") {
-          renderDoctors(doctorsList);
-        } else {
-          const filtered = doctorsList.filter(d => d.spec && d.spec.toLowerCase().includes(dept.toLowerCase()));
-          renderDoctors(filtered);
-        }
+        applyFilters();
       }
 
-      function resetForm() {
-        document.getElementById("doctor-form").reset();
+      function filterDoctorsSearch() {
+        applyFilters();
       }
 
-      function toggleForm() {
-        const card = document.getElementById("doctor-form-card");
-        const btnText = document.getElementById("toggle-form-btn-text");
-        if (card.style.display === "none") {
-          card.style.display = "block";
-          btnText.innerText = "Hide Form";
-          card.scrollIntoView({ behavior: "smooth" });
-        } else {
-          card.style.display = "none";
-          btnText.innerText = "Add New Specialist";
+      function applyFilters() {
+        const q = (document.getElementById("search-input") ? document.getElementById("search-input").value : "").toLowerCase();
+        let list = doctorsList;
+        if (selectedDept !== "all") {
+          list = list.filter(d => d.spec && d.spec.toLowerCase().includes(selectedDept.toLowerCase()));
         }
+        if (q) {
+          list = list.filter(d => 
+            (d.name && d.name.toLowerCase().includes(q)) ||
+            (d.spec && d.spec.toLowerCase().includes(q)) ||
+            (d.email && d.email.toLowerCase().includes(q))
+          );
+        }
+        renderDoctors(list);
       }
 
       function showToast(msg) {
