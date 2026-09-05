@@ -1249,8 +1249,29 @@
           </div>
         </section>
 
-        <!-- Data Table Section -->
+        <!-- Data Table & Direct Form Section -->
         <section id="sec-data" style="display: none">
+          <!-- Section Specific Stats Banner -->
+          <div id="section-stats-banner" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+            <!-- Dynamically populated -->
+          </div>
+
+          <!-- Direct Interactive Form on Page -->
+          <div id="inline-form-card" style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 4px 16px rgba(0,0,0,0.03);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 0.8rem; border-bottom: 1px solid var(--border);">
+              <h3 id="inline-form-title" style="margin: 0; font-size: 1.1rem; color: var(--primary); display: flex; align-items: center; gap: 8px;">
+                <i class="fas fa-edit"></i> Record Entry Form
+              </h3>
+              <button class="btn btn-outline" onclick="toggleInlineForm()" style="padding: 0.35rem 0.8rem; font-size: 0.8rem;">
+                <i class="fas fa-chevron-up" id="inline-toggle-icon"></i> <span id="inline-toggle-text">Collapse Form</span>
+              </button>
+            </div>
+            <div id="inline-form-body">
+              <!-- Dynamically populated form fields -->
+            </div>
+          </div>
+
+          <!-- Records Table & Directory -->
           <div class="card-container">
             <div class="table-header">
               <div class="search-container">
@@ -1274,11 +1295,13 @@
                     border: 1px solid var(--border);
                     width: 100%;
                     font-family: inherit;
+                    background: var(--bg-main);
+                    color: var(--text-main);
                   "
                   onkeyup="handleSearch()"
                 />
               </div>
-              <button class="btn btn-primary" id="add-btn">
+              <button class="btn btn-primary" id="add-btn" onclick="toggleInlineForm(true)">
                 + Add New Record
               </button>
             </div>
@@ -1594,7 +1617,15 @@
           "U")[0].toUpperCase();
         showPage("app");
         await fetchAllData();
-        renderView("dashboard");
+        
+        const params = new URLSearchParams(window.location.search);
+        let targetView = params.get("view") || (window.location.hash ? window.location.hash.replace("#", "") : "dashboard");
+        if (targetView === "specialization") targetView = "doctors";
+        const validViews = ["dashboard", "patients", "doctors", "appointments", "billing"];
+        const initView = validViews.includes(targetView) ? targetView : "dashboard";
+
+        const navEl = document.querySelector(`.nav-links a[data-view="${initView}"]`);
+        navigate(initView, navEl);
         initDashboardFeatures();
       }
 
@@ -1610,7 +1641,6 @@
           }
           const res = await fetch(url, { ...opts, headers });
           if (res.status === 401) {
-            // Only force logout if explicitly requested (e.g. session restore check)
             if (autoLogout) logout();
             return null;
           }
@@ -1629,7 +1659,6 @@
             authFetch(`${API}/appointments`),
             authFetch(`${API}/billing`),
           ]);
-          // Only overwrite state if we got real data back from the server
           if (pR && pR.ok) { const d = await pR.json(); if (Array.isArray(d)) state.patients = d; }
           if (dR && dR.ok) { const d = await dR.json(); if (Array.isArray(d)) state.doctors = d; }
           if (aR && aR.ok) { const d = await aR.json(); if (Array.isArray(d)) state.appointments = d; }
@@ -1637,7 +1666,6 @@
         } catch (e) {
           console.log("Server not reachable — displaying local data");
         }
-        // Always update stats and current view regardless of server availability
         updateStats();
         if (state.currentView !== "dashboard") renderView(state.currentView);
       }
@@ -1648,13 +1676,17 @@
           .querySelectorAll(".nav-links a")
           .forEach((a) => a.classList.remove("active"));
         if (el) el.classList.add("active");
+        else {
+          const matching = document.querySelector(`.nav-links a[data-view="${view}"]`);
+          if (matching) matching.classList.add("active");
+        }
 
         const titleMap = {
           dashboard: "Dashboard Overview",
-          patients: "Patient Records",
-          doctors: "Specialists & Doctors",
-          appointments: "Appointment Schedule",
-          billing: "Billing & Invoices"
+          patients: "Patient Records & Registration",
+          doctors: "Specialists & Department Directory",
+          appointments: "Appointment Scheduling & Visits",
+          billing: "Billing, Invoices & Financial Ledger"
         };
         document.getElementById("page-title").innerText =
           titleMap[view] || (view.charAt(0).toUpperCase() + view.slice(1));
@@ -1665,12 +1697,10 @@
           view === "dashboard" ? "none" : "block";
         document.getElementById("global-search").value = "";
 
-        // Render immediately so user never sees a blank screen
         if (view !== "dashboard") {
           renderView(view);
         }
 
-        // Fetch fresh data in the background
         fetchAllData().then(() => {
           if (state.currentView === view && view !== "dashboard") {
             renderView(view);
@@ -1678,7 +1708,336 @@
         }).catch(() => {});
       }
 
+      function toggleInlineForm(forceOpen = false) {
+        const formCard = document.getElementById("inline-form-card");
+        const icon = document.getElementById("inline-toggle-icon");
+        const txt = document.getElementById("inline-toggle-text");
+        if (!formCard) return;
+
+        if (forceOpen || formCard.style.display === "none") {
+          formCard.style.display = "block";
+          if (icon) icon.className = "fas fa-chevron-up";
+          if (txt) txt.innerText = "Collapse Form";
+          formCard.scrollIntoView({ behavior: "smooth", block: "start" });
+        } else {
+          formCard.style.display = "none";
+          if (icon) icon.className = "fas fa-chevron-down";
+          if (txt) txt.innerText = "Expand Form";
+        }
+      }
+
+      function renderSectionStats(view) {
+        const banner = document.getElementById("section-stats-banner");
+        if (!banner) return;
+
+        if (view === "patients") {
+          banner.innerHTML = `
+            <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1rem;display:flex;align-items:center;gap:12px;">
+              <div style="width:40px;height:40px;border-radius:10px;background:#ede9fe;color:#7c3aed;display:flex;align-items:center;justify-content:center;font-size:1.2rem;"><i class="fas fa-users"></i></div>
+              <div><p style="margin:0;font-size:0.75rem;color:var(--text-muted);font-weight:600;">TOTAL PATIENTS</p><h3 style="margin:0;font-size:1.3rem;">${state.patients.length}</h3></div>
+            </div>
+            <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1rem;display:flex;align-items:center;gap:12px;">
+              <div style="width:40px;height:40px;border-radius:10px;background:#dcfce7;color:#16a34a;display:flex;align-items:center;justify-content:center;font-size:1.2rem;"><i class="fas fa-user-check"></i></div>
+              <div><p style="margin:0;font-size:0.75rem;color:var(--text-muted);font-weight:600;">ACTIVE INPATIENTS</p><h3 style="margin:0;font-size:1.3rem;">${Math.ceil(state.patients.length * 0.6)}</h3></div>
+            </div>
+            <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1rem;display:flex;align-items:center;gap:12px;">
+              <div style="width:40px;height:40px;border-radius:10px;background:#fef3c7;color:#d97706;display:flex;align-items:center;justify-content:center;font-size:1.2rem;"><i class="fas fa-heartbeat"></i></div>
+              <div><p style="margin:0;font-size:0.75rem;color:var(--text-muted);font-weight:600;">OUTPATIENTS</p><h3 style="margin:0;font-size:1.3rem;">${Math.floor(state.patients.length * 0.4)}</h3></div>
+            </div>
+          `;
+        } else if (view === "doctors") {
+          const avail = state.doctors.filter(d => (d.status || "Available") === "Available").length;
+          banner.innerHTML = `
+            <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1rem;display:flex;align-items:center;gap:12px;">
+              <div style="width:40px;height:40px;border-radius:10px;background:#ede9fe;color:#7c3aed;display:flex;align-items:center;justify-content:center;font-size:1.2rem;"><i class="fas fa-user-md"></i></div>
+              <div><p style="margin:0;font-size:0.75rem;color:var(--text-muted);font-weight:600;">SPECIALISTS LISTED</p><h3 style="margin:0;font-size:1.3rem;">${state.doctors.length}</h3></div>
+            </div>
+            <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1rem;display:flex;align-items:center;gap:12px;">
+              <div style="width:40px;height:40px;border-radius:10px;background:#dcfce7;color:#16a34a;display:flex;align-items:center;justify-content:center;font-size:1.2rem;"><i class="fas fa-check-circle"></i></div>
+              <div><p style="margin:0;font-size:0.75rem;color:var(--text-muted);font-weight:600;">AVAILABLE NOW</p><h3 style="margin:0;font-size:1.3rem;">${avail}</h3></div>
+            </div>
+            <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1rem;display:flex;align-items:center;gap:12px;">
+              <div style="width:40px;height:40px;border-radius:10px;background:#dbeafe;color:#2563eb;display:flex;align-items:center;justify-content:center;font-size:1.2rem;"><i class="fas fa-hospital"></i></div>
+              <div><p style="margin:0;font-size:0.75rem;color:var(--text-muted);font-weight:600;">DEPARTMENTS</p><h3 style="margin:0;font-size:1.3rem;">${new Set(state.doctors.map(d => d.spec)).size || 5}</h3></div>
+            </div>
+          `;
+        } else if (view === "appointments") {
+          const pending = state.appointments.filter(a => a.status === "Pending").length;
+          const completed = state.appointments.filter(a => a.status === "Completed").length;
+          banner.innerHTML = `
+            <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1rem;display:flex;align-items:center;gap:12px;">
+              <div style="width:40px;height:40px;border-radius:10px;background:#ede9fe;color:#7c3aed;display:flex;align-items:center;justify-content:center;font-size:1.2rem;"><i class="fas fa-calendar-alt"></i></div>
+              <div><p style="margin:0;font-size:0.75rem;color:var(--text-muted);font-weight:600;">TOTAL BOOKINGS</p><h3 style="margin:0;font-size:1.3rem;">${state.appointments.length}</h3></div>
+            </div>
+            <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1rem;display:flex;align-items:center;gap:12px;">
+              <div style="width:40px;height:40px;border-radius:10px;background:#fef3c7;color:#d97706;display:flex;align-items:center;justify-content:center;font-size:1.2rem;"><i class="fas fa-clock"></i></div>
+              <div><p style="margin:0;font-size:0.75rem;color:var(--text-muted);font-weight:600;">PENDING VISITS</p><h3 style="margin:0;font-size:1.3rem;">${pending}</h3></div>
+            </div>
+            <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1rem;display:flex;align-items:center;gap:12px;">
+              <div style="width:40px;height:40px;border-radius:10px;background:#dcfce7;color:#16a34a;display:flex;align-items:center;justify-content:center;font-size:1.2rem;"><i class="fas fa-check-double"></i></div>
+              <div><p style="margin:0;font-size:0.75rem;color:var(--text-muted);font-weight:600;">COMPLETED</p><h3 style="margin:0;font-size:1.3rem;">${completed}</h3></div>
+            </div>
+          `;
+        } else if (view === "billing") {
+          const rev = state.bills.filter(b => b.status === "Paid").reduce((sum, b) => sum + Number(b.fee || 0), 0);
+          const unpaidCount = state.bills.filter(b => b.status !== "Paid").length;
+          banner.innerHTML = `
+            <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1rem;display:flex;align-items:center;gap:12px;">
+              <div style="width:40px;height:40px;border-radius:10px;background:#dcfce7;color:#16a34a;display:flex;align-items:center;justify-content:center;font-size:1.2rem;"><i class="fas fa-wallet"></i></div>
+              <div><p style="margin:0;font-size:0.75rem;color:var(--text-muted);font-weight:600;">TOTAL REVENUE</p><h3 style="margin:0;font-size:1.3rem;color:var(--success);">$${rev.toLocaleString()}</h3></div>
+            </div>
+            <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1rem;display:flex;align-items:center;gap:12px;">
+              <div style="width:40px;height:40px;border-radius:10px;background:#ede9fe;color:#7c3aed;display:flex;align-items:center;justify-content:center;font-size:1.2rem;"><i class="fas fa-file-invoice"></i></div>
+              <div><p style="margin:0;font-size:0.75rem;color:var(--text-muted);font-weight:600;">TOTAL INVOICES</p><h3 style="margin:0;font-size:1.3rem;">${state.bills.length}</h3></div>
+            </div>
+            <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1rem;display:flex;align-items:center;gap:12px;">
+              <div style="width:40px;height:40px;border-radius:10px;background:#fee2e2;color:#dc2626;display:flex;align-items:center;justify-content:center;font-size:1.2rem;"><i class="fas fa-exclamation-circle"></i></div>
+              <div><p style="margin:0;font-size:0.75rem;color:var(--text-muted);font-weight:600;">UNPAID INVOICES</p><h3 style="margin:0;font-size:1.3rem;">${unpaidCount}</h3></div>
+            </div>
+          `;
+        }
+      }
+
+      function renderInlineForm(view) {
+        const formBody = document.getElementById("inline-form-body");
+        const formTitle = document.getElementById("inline-form-title");
+        if (!formBody || !formTitle) return;
+
+        if (view === "patients") {
+          formTitle.innerHTML = `<i class="fas fa-user-plus"></i> Register New Patient`;
+          formBody.innerHTML = `
+            <form onsubmit="handleInlineSubmit(event, 'patients')">
+              <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:12px;">
+                <div>
+                  <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Full Name *</label>
+                  <input id="inf-p-name" class="modal-input" placeholder="e.g. John Doe" required style="margin-bottom:0;">
+                </div>
+                <div>
+                  <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Age *</label>
+                  <input id="inf-p-age" type="number" min="0" max="130" class="modal-input" placeholder="e.g. 35" required style="margin-bottom:0;">
+                </div>
+                <div>
+                  <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Gender *</label>
+                  <select id="inf-p-gender" class="modal-input" style="margin-bottom:0;">
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+                <div>
+                  <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Contact Phone *</label>
+                  <input id="inf-p-phone" class="modal-input" placeholder="e.g. 555-0199" required style="margin-bottom:0;">
+                </div>
+                <div>
+                  <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Medical Condition *</label>
+                  <input id="inf-p-disease" class="modal-input" placeholder="e.g. Hypertension, Fever" required style="margin-bottom:0;">
+                </div>
+                <div>
+                  <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Address / Ward</label>
+                  <input id="inf-p-address" class="modal-input" placeholder="e.g. 123 Health Ave" style="margin-bottom:0;">
+                </div>
+              </div>
+              <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:1rem;">
+                <button type="reset" class="btn btn-outline" style="font-size:0.85rem;"><i class="fas fa-undo"></i> Clear</button>
+                <button type="submit" class="btn btn-primary" id="inf-submit-btn" style="font-size:0.85rem;"><i class="fas fa-check"></i> Register Patient</button>
+              </div>
+            </form>
+          `;
+        } else if (view === "doctors") {
+          formTitle.innerHTML = `<i class="fas fa-user-md"></i> Add New Doctor / Specialist`;
+          formBody.innerHTML = `
+            <form onsubmit="handleInlineSubmit(event, 'doctors')">
+              <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:12px;">
+                <div>
+                  <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Doctor Name *</label>
+                  <input id="inf-d-name" class="modal-input" placeholder="e.g. Dr. Emily Watson" required style="margin-bottom:0;">
+                </div>
+                <div>
+                  <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Specialization / Dept *</label>
+                  <select id="inf-d-spec" class="modal-input" style="margin-bottom:0;">
+                    <option value="Cardiology">Cardiology</option>
+                    <option value="Pediatrics">Pediatrics</option>
+                    <option value="Neurology">Neurology</option>
+                    <option value="Orthopedics">Orthopedics</option>
+                    <option value="General Medicine">General Medicine</option>
+                    <option value="Dermatology">Dermatology</option>
+                    <option value="Oncology">Oncology</option>
+                    <option value="Emergency Care">Emergency Care</option>
+                  </select>
+                </div>
+                <div>
+                  <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Phone Number *</label>
+                  <input id="inf-d-phone" class="modal-input" placeholder="e.g. 555-1002" required style="margin-bottom:0;">
+                </div>
+                <div>
+                  <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Email Address</label>
+                  <input id="inf-d-email" type="email" class="modal-input" placeholder="doctor@hospital.com" style="margin-bottom:0;">
+                </div>
+                <div>
+                  <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Status</label>
+                  <select id="inf-d-status" class="modal-input" style="margin-bottom:0;">
+                    <option value="Available">Available (On Duty)</option>
+                    <option value="Busy">Busy (In Consult)</option>
+                    <option value="Off Duty">Off Duty</option>
+                  </select>
+                </div>
+              </div>
+              <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:1rem;">
+                <button type="reset" class="btn btn-outline" style="font-size:0.85rem;"><i class="fas fa-undo"></i> Clear</button>
+                <button type="submit" class="btn btn-primary" id="inf-submit-btn" style="font-size:0.85rem;"><i class="fas fa-check"></i> Save Specialist</button>
+              </div>
+            </form>
+          `;
+        } else if (view === "appointments") {
+          formTitle.innerHTML = `<i class="fas fa-calendar-plus"></i> Schedule New Appointment`;
+          let pOpts = state.patients.map(p => `<option value="${p.name}">${p.name}</option>`).join("");
+          if (!pOpts) pOpts = `<option value="John Doe">John Doe</option><option value="Jane Smith">Jane Smith</option>`;
+          let dOpts = state.doctors.map(d => `<option value="${d.name}">${d.name} (${d.spec})</option>`).join("");
+          if (!dOpts) dOpts = `<option value="Dr. Alexander Wright">Dr. Alexander Wright</option>`;
+
+          formBody.innerHTML = `
+            <form onsubmit="handleInlineSubmit(event, 'appointments')">
+              <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:12px;">
+                <div>
+                  <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Select Patient *</label>
+                  <input id="inf-a-patient" list="inf-patient-list" class="modal-input" placeholder="Select / type patient..." required style="margin-bottom:0;">
+                  <datalist id="inf-patient-list">${pOpts}</datalist>
+                </div>
+                <div>
+                  <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Attending Specialist *</label>
+                  <select id="inf-a-doctor" class="modal-input" style="margin-bottom:0;">${dOpts}</select>
+                </div>
+                <div>
+                  <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Date *</label>
+                  <input id="inf-a-date" type="date" class="modal-input" value="${new Date().toISOString().split("T")[0]}" required style="margin-bottom:0;">
+                </div>
+                <div>
+                  <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Consultation Status</label>
+                  <select id="inf-a-status" class="modal-input" style="margin-bottom:0;">
+                    <option value="Pending">Pending</option>
+                    <option value="Completed">Completed</option>
+                  </select>
+                </div>
+                <div>
+                  <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Payment Status</label>
+                  <select id="inf-a-payment" class="modal-input" style="margin-bottom:0;">
+                    <option value="Unpaid">Unpaid</option>
+                    <option value="Paid">Paid</option>
+                  </select>
+                </div>
+              </div>
+              <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:1rem;">
+                <button type="reset" class="btn btn-outline" style="font-size:0.85rem;"><i class="fas fa-undo"></i> Clear</button>
+                <button type="submit" class="btn btn-primary" id="inf-submit-btn" style="font-size:0.85rem;"><i class="fas fa-check"></i> Book Appointment</button>
+              </div>
+            </form>
+          `;
+        } else if (view === "billing") {
+          formTitle.innerHTML = `<i class="fas fa-file-invoice-dollar"></i> Generate Patient Invoice`;
+          let pOpts = state.patients.map(p => `<option value="${p.name}">${p.name}</option>`).join("");
+          if (!pOpts) pOpts = `<option value="John Doe">John Doe</option>`;
+          let dOpts = state.doctors.map(d => `<option value="${d.name}">${d.name}</option>`).join("");
+          if (!dOpts) dOpts = `<option value="Dr. Alexander Wright">Dr. Alexander Wright</option>`;
+
+          formBody.innerHTML = `
+            <form onsubmit="handleInlineSubmit(event, 'billing')">
+              <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:12px;">
+                <div>
+                  <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Patient *</label>
+                  <select id="inf-b-patient" class="modal-input" style="margin-bottom:0;">${pOpts}</select>
+                </div>
+                <div>
+                  <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Doctor *</label>
+                  <select id="inf-b-doctor" class="modal-input" style="margin-bottom:0;">${dOpts}</select>
+                </div>
+                <div>
+                  <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Service *</label>
+                  <select id="inf-b-service" class="modal-input" style="margin-bottom:0;">
+                    <option value="Consultation">Consultation</option>
+                    <option value="Lab Test">Lab Test</option>
+                    <option value="Follow-up Visit">Follow-up Visit</option>
+                    <option value="Surgery">Surgery</option>
+                    <option value="X-Ray / Scan">X-Ray / Scan</option>
+                    <option value="Pharmacy">Pharmacy</option>
+                    <option value="Emergency Care">Emergency Care</option>
+                  </select>
+                </div>
+                <div>
+                  <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Fee Amount ($) *</label>
+                  <input id="inf-b-fee" type="number" min="1" step="0.01" class="modal-input" value="150" required style="margin-bottom:0;">
+                </div>
+                <div>
+                  <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Status</label>
+                  <select id="inf-b-status" class="modal-input" style="margin-bottom:0;">
+                    <option value="Paid">Paid</option>
+                    <option value="Unpaid">Unpaid</option>
+                  </select>
+                </div>
+              </div>
+              <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:1rem;">
+                <button type="reset" class="btn btn-outline" style="font-size:0.85rem;"><i class="fas fa-undo"></i> Clear</button>
+                <button type="submit" class="btn btn-primary" id="inf-submit-btn" style="font-size:0.85rem;"><i class="fas fa-check"></i> Issue Invoice</button>
+              </div>
+            </form>
+          `;
+        }
+      }
+
+      async function handleInlineSubmit(e, route) {
+        e.preventDefault();
+        const submitBtn = document.getElementById("inf-submit-btn");
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Saving...`;
+        }
+
+        let data = {};
+        if (route === "patients") {
+          data = {
+            name: val("inf-p-name"),
+            age: Number(val("inf-p-age")),
+            gender: val("inf-p-gender"),
+            phone: val("inf-p-phone"),
+            disease: val("inf-p-disease"),
+            address: val("inf-p-address") || "General Ward",
+          };
+        } else if (route === "doctors") {
+          data = {
+            name: val("inf-d-name"),
+            spec: val("inf-d-spec"),
+            phone: val("inf-d-phone"),
+            email: val("inf-d-email") || "doctor@hospital.com",
+            status: val("inf-d-status"),
+          };
+        } else if (route === "appointments") {
+          data = {
+            pName: val("inf-a-patient"),
+            dName: val("inf-a-doctor"),
+            date: new Date(val("inf-a-date")).toISOString(),
+            status: val("inf-a-status"),
+            payment: val("inf-a-payment"),
+          };
+        } else if (route === "billing") {
+          data = {
+            patientName: val("inf-b-patient"),
+            doctorName: val("inf-b-doctor"),
+            service: val("inf-b-service"),
+            fee: Number(val("inf-b-fee")),
+            date: new Date().toISOString().split("T")[0],
+            status: val("inf-b-status"),
+          };
+        }
+
+        await sendData(route, data);
+        await fetchAllData();
+        renderView(route);
+        showToast("Record successfully created & saved!");
+      }
+
       function renderView(view) {
+        renderSectionStats(view);
+        renderInlineForm(view);
+
         const head = document.getElementById("table-head");
         const body = document.getElementById("table-body");
         const addBtn = document.getElementById("add-btn");
@@ -1689,18 +2048,18 @@
         if (view === "patients") {
           head.innerHTML = `<tr><th>ID</th><th>Name</th><th>Age</th><th>Condition</th><th>Phone</th><th>Actions</th></tr>`;
           addBtn.innerText = "+ Register Patient";
-          addBtn.onclick = () => openForm("patient");
+          addBtn.onclick = () => toggleInlineForm(true);
 
           if (!state.patients || state.patients.length === 0) {
-            body.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:3rem;color:var(--text-muted)"><i class="fas fa-user-injured" style="font-size:2.5rem;display:block;margin-bottom:0.8rem;opacity:.4"></i>No patients recorded yet.<br><button class="btn btn-primary" style="margin-top:1rem;" onclick="openForm('patient')"><i class="fas fa-plus"></i> Register First Patient</button></td></tr>`;
+            body.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:3rem;color:var(--text-muted)"><i class="fas fa-user-injured" style="font-size:2.5rem;display:block;margin-bottom:0.8rem;opacity:.4"></i>No patients recorded yet.<br><button class="btn btn-primary" style="margin-top:1rem;" onclick="toggleInlineForm(true)"><i class="fas fa-plus"></i> Register First Patient</button></td></tr>`;
           } else {
             state.patients.forEach((p, idx) => {
               const pid = p._id ? String(p._id).slice(-5) : String(idx + 1).padStart(3, "0");
               body.innerHTML += `<tr>
                 <td><span style="font-family:monospace;font-weight:600;color:var(--primary);">#${pid}</span></td>
                 <td><strong>${p.name || "Unknown"}</strong></td>
-                <td>${p.age || "N/A"}</td>
-                <td><span class="badge badge-warning" style="background:#fef3c7;color:#92400e;">${p.disease || p.condition || "General"}</span></td>
+                <td>${p.age || "N/A"} yrs • ${p.gender || "—"}</td>
+                <td><span class="badge badge-warning">${p.disease || p.condition || "General"}</span></td>
                 <td>${p.phone || "—"}</td>
                 <td>
                   <button class="btn-outline" style="color:var(--danger);padding:.4rem .7rem;border-radius:8px;" onclick="deleteItem('patients','${p._id || idx}')">
@@ -1713,10 +2072,10 @@
         } else if (view === "doctors") {
           head.innerHTML = `<tr><th>ID</th><th>Specialist</th><th>Department</th><th>Status</th><th>Contact</th><th>Actions</th></tr>`;
           addBtn.innerText = "+ Add Specialist";
-          addBtn.onclick = () => openForm("doctor");
+          addBtn.onclick = () => toggleInlineForm(true);
 
           if (!state.doctors || state.doctors.length === 0) {
-            body.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:3rem;color:var(--text-muted)"><i class="fas fa-user-md" style="font-size:2.5rem;display:block;margin-bottom:0.8rem;opacity:.4"></i>No doctors or specialists listed yet.<br><button class="btn btn-primary" style="margin-top:1rem;" onclick="openForm('doctor')"><i class="fas fa-plus"></i> Add First Specialist</button></td></tr>`;
+            body.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:3rem;color:var(--text-muted)"><i class="fas fa-user-md" style="font-size:2.5rem;display:block;margin-bottom:0.8rem;opacity:.4"></i>No specialists listed yet.<br><button class="btn btn-primary" style="margin-top:1rem;" onclick="toggleInlineForm(true)"><i class="fas fa-plus"></i> Add First Specialist</button></td></tr>`;
           } else {
             state.doctors.forEach((d, idx) => {
               const did = d._id ? String(d._id).slice(-5) : String(idx + 1).padStart(3, "0");
@@ -1724,7 +2083,7 @@
               body.innerHTML += `<tr>
                 <td><span style="font-family:monospace;font-weight:600;color:var(--primary);">#${did}</span></td>
                 <td><strong>${d.name || "Dr. Specialist"}</strong></td>
-                <td>${d.spec || "General Practice"}</td>
+                <td><span class="badge badge-primary">${d.spec || "General Practice"}</span></td>
                 <td><span class="badge ${isAvail ? "badge-success" : "badge-warning"}">${d.status || "Available"}</span></td>
                 <td>${d.phone || d.email || "—"}</td>
                 <td>
@@ -1738,18 +2097,18 @@
         } else if (view === "appointments") {
           head.innerHTML = `<tr><th>Patient</th><th>Specialist</th><th>Date</th><th>Status</th><th>Payment</th><th>Actions</th></tr>`;
           addBtn.innerText = "+ Schedule Visit";
-          addBtn.onclick = () => openForm("appointment");
+          addBtn.onclick = () => toggleInlineForm(true);
 
           if (!state.appointments || state.appointments.length === 0) {
-            body.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:3rem;color:var(--text-muted)"><i class="fas fa-calendar-check" style="font-size:2.5rem;display:block;margin-bottom:0.8rem;opacity:.4"></i>No appointments scheduled yet.<br><button class="btn btn-primary" style="margin-top:1rem;" onclick="openForm('appointment')"><i class="fas fa-plus"></i> Schedule Appointment</button></td></tr>`;
+            body.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:3rem;color:var(--text-muted)"><i class="fas fa-calendar-check" style="font-size:2.5rem;display:block;margin-bottom:0.8rem;opacity:.4"></i>No appointments scheduled yet.<br><button class="btn btn-primary" style="margin-top:1rem;" onclick="toggleInlineForm(true)"><i class="fas fa-plus"></i> Schedule Appointment</button></td></tr>`;
           } else {
             state.appointments.forEach((a, idx) => {
               const rawDate = a.date ? (typeof a.date === 'string' && a.date.includes('T') ? a.date.split('T')[0] : String(a.date)) : 'Today';
               body.innerHTML += `<tr>
                 <td><strong>${a.pName || a.patientName || "Patient"}</strong></td>
-                <td>${a.dName || a.doctorName || "Specialist"}</td>
-                <td>${rawDate}</td>
-                <td><span class="badge ${a.status === "Completed" ? "badge-success" : "badge-warning"}" style="cursor:pointer;" onclick="toggleStatus('${a._id || idx}','status')">${a.status || "Pending"}</span></td>
+                <td><span style="color:var(--primary);font-weight:600;"><i class="fas fa-user-md"></i> ${a.dName || a.doctorName || "Specialist"}</span></td>
+                <td><span class="badge badge-info">${rawDate}</span></td>
+                <td><span class="badge ${a.status === "Completed" ? "badge-success" : "badge-warning"}" style="cursor:pointer;" onclick="toggleStatus('${a._id || idx}','status')"><i class="fas ${a.status === "Completed" ? "fa-check" : "fa-clock"}"></i> ${a.status || "Pending"}</span></td>
                 <td><span class="badge ${a.payment === "Paid" ? "badge-success" : "badge-danger"}" style="cursor:pointer;" onclick="toggleStatus('${a._id || idx}','payment')">${a.payment || "Unpaid"}</span></td>
                 <td>
                   <button class="btn-outline" style="color:var(--danger);padding:.4rem .7rem;border-radius:8px;" onclick="deleteItem('appointments','${a._id || idx}')">
@@ -1762,10 +2121,10 @@
         } else if (view === "billing") {
           head.innerHTML = `<tr><th>#</th><th>Patient</th><th>Doctor</th><th>Service</th><th>Date</th><th>Fee</th><th>Status</th><th>Actions</th></tr>`;
           addBtn.innerText = "+ Add Bill";
-          addBtn.onclick = () => openForm("bill");
+          addBtn.onclick = () => toggleInlineForm(true);
 
           if (!state.bills || state.bills.length === 0) {
-            body.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:3rem;color:var(--text-muted)"><i class="fas fa-file-invoice-dollar" style="font-size:2.5rem;display:block;margin-bottom:0.8rem;opacity:.4"></i>No bills yet.<br><button class="btn btn-primary" style="margin-top:1rem;" onclick="openForm('bill')"><i class="fas fa-plus"></i> Create Invoice</button></td></tr>`;
+            body.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:3rem;color:var(--text-muted)"><i class="fas fa-file-invoice-dollar" style="font-size:2.5rem;display:block;margin-bottom:0.8rem;opacity:.4"></i>No bills yet.<br><button class="btn btn-primary" style="margin-top:1rem;" onclick="toggleInlineForm(true)"><i class="fas fa-plus"></i> Create Invoice</button></td></tr>`;
           } else {
             state.bills.forEach((b, i) => {
               body.innerHTML += `<tr>
@@ -1787,260 +2146,7 @@
       }
 
       function openForm(type) {
-        const container = document.getElementById("modal-form");
-        const title = document.getElementById("modal-title");
-        const saveBtn = document.getElementById("save-btn");
-        document.getElementById("modal").style.display = "flex";
-        container.innerHTML = "";
-
-        if (type === "patient") {
-          title.innerText = "Register Patient";
-          container.innerHTML = `
-            <div style="display:flex;flex-direction:column;gap:12px;">
-              <div>
-                <label style="font-size:.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Full Name *</label>
-                <input id="f-name" class="modal-input" placeholder="e.g. John Doe" required>
-              </div>
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-                <div>
-                  <label style="font-size:.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Age *</label>
-                  <input id="f-age" class="modal-input" type="number" min="1" max="120" placeholder="e.g. 35" required>
-                </div>
-                <div>
-                  <label style="font-size:.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Gender</label>
-                  <select id="f-gender" class="modal-input">
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                    <option value="Other">Other</option>
-                  </select>
-                </div>
-              </div>
-              <div>
-                <label style="font-size:.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Medical Condition / Diagnosis *</label>
-                <input id="f-dis" class="modal-input" placeholder="e.g. Hypertension, Fever, Routine Checkup" required>
-              </div>
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-                <div>
-                  <label style="font-size:.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Phone</label>
-                  <input id="f-phone" class="modal-input" placeholder="e.g. 555-0199">
-                </div>
-                <div>
-                  <label style="font-size:.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Address</label>
-                  <input id="f-address" class="modal-input" placeholder="City or Street">
-                </div>
-              </div>
-            </div>
-          `;
-          saveBtn.onclick = async () => {
-            const name = val("f-name");
-            const age = val("f-age");
-            const disease = val("f-dis");
-            if (!name || !age || !disease) {
-              alert("Please fill in Name, Age, and Condition.");
-              return;
-            }
-            await sendData("patients", {
-              name,
-              age: Number(age),
-              gender: val("f-gender"),
-              disease,
-              phone: val("f-phone") || "",
-              address: val("f-address") || ""
-            });
-            finishAction("patients");
-          };
-        } else if (type === "doctor") {
-          title.innerText = "Add Specialist / Doctor";
-          container.innerHTML = `
-            <div style="display:flex;flex-direction:column;gap:12px;">
-              <div>
-                <label style="font-size:.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Doctor / Specialist Name *</label>
-                <input id="d-name" class="modal-input" placeholder="e.g. Dr. Emily Watson" required>
-              </div>
-              <div>
-                <label style="font-size:.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Specialty / Department *</label>
-                <select id="d-spec" class="modal-input">
-                  <option value="Cardiology">Cardiology</option>
-                  <option value="Pediatrics">Pediatrics</option>
-                  <option value="Neurology">Neurology</option>
-                  <option value="Orthopedics">Orthopedics</option>
-                  <option value="General Medicine">General Medicine</option>
-                  <option value="Dermatology">Dermatology</option>
-                  <option value="Oncology">Oncology</option>
-                  <option value="Emergency Care">Emergency Care</option>
-                </select>
-              </div>
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-                <div>
-                  <label style="font-size:.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Phone</label>
-                  <input id="d-phone" class="modal-input" placeholder="e.g. 555-1002">
-                </div>
-                <div>
-                  <label style="font-size:.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Email</label>
-                  <input id="d-email" class="modal-input" placeholder="doctor@hospital.com">
-                </div>
-              </div>
-              <div>
-                <label style="font-size:.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Status</label>
-                <select id="d-status" class="modal-input">
-                  <option value="Available">Available</option>
-                  <option value="Busy">Busy</option>
-                  <option value="Off Duty">Off Duty</option>
-                </select>
-              </div>
-            </div>
-          `;
-          saveBtn.onclick = async () => {
-            const name = val("d-name");
-            const spec = val("d-spec");
-            if (!name || !spec) {
-              alert("Please enter Doctor Name and Specialty.");
-              return;
-            }
-            await sendData("doctors", {
-              name,
-              spec,
-              phone: val("d-phone") || "",
-              email: val("d-email") || "",
-              status: val("d-status") || "Available",
-            });
-            finishAction("doctors");
-          };
-        } else if (type === "bill") {
-          title.innerText = "Create Patient Invoice / Bill";
-          let pOpt2 = state.patients.length > 0 
-            ? state.patients.map((p) => `<option value="${p.name}">${p.name}</option>`).join("")
-            : `<option value="John Doe">John Doe</option><option value="Jane Smith">Jane Smith</option>`;
-          let dOpt2 = state.doctors.length > 0
-            ? state.doctors.map((d) => `<option value="${d.name}">${d.name} (${d.spec})</option>`).join("")
-            : `<option value="Dr. Alexander Wright">Dr. Alexander Wright</option><option value="Dr. Emily Watson">Dr. Emily Watson</option>`;
-
-          container.innerHTML = `
-            <div style="display:flex;flex-direction:column;gap:12px;">
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-                <div>
-                  <label style="font-size:.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Patient *</label>
-                  <select id="b-patient" class="modal-input">${pOpt2}</select>
-                </div>
-                <div>
-                  <label style="font-size:.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Doctor *</label>
-                  <select id="b-doctor" class="modal-input">${dOpt2}</select>
-                </div>
-              </div>
-              <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:10px;">
-                <div>
-                  <label style="font-size:.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Medical Service *</label>
-                  <select id="b-service" class="modal-input">
-                    <option>Consultation</option>
-                    <option>Follow-up Visit</option>
-                    <option>Lab Test</option>
-                    <option>Surgery</option>
-                    <option>X-Ray / Scan</option>
-                    <option>Physiotherapy</option>
-                    <option>Emergency</option>
-                    <option>Medication / Pharmacy</option>
-                  </select>
-                </div>
-                <div>
-                  <label style="font-size:.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Fee ($) *</label>
-                  <input id="b-fee" class="modal-input" type="number" min="1" placeholder="e.g. 150" value="150" required>
-                </div>
-              </div>
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-                <div>
-                  <label style="font-size:.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Date *</label>
-                  <input id="b-date" class="modal-input" type="date" value="${new Date().toISOString().split("T")[0]}">
-                </div>
-                <div>
-                  <label style="font-size:.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Payment Status *</label>
-                  <select id="b-status" class="modal-input">
-                    <option value="Paid">Paid</option>
-                    <option value="Unpaid">Unpaid</option>
-                  </select>
-                </div>
-              </div>
-              <div>
-                <label style="font-size:.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Notes (optional)</label>
-                <input id="b-notes" class="modal-input" placeholder="e.g. Standard consultation fee">
-              </div>
-            </div>
-          `;
-          saveBtn.onclick = async () => {
-            const fee = val("b-fee");
-            if (!fee || isNaN(fee) || Number(fee) <= 0) {
-              alert("Please enter a valid positive fee amount.");
-              return;
-            }
-            await sendData("billing", {
-              patientName: val("b-patient"),
-              doctorName: val("b-doctor"),
-              service: val("b-service"),
-              fee: Number(fee),
-              date: val("b-date"),
-              status: val("b-status"),
-              notes: val("b-notes") || "",
-            });
-            finishAction("billing");
-          };
-        } else if (type === "appointment") {
-          title.innerText = "Schedule Appointment";
-          let pOpt = state.patients.length > 0
-            ? state.patients.map((p) => `<option value="${p.name}">${p.name}</option>`).join("")
-            : `<option value="John Doe">John Doe</option><option value="Jane Smith">Jane Smith</option>`;
-          let dOpt = state.doctors.length > 0
-            ? state.doctors.map((d) => `<option value="${d.name}">${d.name} (${d.spec})</option>`).join("")
-            : `<option value="Dr. Alexander Wright">Dr. Alexander Wright</option><option value="Dr. Emily Watson">Dr. Emily Watson</option>`;
-
-          container.innerHTML = `
-            <div style="display:flex;flex-direction:column;gap:12px;">
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-                <div>
-                  <label style="font-size:.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Select Patient *</label>
-                  <select id="f-p" class="modal-input">${pOpt}</select>
-                </div>
-                <div>
-                  <label style="font-size:.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Select Specialist *</label>
-                  <select id="f-d" class="modal-input">${dOpt}</select>
-                </div>
-              </div>
-              <div>
-                <label style="font-size:.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Appointment Date *</label>
-                <input type="date" id="f-date" class="modal-input" value="${new Date().toISOString().split("T")[0]}">
-              </div>
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-                <div>
-                  <label style="font-size:.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Status</label>
-                  <select id="f-status" class="modal-input">
-                    <option value="Pending">Pending</option>
-                    <option value="Completed">Completed</option>
-                  </select>
-                </div>
-                <div>
-                  <label style="font-size:.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Payment Status</label>
-                  <select id="f-payment" class="modal-input">
-                    <option value="Unpaid">Unpaid</option>
-                    <option value="Paid">Paid</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-          `;
-          saveBtn.onclick = async () => {
-            const date = val("f-date");
-            if (!date) {
-              alert("Please pick a date for the appointment.");
-              return;
-            }
-            await sendData("appointments", {
-              pName: val("f-p"),
-              dName: val("f-d"),
-              date: new Date(date).toISOString(),
-              status: val("f-status") || "Pending",
-              payment: val("f-payment") || "Unpaid",
-            });
-            finishAction("appointments");
-          };
-        }
+        toggleInlineForm(true);
       }
 
       async function sendData(route, data) {

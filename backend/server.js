@@ -39,22 +39,60 @@ app.get("/api/health", (req, res) => {
   });
 });
 
-// ─── Catch-all: serve index.html for any unknown route ───────────────────────
+// ─── Direct Route Handlers for Frontend Pages ──────────────────────────────────
+app.get(["/patients", "/patients.html"], (req, res) => {
+  const p = path.join(__dirname, "..", "frontend", "patients.html");
+  if (require("fs").existsSync(p)) return res.sendFile(p);
+  res.redirect("/index.html?view=patients");
+});
+
+app.get(["/specialization", "/specialization.html", "/doctors", "/doctors.html"], (req, res) => {
+  const p = path.join(__dirname, "..", "frontend", "specialization.html");
+  if (require("fs").existsSync(p)) return res.sendFile(p);
+  res.redirect("/index.html?view=doctors");
+});
+
+app.get(["/appointments", "/appointments.html"], (req, res) => {
+  const p = path.join(__dirname, "..", "frontend", "appointments.html");
+  if (require("fs").existsSync(p)) return res.sendFile(p);
+  res.redirect("/index.html?view=appointments");
+});
+
+app.get(["/billing", "/billing.html"], (req, res) => {
+  const p = path.join(__dirname, "..", "frontend", "billing.html");
+  if (require("fs").existsSync(p)) return res.sendFile(p);
+  res.redirect("/index.html?view=billing");
+});
+
+app.get(["/about", "/about.html"], (req, res) => {
+  res.sendFile(path.join(__dirname, "..", "frontend", "about.html"));
+});
+
+app.get(["/home", "/home.html"], (req, res) => {
+  res.sendFile(path.join(__dirname, "..", "frontend", "home.html"));
+});
+
+app.get(["/app", "/dashboard"], (req, res) => {
+  res.sendFile(path.join(__dirname, "..", "frontend", "index.html"));
+});
+
+// ─── Catch-all: serve home.html or index.html for root / unknown route ───────
 app.get("*", (req, res) => {
-  // Try frontend/index.html first, then root index.html
-  const frontendPath = path.join(__dirname, "..", "frontend", "home.html");
-  const rootPath = path.join(__dirname, "..", "home.html");
   const fs = require("fs");
-  if (fs.existsSync(frontendPath)) {
-    res.sendFile(frontendPath);
-  } else if (fs.existsSync(rootPath)) {
-    res.sendFile(rootPath);
+  const reqFile = req.path.replace(/^\//, "");
+  const customPath = path.join(__dirname, "..", "frontend", reqFile.endsWith(".html") ? reqFile : `${reqFile}.html`);
+  if (reqFile && fs.existsSync(customPath)) {
+    return res.sendFile(customPath);
+  }
+
+  const homePath = path.join(__dirname, "..", "frontend", "home.html");
+  const indexPath = path.join(__dirname, "..", "frontend", "index.html");
+  if (fs.existsSync(homePath)) {
+    res.sendFile(homePath);
+  } else if (fs.existsSync(indexPath)) {
+    res.sendFile(indexPath);
   } else {
-    res
-      .status(404)
-      .send(
-        "index.html not found. Please place it in the same folder as server.js or inside a /frontend subfolder."
-      );
+    res.status(404).send("Page not found.");
   }
 });
 

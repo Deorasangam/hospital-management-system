@@ -565,16 +565,17 @@
         <i class="fas fa-bars"></i>
       </button>
       <ul class="nav-links-bar" id="navLinks">
-        <li><a href="home.html" class="active">Home</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="#features">Features</a></li>
-        <li><a href="#how">How It Works</a></li>
-        <li><a href="#testimonials">Reviews</a></li>
+        <li><a href="home.html" class="active"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="about.html"><i class="fas fa-info-circle"></i> About</a></li>
+        <li><a href="patients.html"><i class="fas fa-user-injured"></i> Patients</a></li>
+        <li><a href="specialization.html"><i class="fas fa-user-md"></i> Specialization</a></li>
+        <li><a href="appointments.html"><i class="fas fa-calendar-check"></i> Appointments</a></li>
+        <li><a href="billing.html"><i class="fas fa-file-invoice-dollar"></i> Billing</a></li>
       </ul>
       <div class="nav-cta">
-        <a href="index.html" class="btn btn-outline">Sign In</a>
-        <a href="index.html?tab=register" class="btn btn-solid"
-          >Get Started Free</a
+        <a href="index.html" class="btn btn-outline"><i class="fas fa-sign-in-alt"></i> Sign In</a>
+        <a href="index.html" class="btn btn-solid"
+          ><i class="fas fa-chart-line"></i> Dashboard</a
         >
       </div>
     </nav>
@@ -656,7 +657,7 @@
         intuitive, role-based interface.
       </p>
       <div class="features-grid">
-        <div class="feature-card">
+        <div class="feature-card" onclick="window.location.href='patients.html'" style="cursor: pointer;">
           <div class="feature-icon" style="background: #ede9fe; color: #7c3aed">
             <i class="fas fa-user-injured"></i>
           </div>
@@ -665,8 +666,11 @@
             Register, track, and manage patient records in real-time with full
             history, conditions, and appointment logs.
           </p>
+          <span style="color: var(--primary); font-size: 0.85rem; font-weight: 700; margin-top: 10px; display: inline-flex; align-items: center; gap: 4px;">
+            Open Patients Module <i class="fas fa-arrow-right"></i>
+          </span>
         </div>
-        <div class="feature-card">
+        <div class="feature-card" onclick="window.location.href='appointments.html'" style="cursor: pointer;">
           <div class="feature-icon" style="background: #dcfce7; color: #16a34a">
             <i class="fas fa-calendar-check"></i>
           </div>
@@ -675,8 +679,11 @@
             Book, reschedule, and track appointments with one click. Auto-assign
             doctors based on specialty and availability.
           </p>
+          <span style="color: var(--primary); font-size: 0.85rem; font-weight: 700; margin-top: 10px; display: inline-flex; align-items: center; gap: 4px;">
+            Book Appointment <i class="fas fa-arrow-right"></i>
+          </span>
         </div>
-        <div class="feature-card">
+        <div class="feature-card" onclick="window.location.href='billing.html'" style="cursor: pointer;">
           <div class="feature-icon" style="background: #fef3c7; color: #d97706">
             <i class="fas fa-file-invoice-dollar"></i>
           </div>
@@ -685,8 +692,11 @@
             Generate professional invoices, track paid/unpaid bills, and print
             receipts instantly from the billing module.
           </p>
+          <span style="color: var(--primary); font-size: 0.85rem; font-weight: 700; margin-top: 10px; display: inline-flex; align-items: center; gap: 4px;">
+            Open Invoicing <i class="fas fa-arrow-right"></i>
+          </span>
         </div>
-        <div class="feature-card">
+        <div class="feature-card" onclick="window.location.href='specialization.html'" style="cursor: pointer;">
           <div class="feature-icon" style="background: #fee2e2; color: #dc2626">
             <i class="fas fa-user-md"></i>
           </div>
@@ -695,6 +705,9 @@
             Manage all doctors and specialists with their department,
             availability status, and appointment load.
           </p>
+          <span style="color: var(--primary); font-size: 0.85rem; font-weight: 700; margin-top: 10px; display: inline-flex; align-items: center; gap: 4px;">
+            View Specialists <i class="fas fa-arrow-right"></i>
+          </span>
         </div>
         <div class="feature-card">
           <div class="feature-icon" style="background: #dbeafe; color: #2563eb">

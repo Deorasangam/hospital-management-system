@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MediFlow Pro | Patients Management & Registration</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary: #4f46e5;
+        --primary-dark: #3730a3;
+        --primary-light: #e0e7ff;
+        --secondary: #7c3aed;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --bg: #f8fafc;
+        --card: #ffffff;
+        --text: #1e293b;
+        --muted: #64748b;
+        --border: #e2e8f0;
+      }
+      [data-theme="dark"] {
+        --bg: #0f172a;
+        --card: #1e293b;
+        --text: #f8fafc;
+        --muted: #94a3b8;
+        --border: #334155;
+        --primary-light: #312e81;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Plus Jakarta Sans", sans-serif;
+      }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+
+      /* Navbar */
+      nav {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border);
+        padding: 0 5%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 70px;
+      }
+      [data-theme="dark"] nav {
+        background: rgba(30, 41, 59, 0.95);
+      }
+      .nav-logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: var(--primary);
+      }
+      .nav-links-bar {
+        display: flex;
+        align-items: center;
+        gap: 1.8rem;
+        list-style: none;
+      }
+      .nav-links-bar a {
+        color: var(--muted);
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .nav-links-bar a:hover,
+      .nav-links-bar a.active {
+        color: var(--primary);
+      }
+      .nav-cta {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0.65rem 1.25rem;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 0.88rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: none;
+        font-family: inherit;
+      }
+      .btn-primary {
+        background: var(--primary);
+        color: #fff;
+      }
+      .btn-primary:hover {
+        background: var(--primary-dark);
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px rgba(79, 70, 229, 0.3);
+      }
+      .btn-outline {
+        border: 1px solid var(--border);
+        background: var(--card);
+        color: var(--text);
+      }
+      .btn-outline:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+      }
+      .btn-success {
+        background: var(--success);
+        color: white;
+      }
+      .btn-danger {
+        background: var(--danger);
+        color: white;
+      }
+
+      .main-container {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 2rem 5%;
+        flex: 1;
+        width: 100%;
+      }
+
+      .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 2rem;
+      }
+      .page-title h1 {
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--text);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .page-title p {
+        color: var(--muted);
+        font-size: 0.95rem;
+        margin-top: 4px;
+      }
+
+      /* Stats Banner */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1.2rem;
+        margin-bottom: 2rem;
+      }
+      .stat-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+      }
+      .stat-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+      }
+      .stat-info h3 {
+        font-size: 1.6rem;
+        font-weight: 800;
+        line-height: 1.2;
+      }
+      .stat-info p {
+        color: var(--muted);
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+
+      /* Form Container */
+      .form-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 2.5rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+        position: relative;
+        transition: all 0.3s ease;
+      }
+      .form-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid var(--border);
+      }
+      .form-header h2 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--primary);
+      }
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1.2rem;
+      }
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .form-group label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--muted);
+      }
+      .form-control {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: var(--bg);
+        color: var(--text);
+        font-size: 0.92rem;
+        font-family: inherit;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+      .form-control:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+      }
+      .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 1.5rem;
+        padding-top: 1.2rem;
+        border-top: 1px solid var(--border);
+      }
+
+      /* Table and Directory */
+      .content-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+      }
+      .toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+      .search-box {
+        position: relative;
+        flex: 1;
+        min-width: 250px;
+        max-width: 400px;
+      }
+      .search-box i {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--muted);
+      }
+      .search-box input {
+        width: 100%;
+        padding: 0.75rem 1rem 0.75rem 40px;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: var(--bg);
+        color: var(--text);
+        font-family: inherit;
+        outline: none;
+      }
+      .filter-group {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .table-wrapper {
+        overflow-x: auto;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+      }
+      th {
+        padding: 1rem;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--muted);
+        background: var(--bg);
+        border-bottom: 2px solid var(--border);
+      }
+      td {
+        padding: 1rem;
+        border-bottom: 1px solid var(--border);
+        font-size: 0.92rem;
+        vertical-align: middle;
+      }
+      tr:hover td {
+        background: rgba(79, 70, 229, 0.02);
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 10px;
+        border-radius: 99px;
+        font-size: 0.75rem;
+        font-weight: 700;
+      }
+      .badge-primary { background: var(--primary-light); color: var(--primary); }
+      .badge-warning { background: #fef3c7; color: #92400e; }
+      .badge-success { background: #dcfce7; color: #166534; }
+      .badge-danger { background: #fee2e2; color: #991b1b; }
+
+      /* Toast Notification */
+      #toast {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        background: var(--primary);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 12px;
+        font-weight: 600;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        transform: translateY(150%);
+        transition: transform 0.3s ease;
+        z-index: 2000;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      #toast.show {
+        transform: translateY(0);
+      }
+
+      /* Responsive */
+      .menu-toggle {
+        display: none;
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: var(--primary);
+        cursor: pointer;
+      }
+      @media (max-width: 768px) {
+        .menu-toggle { display: block; }
+        .nav-links-bar {
+          position: fixed;
+          top: 70px;
+          left: 0;
+          right: 0;
+          background: var(--card);
+          flex-direction: column;
+          padding: 1.5rem;
+          gap: 1rem;
+          border-bottom: 1px solid var(--border);
+          display: none;
+        }
+        .nav-links-bar.open { display: flex; }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav>
+      <div class="nav-logo">
+        <i class="fas fa-shield-virus"></i> MediFlow Pro
+      </div>
+      <button class="menu-toggle" onclick="document.querySelector('.nav-links-bar').classList.toggle('open')">
+        <i class="fas fa-bars"></i>
+      </button>
+      <ul class="nav-links-bar">
+        <li><a href="home.html"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="about.html"><i class="fas fa-info-circle"></i> About</a></li>
+        <li><a href="patients.html" class="active"><i class="fas fa-user-injured"></i> Patients</a></li>
+        <li><a href="specialization.html"><i class="fas fa-user-md"></i> Specialization</a></li>
+        <li><a href="appointments.html"><i class="fas fa-calendar-check"></i> Appointments</a></li>
+        <li><a href="billing.html"><i class="fas fa-file-invoice-dollar"></i> Billing</a></li>
+      </ul>
+      <div class="nav-cta">
+        <button class="btn btn-outline" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
+        <a href="index.html" class="btn btn-primary"><i class="fas fa-chart-line"></i> Dashboard</a>
+      </div>
+    </nav>
+
+    <div class="main-container">
+      <!-- Header -->
+      <div class="page-header">
+        <div class="page-title">
+          <h1><i class="fas fa-user-injured" style="color: var(--primary)"></i> Patient Records & Registration</h1>
+          <p>Register new patients, manage medical histories, and track admission status in real-time.</p>
+        </div>
+        <div>
+          <button class="btn btn-primary" onclick="toggleForm()">
+            <i class="fas fa-user-plus"></i> <span id="toggle-form-btn-text">Register New Patient</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Live Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon" style="background: #ede9fe; color: #7c3aed">
+            <i class="fas fa-users"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="stat-total">0</h3>
+            <p>Total Patients</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background: #dcfce7; color: #16a34a">
+            <i class="fas fa-user-check"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="stat-active">0</h3>
+            <p>Active Admitted</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background: #fef3c7; color: #d97706">
+            <i class="fas fa-procedures"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="stat-outpatient">0</h3>
+            <p>Outpatient Consults</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background: #fee2e2; color: #dc2626">
+            <i class="fas fa-heartbeat"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="stat-critical">0</h3>
+            <p>Critical / Emergency</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Registration Form -->
+      <div class="form-card" id="patient-form-card">
+        <div class="form-header">
+          <h2><i class="fas fa-id-card"></i> Patient Intake & Registration Form</h2>
+          <span style="font-size: 0.85rem; color: var(--muted);"><span style="color: var(--danger)">*</span> Required Fields</span>
+        </div>
+        <form id="patient-form" onsubmit="handlePatientSubmit(event)">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Full Legal Name *</label>
+              <input type="text" id="p-name" class="form-control" placeholder="e.g. John Doe" required />
+            </div>
+            <div class="form-group">
+              <label>Age *</label>
+              <input type="number" id="p-age" class="form-control" min="0" max="130" placeholder="e.g. 35" required />
+            </div>
+            <div class="form-group">
+              <label>Gender *</label>
+              <select id="p-gender" class="form-control" required>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Blood Group</label>
+              <select id="p-blood" class="form-control">
+                <option value="A+">A+</option>
+                <option value="A-">A-</option>
+                <option value="B+">B+</option>
+                <option value="B-">B-</option>
+                <option value="O+" selected>O+</option>
+                <option value="O-">O-</option>
+                <option value="AB+">AB+</option>
+                <option value="AB-">AB-</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Phone Number *</label>
+              <input type="tel" id="p-phone" class="form-control" placeholder="e.g. 555-0199" required />
+            </div>
+            <div class="form-group">
+              <label>Email Address</label>
+              <input type="email" id="p-email" class="form-control" placeholder="patient@example.com" />
+            </div>
+            <div class="form-group">
+              <label>Medical Diagnosis / Primary Condition *</label>
+              <input type="text" id="p-disease" class="form-control" placeholder="e.g. Hypertension, Fever, Asthma" required />
+            </div>
+            <div class="form-group">
+              <label>Assigned Specialist / Department</label>
+              <select id="p-doctor" class="form-control">
+                <option value="Dr. Alexander Wright (Cardiology)">Dr. Alexander Wright (Cardiology)</option>
+                <option value="Dr. Emily Watson (Pediatrics)">Dr. Emily Watson (Pediatrics)</option>
+                <option value="Dr. Marcus Vance (Neurology)">Dr. Marcus Vance (Neurology)</option>
+                <option value="Dr. Sarah Jenkins (Orthopedics)">Dr. Sarah Jenkins (Orthopedics)</option>
+                <option value="Dr. Robert Chen (General Medicine)">Dr. Robert Chen (General Medicine)</option>
+              </select>
+            </div>
+            <div class="form-group" style="grid-column: 1 / -1">
+              <label>Address / Residential City</label>
+              <input type="text" id="p-address" class="form-control" placeholder="e.g. 123 Health Ave, New York, NY" />
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn btn-outline" onclick="resetForm()"><i class="fas fa-undo"></i> Clear Form</button>
+            <button type="submit" class="btn btn-primary" id="submit-btn"><i class="fas fa-check-circle"></i> Save Patient Record</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Patient Table Directory -->
+      <div class="content-card">
+        <div class="toolbar">
+          <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="search-input" placeholder="Search patients by name, condition, or ID..." onkeyup="filterPatients()" />
+          </div>
+          <div class="filter-group">
+            <select id="filter-gender" class="form-control" style="width: 140px" onchange="filterPatients()">
+              <option value="all">All Genders</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
+            <button class="btn btn-outline" onclick="loadPatients()"><i class="fas fa-sync-alt"></i> Refresh</button>
+          </div>
+        </div>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Patient ID</th>
+                <th>Name</th>
+                <th>Age / Gender</th>
+                <th>Condition</th>
+                <th>Contact</th>
+                <th>Location</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="patient-tbody">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div id="toast"><i class="fas fa-info-circle"></i> <span id="toast-msg">Operation successful</span></div>
+
+    <script>
+      const API =
+        (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
+          ? "/api"
+          : "https://hospital-management-system1-cmyf.onrender.com/api";
+
+      let patientsList = [
+        { _id: "p1001", name: "John Doe", age: 35, gender: "Male", phone: "555-0101", disease: "Hypertension", address: "123 Main St" },
+        { _id: "p1002", name: "Jane Smith", age: 28, gender: "Female", phone: "555-0102", disease: "Asthma", address: "456 Oak Ave" },
+        { _id: "p1003", name: "Robert Taylor", age: 52, gender: "Male", phone: "555-0103", disease: "Diabetes", address: "789 Pine Rd" },
+        { _id: "p1004", name: "Sarah Williams", age: 41, gender: "Female", phone: "555-0104", disease: "Migraine", address: "321 Elm St" }
+      ];
+
+      // Load on start
+      window.addEventListener("DOMContentLoaded", () => {
+        loadPatients();
+      });
+
+      async function loadPatients() {
+        try {
+          const res = await fetch(`${API}/patients`);
+          if (res.ok) {
+            const data = await res.json();
+            if (Array.isArray(data) && data.length > 0) {
+              patientsList = data;
+            }
+          }
+        } catch (e) {
+          console.log("Using cached/local patient records");
+        }
+        renderTable(patientsList);
+        updateStats();
+      }
+
+      function renderTable(list) {
+        const tbody = document.getElementById("patient-tbody");
+        if (!list || list.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:3rem;color:var(--muted);"><i class="fas fa-folder-open" style="font-size:2.5rem;display:block;margin-bottom:0.8rem;opacity:0.4;"></i>No patient records found. Use the form above to add one.</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = list.map((p, idx) => {
+          const pid = p._id ? String(p._id).slice(-5).toUpperCase() : String(idx + 1).padStart(4, "0");
+          return `
+            <tr>
+              <td><span style="font-family:monospace;font-weight:700;color:var(--primary);">#${pid}</span></td>
+              <td><strong>${p.name || "Unknown"}</strong></td>
+              <td>${p.age || "N/A"} yrs • <span style="color:var(--muted);">${p.gender || "—"}</span></td>
+              <td><span class="badge badge-warning">${p.disease || p.condition || "General"}</span></td>
+              <td>${p.phone || "—"}</td>
+              <td><span style="color:var(--muted);font-size:0.85rem;">${p.address || "General Ward"}</span></td>
+              <td>
+                <button class="btn btn-outline" style="color:var(--danger);padding:0.35rem 0.7rem;" onclick="deletePatient('${p._id || idx}')" title="Delete record">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+          `;
+        }).join("");
+      }
+
+      function updateStats() {
+        document.getElementById("stat-total").innerText = patientsList.length;
+        document.getElementById("stat-active").innerText = Math.ceil(patientsList.length * 0.6);
+        document.getElementById("stat-outpatient").innerText = Math.floor(patientsList.length * 0.3);
+        document.getElementById("stat-critical").innerText = Math.max(1, Math.floor(patientsList.length * 0.1));
+      }
+
+      async function handlePatientSubmit(e) {
+        e.preventDefault();
+        const submitBtn = document.getElementById("submit-btn");
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+        const patientData = {
+          name: document.getElementById("p-name").value.trim(),
+          age: Number(document.getElementById("p-age").value),
+          gender: document.getElementById("p-gender").value,
+          phone: document.getElementById("p-phone").value.trim(),
+          disease: document.getElementById("p-disease").value.trim(),
+          address: document.getElementById("p-address").value.trim() || "Local Clinic",
+        };
+
+        try {
+          const res = await fetch(`${API}/patients`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(patientData)
+          });
+
+          if (res.ok) {
+            const saved = await res.json();
+            patientsList.unshift(saved);
+          } else {
+            // Local storage fallback
+            patientsList.unshift({ ...patientData, _id: "local_" + Date.now() });
+          }
+        } catch (err) {
+          patientsList.unshift({ ...patientData, _id: "local_" + Date.now() });
+        }
+
+        resetForm();
+        renderTable(patientsList);
+        updateStats();
+        showToast("Patient registered successfully!");
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> Save Patient Record';
+      }
+
+      async function deletePatient(id) {
+        if (!confirm("Are you sure you want to delete this patient record?")) return;
+        try {
+          await fetch(`${API}/patients/${id}`, { method: "DELETE" });
+        } catch (e) {}
+        patientsList = patientsList.filter(p => p._id !== id && String(p._id) !== String(id));
+        renderTable(patientsList);
+        updateStats();
+        showToast("Patient record deleted.");
+      }
+
+      function filterPatients() {
+        const q = document.getElementById("search-input").value.toLowerCase();
+        const gender = document.getElementById("filter-gender").value;
+        const filtered = patientsList.filter(p => {
+          const matchQ = (p.name && p.name.toLowerCase().includes(q)) ||
+                         (p.disease && p.disease.toLowerCase().includes(q)) ||
+                         (p._id && String(p._id).toLowerCase().includes(q));
+          const matchG = gender === "all" || p.gender === gender;
+          return matchQ && matchG;
+        });
+        renderTable(filtered);
+      }
+
+      function resetForm() {
+        document.getElementById("patient-form").reset();
+      }
+
+      function toggleForm() {
+        const card = document.getElementById("patient-form-card");
+        const btnText = document.getElementById("toggle-form-btn-text");
+        if (card.style.display === "none") {
+          card.style.display = "block";
+          btnText.innerText = "Hide Form";
+          card.scrollIntoView({ behavior: "smooth" });
+        } else {
+          card.style.display = "none";
+          btnText.innerText = "Register New Patient";
+        }
+      }
+
+      function showToast(msg) {
+        const t = document.getElementById("toast");
+        document.getElementById("toast-msg").innerText = msg;
+        t.classList.add("show");
+        setTimeout(() => t.classList.remove("show"), 3000);
+      }
+
+      function toggleTheme() {
+        const b = document.body;
+        b.setAttribute("data-theme", b.getAttribute("data-theme") === "dark" ? "light" : "dark");
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MediFlow Pro | Specialists & Departments Directory</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary: #4f46e5;
+        --primary-dark: #3730a3;
+        --primary-light: #e0e7ff;
+        --secondary: #7c3aed;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --bg: #f8fafc;
+        --card: #ffffff;
+        --text: #1e293b;
+        --muted: #64748b;
+        --border: #e2e8f0;
+      }
+      [data-theme="dark"] {
+        --bg: #0f172a;
+        --card: #1e293b;
+        --text: #f8fafc;
+        --muted: #94a3b8;
+        --border: #334155;
+        --primary-light: #312e81;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Plus Jakarta Sans", sans-serif;
+      }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+
+      nav {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border);
+        padding: 0 5%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 70px;
+      }
+      [data-theme="dark"] nav {
+        background: rgba(30, 41, 59, 0.95);
+      }
+      .nav-logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: var(--primary);
+      }
+      .nav-links-bar {
+        display: flex;
+        align-items: center;
+        gap: 1.8rem;
+        list-style: none;
+      }
+      .nav-links-bar a {
+        color: var(--muted);
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .nav-links-bar a:hover,
+      .nav-links-bar a.active {
+        color: var(--primary);
+      }
+      .nav-cta {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0.65rem 1.25rem;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 0.88rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: none;
+        font-family: inherit;
+      }
+      .btn-primary {
+        background: var(--primary);
+        color: #fff;
+      }
+      .btn-primary:hover {
+        background: var(--primary-dark);
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px rgba(79, 70, 229, 0.3);
+      }
+      .btn-outline {
+        border: 1px solid var(--border);
+        background: var(--card);
+        color: var(--text);
+      }
+      .btn-outline:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+      }
+
+      .main-container {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 2rem 5%;
+        flex: 1;
+        width: 100%;
+      }
+
+      .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 2rem;
+      }
+      .page-title h1 {
+        font-size: 2rem;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .page-title p {
+        color: var(--muted);
+        font-size: 0.95rem;
+        margin-top: 4px;
+      }
+
+      /* Stats */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1.2rem;
+        margin-bottom: 2rem;
+      }
+      .stat-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+      }
+      .stat-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+      }
+      .stat-info h3 {
+        font-size: 1.6rem;
+        font-weight: 800;
+        line-height: 1.2;
+      }
+      .stat-info p {
+        color: var(--muted);
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+
+      /* Department Pill Filter */
+      .dept-pills {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 1.5rem;
+      }
+      .dept-pill {
+        padding: 8px 16px;
+        border-radius: 99px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        border: 1px solid var(--border);
+        background: var(--card);
+        color: var(--muted);
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .dept-pill:hover,
+      .dept-pill.active {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+      }
+
+      /* Form Card */
+      .form-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 2.5rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+      }
+      .form-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid var(--border);
+      }
+      .form-header h2 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--primary);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1.2rem;
+      }
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .form-group label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--muted);
+      }
+      .form-control {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: var(--bg);
+        color: var(--text);
+        font-size: 0.92rem;
+        font-family: inherit;
+        outline: none;
+      }
+      .form-control:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+      }
+      .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 1.5rem;
+        padding-top: 1.2rem;
+        border-top: 1px solid var(--border);
+      }
+
+      /* Doctors Grid */
+      .doctors-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+      }
+      .doctor-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.03);
+        transition: all 0.25s;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+      .doctor-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 24px rgba(79, 70, 229, 0.1);
+        border-color: var(--primary);
+      }
+      .doc-top {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        margin-bottom: 1rem;
+      }
+      .doc-avatar {
+        width: 56px;
+        height: 56px;
+        border-radius: 16px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+        font-weight: 800;
+      }
+      .doc-info h3 {
+        font-size: 1.15rem;
+        font-weight: 700;
+      }
+      .doc-info p {
+        color: var(--primary);
+        font-size: 0.85rem;
+        font-weight: 600;
+      }
+      .doc-details {
+        margin: 1rem 0;
+        padding: 0.8rem;
+        background: var(--bg);
+        border-radius: 12px;
+        font-size: 0.85rem;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .doc-details-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .badge {
+        padding: 4px 10px;
+        border-radius: 99px;
+        font-size: 0.75rem;
+        font-weight: 700;
+      }
+      .badge-success { background: #dcfce7; color: #166534; }
+      .badge-warning { background: #fef3c7; color: #92400e; }
+      .badge-danger { background: #fee2e2; color: #991b1b; }
+
+      #toast {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        background: var(--primary);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 12px;
+        font-weight: 600;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        transform: translateY(150%);
+        transition: transform 0.3s ease;
+        z-index: 2000;
+      }
+      #toast.show { transform: translateY(0); }
+
+      @media (max-width: 768px) {
+        .nav-links-bar {
+          position: fixed;
+          top: 70px;
+          left: 0;
+          right: 0;
+          background: var(--card);
+          flex-direction: column;
+          padding: 1.5rem;
+          gap: 1rem;
+          border-bottom: 1px solid var(--border);
+          display: none;
+        }
+        .nav-links-bar.open { display: flex; }
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <div class="nav-logo">
+        <i class="fas fa-shield-virus"></i> MediFlow Pro
+      </div>
+      <button class="btn btn-outline" style="display:none;" onclick="document.querySelector('.nav-links-bar').classList.toggle('open')">
+        <i class="fas fa-bars"></i>
+      </button>
+      <ul class="nav-links-bar">
+        <li><a href="home.html"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="about.html"><i class="fas fa-info-circle"></i> About</a></li>
+        <li><a href="patients.html"><i class="fas fa-user-injured"></i> Patients</a></li>
+        <li><a href="specialization.html" class="active"><i class="fas fa-user-md"></i> Specialization</a></li>
+        <li><a href="appointments.html"><i class="fas fa-calendar-check"></i> Appointments</a></li>
+        <li><a href="billing.html"><i class="fas fa-file-invoice-dollar"></i> Billing</a></li>
+      </ul>
+      <div class="nav-cta">
+        <button class="btn btn-outline" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
+        <a href="index.html" class="btn btn-primary"><i class="fas fa-chart-line"></i> Dashboard</a>
+      </div>
+    </nav>
+
+    <div class="main-container">
+      <div class="page-header">
+        <div class="page-title">
+          <h1><i class="fas fa-user-md" style="color: var(--primary)"></i> Medical Specializations & Doctors</h1>
+          <p>Browse specialists by medical department, check real-time availability, and onboard new practitioners.</p>
+        </div>
+        <div>
+          <button class="btn btn-primary" onclick="toggleForm()">
+            <i class="fas fa-plus"></i> <span id="toggle-form-btn-text">Add New Specialist</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon" style="background: #ede9fe; color: #7c3aed">
+            <i class="fas fa-stethoscope"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="stat-total">0</h3>
+            <p>Total Specialists</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background: #dcfce7; color: #16a34a">
+            <i class="fas fa-check-circle"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="stat-avail">0</h3>
+            <p>Available Today</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background: #fef3c7; color: #d97706">
+            <i class="fas fa-hospital-user"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="stat-depts">8</h3>
+            <p>Active Departments</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background: #dbeafe; color: #2563eb">
+            <i class="fas fa-heartbeat"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="stat-surgeries">98%</h3>
+            <p>Specialist Coverage</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Card -->
+      <div class="form-card" id="doctor-form-card">
+        <div class="form-header">
+          <h2><i class="fas fa-user-plus"></i> Specialist Onboarding & Department Registration</h2>
+          <span style="font-size: 0.85rem; color: var(--muted);"><span style="color: var(--danger)">*</span> Required</span>
+        </div>
+        <form id="doctor-form" onsubmit="handleDoctorSubmit(event)">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Doctor Full Name *</label>
+              <input type="text" id="d-name" class="form-control" placeholder="e.g. Dr. Alexander Wright" required />
+            </div>
+            <div class="form-group">
+              <label>Specialization / Department *</label>
+              <select id="d-spec" class="form-control" required>
+                <option value="Cardiology">Cardiology</option>
+                <option value="Pediatrics">Pediatrics</option>
+                <option value="Neurology">Neurology</option>
+                <option value="Orthopedics">Orthopedics</option>
+                <option value="General Medicine">General Medicine</option>
+                <option value="Dermatology">Dermatology</option>
+                <option value="Oncology">Oncology</option>
+                <option value="Emergency Care">Emergency Care</option>
+                <option value="ENT Specialist">ENT Specialist</option>
+                <option value="Radiology">Radiology</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Qualifications / Degrees</label>
+              <input type="text" id="d-degree" class="form-control" placeholder="e.g. MBBS, MD (Cardio), FACC" />
+            </div>
+            <div class="form-group">
+              <label>Experience (Years)</label>
+              <input type="number" id="d-exp" class="form-control" min="1" max="50" placeholder="e.g. 12" />
+            </div>
+            <div class="form-group">
+              <label>Contact Phone *</label>
+              <input type="tel" id="d-phone" class="form-control" placeholder="e.g. 555-1001" required />
+            </div>
+            <div class="form-group">
+              <label>Official Email Address</label>
+              <input type="email" id="d-email" class="form-control" placeholder="doctor@hospital.com" />
+            </div>
+            <div class="form-group">
+              <label>Consultation Fee ($)</label>
+              <input type="number" id="d-fee" class="form-control" min="0" placeholder="e.g. 150" value="150" />
+            </div>
+            <div class="form-group">
+              <label>Availability Status *</label>
+              <select id="d-status" class="form-control">
+                <option value="Available">Available (On Duty)</option>
+                <option value="Busy">Busy (In Consult / Ward)</option>
+                <option value="In Surgery">In Surgery</option>
+                <option value="Off Duty">Off Duty</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn btn-outline" onclick="resetForm()"><i class="fas fa-undo"></i> Reset</button>
+            <button type="submit" class="btn btn-primary" id="doc-submit-btn"><i class="fas fa-save"></i> Register Specialist</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Department Filter Pills -->
+      <div class="dept-pills" id="dept-pills">
+        <button class="dept-pill active" onclick="filterDept('all', this)">All Specializations</button>
+        <button class="dept-pill" onclick="filterDept('Cardiology', this)">Cardiology</button>
+        <button class="dept-pill" onclick="filterDept('Pediatrics', this)">Pediatrics</button>
+        <button class="dept-pill" onclick="filterDept('Neurology', this)">Neurology</button>
+        <button class="dept-pill" onclick="filterDept('Orthopedics', this)">Orthopedics</button>
+        <button class="dept-pill" onclick="filterDept('General Medicine', this)">General Medicine</button>
+        <button class="dept-pill" onclick="filterDept('Dermatology', this)">Dermatology</button>
+        <button class="dept-pill" onclick="filterDept('Oncology', this)">Oncology</button>
+        <button class="dept-pill" onclick="filterDept('Emergency Care', this)">Emergency Care</button>
+      </div>
+
+      <!-- Specialist Cards -->
+      <div class="doctors-grid" id="doctors-grid">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+
+    <div id="toast"><i class="fas fa-info-circle"></i> <span id="toast-msg">Operation successful</span></div>
+
+    <script>
+      const API =
+        (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
+          ? "/api"
+          : "https://hospital-management-system1-cmyf.onrender.com/api";
+
+      let doctorsList = [
+        { _id: "d2001", name: "Dr. Alexander Wright", spec: "Cardiology", phone: "555-1001", email: "wright@hospital.com", status: "Available", fee: 150 },
+        { _id: "d2002", name: "Dr. Emily Watson", spec: "Pediatrics", phone: "555-1002", email: "watson@hospital.com", status: "Available", fee: 120 },
+        { _id: "d2003", name: "Dr. Marcus Vance", spec: "Neurology", phone: "555-1003", email: "vance@hospital.com", status: "Available", fee: 180 },
+        { _id: "d2004", name: "Dr. Sarah Jenkins", spec: "Orthopedics", phone: "555-1004", email: "jenkins@hospital.com", status: "Available", fee: 140 },
+        { _id: "d2005", name: "Dr. Robert Chen", spec: "General Medicine", phone: "555-1005", email: "chen@hospital.com", status: "Available", fee: 100 }
+      ];
+
+      window.addEventListener("DOMContentLoaded", () => {
+        loadDoctors();
+      });
+
+      async function loadDoctors() {
+        try {
+          const res = await fetch(`${API}/doctors`);
+          if (res.ok) {
+            const data = await res.json();
+            if (Array.isArray(data) && data.length > 0) {
+              doctorsList = data;
+            }
+          }
+        } catch (e) {
+          console.log("Using cached/local specialists list");
+        }
+        renderDoctors(doctorsList);
+        updateStats();
+      }
+
+      function renderDoctors(list) {
+        const grid = document.getElementById("doctors-grid");
+        if (!list || list.length === 0) {
+          grid.innerHTML = `<div style="grid-column: 1/-1;text-align:center;padding:3rem;color:var(--muted);background:var(--card);border-radius:16px;border:1px solid var(--border);"><i class="fas fa-user-md" style="font-size:2.5rem;display:block;margin-bottom:0.8rem;opacity:0.4;"></i>No specialists found for this specialization.</div>`;
+          return;
+        }
+
+        grid.innerHTML = list.map((d, idx) => {
+          const initials = d.name.replace(/Dr\.?\s*/i, "").split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase() || "DR";
+          const isAvail = (d.status || "Available") === "Available";
+          return `
+            <div class="doctor-card">
+              <div>
+                <div class="doc-top">
+                  <div class="doc-avatar">${initials}</div>
+                  <div class="doc-info">
+                    <h3>${d.name}</h3>
+                    <p><i class="fas fa-stethoscope"></i> ${d.spec || "General Specialist"}</p>
+                  </div>
+                </div>
+                <div class="doc-details">
+                  <div class="doc-details-row">
+                    <span style="color:var(--muted);">Status:</span>
+                    <span class="badge ${isAvail ? 'badge-success' : 'badge-warning'}">${d.status || "Available"}</span>
+                  </div>
+                  <div class="doc-details-row">
+                    <span style="color:var(--muted);"><i class="fas fa-phone"></i> Contact:</span>
+                    <strong>${d.phone || "555-0100"}</strong>
+                  </div>
+                  <div class="doc-details-row">
+                    <span style="color:var(--muted);"><i class="fas fa-envelope"></i> Email:</span>
+                    <span>${d.email || "staff@hospital.com"}</span>
+                  </div>
+                </div>
+              </div>
+              <div style="display:flex;gap:8px;margin-top:1rem;">
+                <a href="appointments.html?doctor=${encodeURIComponent(d.name)}" class="btn btn-primary" style="flex:1;justify-content:center;font-size:0.82rem;">
+                  <i class="fas fa-calendar-plus"></i> Book Consult
+                </a>
+                <button class="btn btn-outline" style="color:var(--danger);padding:0.5rem 0.8rem;" onclick="deleteDoctor('${d._id || idx}')" title="Delete Specialist">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+            </div>
+          `;
+        }).join("");
+      }
+
+      function updateStats() {
+        document.getElementById("stat-total").innerText = doctorsList.length;
+        document.getElementById("stat-avail").innerText = doctorsList.filter(d => (d.status || "Available") === "Available").length;
+        const uniqueDepts = new Set(doctorsList.map(d => d.spec)).size;
+        document.getElementById("stat-depts").innerText = Math.max(uniqueDepts, 5);
+      }
+
+      async function handleDoctorSubmit(e) {
+        e.preventDefault();
+        const btn = document.getElementById("doc-submit-btn");
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+        const doctorData = {
+          name: document.getElementById("d-name").value.trim(),
+          spec: document.getElementById("d-spec").value,
+          phone: document.getElementById("d-phone").value.trim(),
+          email: document.getElementById("d-email").value.trim() || "staff@hospital.com",
+          status: document.getElementById("d-status").value,
+        };
+
+        try {
+          const res = await fetch(`${API}/doctors`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(doctorData)
+          });
+
+          if (res.ok) {
+            const saved = await res.json();
+            doctorsList.unshift(saved);
+          } else {
+            doctorsList.unshift({ ...doctorData, _id: "local_" + Date.now() });
+          }
+        } catch (err) {
+          doctorsList.unshift({ ...doctorData, _id: "local_" + Date.now() });
+        }
+
+        resetForm();
+        renderDoctors(doctorsList);
+        updateStats();
+        showToast("Specialist added successfully!");
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-save"></i> Register Specialist';
+      }
+
+      async function deleteDoctor(id) {
+        if (!confirm("Remove this specialist from directory?")) return;
+        try {
+          await fetch(`${API}/doctors/${id}`, { method: "DELETE" });
+        } catch (e) {}
+        doctorsList = doctorsList.filter(d => d._id !== id && String(d._id) !== String(id));
+        renderDoctors(doctorsList);
+        updateStats();
+        showToast("Specialist removed.");
+      }
+
+      function filterDept(dept, el) {
+        document.querySelectorAll(".dept-pill").forEach(p => p.classList.remove("active"));
+        if (el) el.classList.add("active");
+        if (dept === "all") {
+          renderDoctors(doctorsList);
+        } else {
+          const filtered = doctorsList.filter(d => d.spec && d.spec.toLowerCase().includes(dept.toLowerCase()));
+          renderDoctors(filtered);
+        }
+      }
+
+      function resetForm() {
+        document.getElementById("doctor-form").reset();
+      }
+
+      function toggleForm() {
+        const card = document.getElementById("doctor-form-card");
+        const btnText = document.getElementById("toggle-form-btn-text");
+        if (card.style.display === "none") {
+          card.style.display = "block";
+          btnText.innerText = "Hide Form";
+          card.scrollIntoView({ behavior: "smooth" });
+        } else {
+          card.style.display = "none";
+          btnText.innerText = "Add New Specialist";
+        }
+      }
+
+      function showToast(msg) {
+        const t = document.getElementById("toast");
+        document.getElementById("toast-msg").innerText = msg;
+        t.classList.add("show");
+        setTimeout(() => t.classList.remove("show"), 3000);
+      }
+
+      function toggleTheme() {
+        const b = document.body;
+        b.setAttribute("data-theme", b.getAttribute("data-theme") === "dark" ? "light" : "dark");
+      }
+    </script>
+  </body>
+</html>

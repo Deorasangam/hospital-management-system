@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MediFlow Pro | Billing, Invoicing & Receipts</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary: #4f46e5;
+        --primary-dark: #3730a3;
+        --primary-light: #e0e7ff;
+        --secondary: #7c3aed;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --bg: #f8fafc;
+        --card: #ffffff;
+        --text: #1e293b;
+        --muted: #64748b;
+        --border: #e2e8f0;
+      }
+      [data-theme="dark"] {
+        --bg: #0f172a;
+        --card: #1e293b;
+        --text: #f8fafc;
+        --muted: #94a3b8;
+        --border: #334155;
+        --primary-light: #312e81;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Plus Jakarta Sans", sans-serif;
+      }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+
+      nav {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border);
+        padding: 0 5%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 70px;
+      }
+      [data-theme="dark"] nav {
+        background: rgba(30, 41, 59, 0.95);
+      }
+      .nav-logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: var(--primary);
+      }
+      .nav-links-bar {
+        display: flex;
+        align-items: center;
+        gap: 1.8rem;
+        list-style: none;
+      }
+      .nav-links-bar a {
+        color: var(--muted);
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .nav-links-bar a:hover,
+      .nav-links-bar a.active {
+        color: var(--primary);
+      }
+      .nav-cta {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0.65rem 1.25rem;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 0.88rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: none;
+        font-family: inherit;
+      }
+      .btn-primary {
+        background: var(--primary);
+        color: #fff;
+      }
+      .btn-primary:hover {
+        background: var(--primary-dark);
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px rgba(79, 70, 229, 0.3);
+      }
+      .btn-outline {
+        border: 1px solid var(--border);
+        background: var(--card);
+        color: var(--text);
+      }
+      .btn-outline:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+      }
+
+      .main-container {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 2rem 5%;
+        flex: 1;
+        width: 100%;
+      }
+
+      .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 2rem;
+      }
+      .page-title h1 {
+        font-size: 2rem;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .page-title p {
+        color: var(--muted);
+        font-size: 0.95rem;
+        margin-top: 4px;
+      }
+
+      /* Stats */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1.2rem;
+        margin-bottom: 2rem;
+      }
+      .stat-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+      }
+      .stat-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+      }
+      .stat-info h3 {
+        font-size: 1.6rem;
+        font-weight: 800;
+        line-height: 1.2;
+      }
+      .stat-info p {
+        color: var(--muted);
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+
+      /* Form Card */
+      .form-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 2.5rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+      }
+      .form-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid var(--border);
+      }
+      .form-header h2 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--primary);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1.2rem;
+      }
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .form-group label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--muted);
+      }
+      .form-control {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: var(--bg);
+        color: var(--text);
+        font-size: 0.92rem;
+        font-family: inherit;
+        outline: none;
+      }
+      .form-control:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+      }
+      .form-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        margin-top: 1.5rem;
+        padding-top: 1.2rem;
+        border-top: 1px solid var(--border);
+      }
+
+      /* Table */
+      .content-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+      }
+      .toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+      .search-box {
+        position: relative;
+        flex: 1;
+        min-width: 250px;
+        max-width: 400px;
+      }
+      .search-box i {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--muted);
+      }
+      .search-box input {
+        width: 100%;
+        padding: 0.75rem 1rem 0.75rem 40px;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: var(--bg);
+        color: var(--text);
+        font-family: inherit;
+        outline: none;
+      }
+
+      .table-wrapper {
+        overflow-x: auto;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+      }
+      th {
+        padding: 1rem;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--muted);
+        background: var(--bg);
+        border-bottom: 2px solid var(--border);
+      }
+      td {
+        padding: 1rem;
+        border-bottom: 1px solid var(--border);
+        font-size: 0.92rem;
+        vertical-align: middle;
+      }
+      tr:hover td {
+        background: rgba(79, 70, 229, 0.02);
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 5px 12px;
+        border-radius: 99px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        cursor: pointer;
+        user-select: none;
+      }
+      .badge-success { background: #dcfce7; color: #166534; }
+      .badge-danger { background: #fee2e2; color: #991b1b; }
+
+      #toast {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        background: var(--primary);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 12px;
+        font-weight: 600;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        transform: translateY(150%);
+        transition: transform 0.3s ease;
+        z-index: 2000;
+      }
+      #toast.show { transform: translateY(0); }
+
+      @media (max-width: 768px) {
+        .nav-links-bar {
+          position: fixed;
+          top: 70px;
+          left: 0;
+          right: 0;
+          background: var(--card);
+          flex-direction: column;
+          padding: 1.5rem;
+          gap: 1rem;
+          border-bottom: 1px solid var(--border);
+          display: none;
+        }
+        .nav-links-bar.open { display: flex; }
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <div class="nav-logo">
+        <i class="fas fa-shield-virus"></i> MediFlow Pro
+      </div>
+      <button class="btn btn-outline" style="display:none;" onclick="document.querySelector('.nav-links-bar').classList.toggle('open')">
+        <i class="fas fa-bars"></i>
+      </button>
+      <ul class="nav-links-bar">
+        <li><a href="home.html"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="about.html"><i class="fas fa-info-circle"></i> About</a></li>
+        <li><a href="patients.html"><i class="fas fa-user-injured"></i> Patients</a></li>
+        <li><a href="specialization.html"><i class="fas fa-user-md"></i> Specialization</a></li>
+        <li><a href="appointments.html"><i class="fas fa-calendar-check"></i> Appointments</a></li>
+        <li><a href="billing.html" class="active"><i class="fas fa-file-invoice-dollar"></i> Billing</a></li>
+      </ul>
+      <div class="nav-cta">
+        <button class="btn btn-outline" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
+        <a href="index.html" class="btn btn-primary"><i class="fas fa-chart-line"></i> Dashboard</a>
+      </div>
+    </nav>
+
+    <div class="main-container">
+      <div class="page-header">
+        <div class="page-title">
+          <h1><i class="fas fa-file-invoice-dollar" style="color: var(--primary)"></i> Billing & Patient Invoicing</h1>
+          <p>Generate professional patient invoices, process payments, and print medical receipts.</p>
+        </div>
+        <div>
+          <button class="btn btn-primary" onclick="toggleForm()">
+            <i class="fas fa-plus"></i> <span id="toggle-form-btn-text">Generate New Invoice</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon" style="background: #dcfce7; color: #16a34a">
+            <i class="fas fa-wallet"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="stat-rev">$0</h3>
+            <p>Total Paid Revenue</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background: #ede9fe; color: #7c3aed">
+            <i class="fas fa-file-invoice"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="stat-total">0</h3>
+            <p>Total Invoices</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background: #fee2e2; color: #dc2626">
+            <i class="fas fa-exclamation-circle"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="stat-unpaid">0</h3>
+            <p>Unpaid / Outstanding</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background: #dbeafe; color: #2563eb">
+            <i class="fas fa-percentage"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="stat-rate">100%</h3>
+            <p>Collection Rate</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Invoice Form -->
+      <div class="form-card" id="bill-form-card">
+        <div class="form-header">
+          <h2><i class="fas fa-receipt"></i> Create Patient Invoice</h2>
+          <span style="font-size: 0.85rem; color: var(--muted);"><span style="color: var(--danger)">*</span> Required</span>
+        </div>
+        <form id="bill-form" onsubmit="handleBillSubmit(event)">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Patient Name *</label>
+              <input type="text" id="b-patient" class="form-control" list="patients-datalist" placeholder="Select or type patient..." required />
+              <datalist id="patients-datalist">
+                <option value="John Doe"></option>
+                <option value="Jane Smith"></option>
+                <option value="Robert Taylor"></option>
+                <option value="Sarah Williams"></option>
+              </datalist>
+            </div>
+            <div class="form-group">
+              <label>Attending Doctor *</label>
+              <select id="b-doctor" class="form-control" required>
+                <option value="Dr. Alexander Wright">Dr. Alexander Wright (Cardiology)</option>
+                <option value="Dr. Emily Watson">Dr. Emily Watson (Pediatrics)</option>
+                <option value="Dr. Marcus Vance">Dr. Marcus Vance (Neurology)</option>
+                <option value="Dr. Sarah Jenkins">Dr. Sarah Jenkins (Orthopedics)</option>
+                <option value="Dr. Robert Chen">Dr. Robert Chen (General Medicine)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Medical Service *</label>
+              <select id="b-service" class="form-control" onchange="updateServiceFee()" required>
+                <option value="Consultation" data-fee="150">Consultation ($150)</option>
+                <option value="Follow-up Visit" data-fee="80">Follow-up Visit ($80)</option>
+                <option value="Lab Blood Panel" data-fee="220">Lab Blood Panel ($220)</option>
+                <option value="X-Ray / MRI Scan" data-fee="350">X-Ray / MRI Scan ($350)</option>
+                <option value="Cardio ECG Test" data-fee="180">Cardio ECG Test ($180)</option>
+                <option value="Pharmacy / Medication" data-fee="95">Pharmacy / Medication ($95)</option>
+                <option value="Minor Surgery / Dressing" data-fee="450">Minor Surgery / Dressing ($450)</option>
+                <option value="Emergency Care" data-fee="500">Emergency Care ($500)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Fee Amount ($) *</label>
+              <input type="number" id="b-fee" class="form-control" min="1" step="0.01" value="150" required />
+            </div>
+            <div class="form-group">
+              <label>Invoice Date *</label>
+              <input type="date" id="b-date" class="form-control" required />
+            </div>
+            <div class="form-group">
+              <label>Payment Status *</label>
+              <select id="b-status" class="form-control" required>
+                <option value="Paid" selected>Paid (Receipt Issued)</option>
+                <option value="Unpaid">Unpaid (Payment Pending)</option>
+              </select>
+            </div>
+            <div class="form-group" style="grid-column: 1 / -1">
+              <label>Billing Notes / Prescription Reference</label>
+              <input type="text" id="b-notes" class="form-control" placeholder="e.g. Consultation fee + diagnostic checkup" />
+            </div>
+          </div>
+          <div class="form-actions">
+            <div>
+              <span style="font-size: 0.9rem; color: var(--muted);">Estimated Total: <strong id="form-total-display" style="color: var(--success); font-size: 1.1rem;">$150.00</strong></span>
+            </div>
+            <div style="display: flex; gap: 10px;">
+              <button type="button" class="btn btn-outline" onclick="resetForm()"><i class="fas fa-undo"></i> Reset</button>
+              <button type="submit" class="btn btn-primary" id="bill-submit-btn"><i class="fas fa-file-invoice"></i> Issue Invoice</button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Invoices Table -->
+      <div class="content-card">
+        <div class="toolbar">
+          <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="search-input" placeholder="Search by patient, doctor, service, or bill ID..." onkeyup="filterBills()" />
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <select id="filter-status" class="form-control" style="width: 140px" onchange="filterBills()">
+              <option value="all">All Invoices</option>
+              <option value="Paid">Paid</option>
+              <option value="Unpaid">Unpaid</option>
+            </select>
+            <button class="btn btn-outline" onclick="loadBills()"><i class="fas fa-sync-alt"></i> Refresh</button>
+          </div>
+        </div>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Invoice #</th>
+                <th>Patient</th>
+                <th>Doctor</th>
+                <th>Service</th>
+                <th>Date</th>
+                <th>Fee</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="bill-tbody">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div id="toast"><i class="fas fa-info-circle"></i> <span id="toast-msg">Operation successful</span></div>
+
+    <script>
+      const API =
+        (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
+          ? "/api"
+          : "https://hospital-management-system1-cmyf.onrender.com/api";
+
+      let billsList = [
+        { _id: "b4001", patientName: "John Doe", doctorName: "Dr. Alexander Wright", service: "Consultation", fee: 150, date: new Date().toISOString().split("T")[0], status: "Paid", notes: "Cardiology consult" },
+        { _id: "b4002", patientName: "Jane Smith", doctorName: "Dr. Emily Watson", service: "Lab Blood Panel", fee: 220, date: new Date().toISOString().split("T")[0], status: "Unpaid", notes: "Pediatric lab panel" },
+        { _id: "b4003", patientName: "Robert Taylor", doctorName: "Dr. Robert Chen", service: "Follow-up Visit", fee: 80, date: new Date().toISOString().split("T")[0], status: "Paid", notes: "Routine follow-up" }
+      ];
+
+      window.addEventListener("DOMContentLoaded", () => {
+        document.getElementById("b-date").value = new Date().toISOString().split("T")[0];
+        document.getElementById("b-fee").addEventListener("input", (e) => {
+          document.getElementById("form-total-display").innerText = "$" + Number(e.target.value || 0).toFixed(2);
+        });
+        loadBills();
+      });
+
+      function updateServiceFee() {
+        const select = document.getElementById("b-service");
+        const opt = select.options[select.selectedIndex];
+        const fee = opt.getAttribute("data-fee") || 150;
+        document.getElementById("b-fee").value = fee;
+        document.getElementById("form-total-display").innerText = "$" + Number(fee).toFixed(2);
+      }
+
+      async function loadBills() {
+        try {
+          const res = await fetch(`${API}/billing`);
+          if (res.ok) {
+            const data = await res.json();
+            if (Array.isArray(data) && data.length > 0) {
+              billsList = data;
+            }
+          }
+        } catch (e) {
+          console.log("Using cached/local billing data");
+        }
+        renderTable(billsList);
+        updateStats();
+      }
+
+      function renderTable(list) {
+        const tbody = document.getElementById("bill-tbody");
+        if (!list || list.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:3rem;color:var(--muted);"><i class="fas fa-file-invoice-dollar" style="font-size:2.5rem;display:block;margin-bottom:0.8rem;opacity:0.4;"></i>No invoices generated yet. Create one with the form above.</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = list.map((b, idx) => {
+          const idStr = b._id ? String(b._id).slice(-5).toUpperCase() : String(idx + 1).padStart(4, "0");
+          const isPaid = b.status === "Paid";
+          return `
+            <tr>
+              <td><span style="font-family:monospace;font-weight:700;color:var(--primary);">#INV-${idStr}</span></td>
+              <td><strong>${b.patientName || "Patient"}</strong></td>
+              <td>${b.doctorName || "Doctor"}</td>
+              <td><span style="font-weight:600;">${b.service || "General Medical"}</span></td>
+              <td>${b.date || "Today"}</td>
+              <td><strong style="color:var(--success);font-size:1rem;">$${Number(b.fee || 0).toFixed(2)}</strong></td>
+              <td>
+                <span class="badge ${isPaid ? 'badge-success' : 'badge-danger'}" onclick="toggleStatus('${b._id || idx}')" title="Click to toggle Paid/Unpaid">
+                  <i class="fas ${isPaid ? 'fa-check-circle' : 'fa-clock'}"></i> ${b.status || "Unpaid"}
+                </span>
+              </td>
+              <td style="display:flex;gap:6px;">
+                <button class="btn btn-primary" style="padding:0.35rem 0.75rem;font-size:0.8rem;" onclick="printInvoice('${b._id || idx}')">
+                  <i class="fas fa-print"></i> Print
+                </button>
+                <button class="btn btn-outline" style="color:var(--danger);padding:0.35rem 0.65rem;" onclick="deleteBill('${b._id || idx}')">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+          `;
+        }).join("");
+      }
+
+      function updateStats() {
+        const total = billsList.length;
+        const paidBills = billsList.filter(b => b.status === "Paid");
+        const rev = paidBills.reduce((sum, b) => sum + Number(b.fee || 0), 0);
+        document.getElementById("stat-rev").innerText = "$" + rev.toLocaleString();
+        document.getElementById("stat-total").innerText = total;
+        document.getElementById("stat-unpaid").innerText = total - paidBills.length;
+        document.getElementById("stat-rate").innerText = total > 0 ? Math.round((paidBills.length / total) * 100) + "%" : "100%";
+      }
+
+      async function handleBillSubmit(e) {
+        e.preventDefault();
+        const btn = document.getElementById("bill-submit-btn");
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+
+        const billData = {
+          patientName: document.getElementById("b-patient").value.trim(),
+          doctorName: document.getElementById("b-doctor").value,
+          service: document.getElementById("b-service").value,
+          fee: Number(document.getElementById("b-fee").value),
+          date: document.getElementById("b-date").value,
+          status: document.getElementById("b-status").value,
+          notes: document.getElementById("b-notes").value.trim(),
+        };
+
+        try {
+          const res = await fetch(`${API}/billing`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(billData)
+          });
+
+          if (res.ok) {
+            const saved = await res.json();
+            billsList.unshift(saved);
+          } else {
+            billsList.unshift({ ...billData, _id: "local_" + Date.now() });
+          }
+        } catch (err) {
+          billsList.unshift({ ...billData, _id: "local_" + Date.now() });
+        }
+
+        resetForm();
+        renderTable(billsList);
+        updateStats();
+        showToast("Invoice generated successfully!");
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-file-invoice"></i> Issue Invoice';
+      }
+
+      async function toggleStatus(id) {
+        let b = billsList.find(x => x._id === id || String(x._id) === String(id));
+        if (!b) return;
+
+        b.status = b.status === "Paid" ? "Unpaid" : "Paid";
+        try {
+          await fetch(`${API}/billing/${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ status: b.status })
+          });
+        } catch (e) {}
+
+        renderTable(billsList);
+        updateStats();
+        showToast(`Invoice marked as ${b.status}!`);
+      }
+
+      async function deleteBill(id) {
+        if (!confirm("Delete this invoice record?")) return;
+        try {
+          await fetch(`${API}/billing/${id}`, { method: "DELETE" });
+        } catch (e) {}
+        billsList = billsList.filter(b => b._id !== id && String(b._id) !== String(id));
+        renderTable(billsList);
+        updateStats();
+        showToast("Invoice deleted.");
+      }
+
+      function printInvoice(id) {
+        const b = billsList.find(x => x._id === id || String(x._id) === String(id));
+        if (!b) return;
+
+        const w = window.open("", "_blank", "width=720,height=650");
+        w.document.write(`
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <title>Invoice #${String(b._id).slice(-6).toUpperCase()}</title>
+            <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+            <style>
+              body { font-family: 'Plus Jakarta Sans', sans-serif; padding: 40px; color: #1e293b; max-width: 620px; margin: 0 auto; }
+              .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #4f46e5; padding-bottom: 20px; margin-bottom: 24px; }
+              .logo { font-size: 1.4rem; font-weight: 800; color: #4f46e5; }
+              .invoice-title { font-size: 0.8rem; text-transform: uppercase; color: #64748b; font-weight: 600; letter-spacing: 0.1em; }
+              .invoice-num { font-size: 1.25rem; font-weight: 800; }
+              .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+              .info-box { background: #f8fafc; padding: 14px; border-radius: 12px; border: 1px solid #e2e8f0; }
+              .info-box label { font-size: 0.72rem; text-transform: uppercase; color: #64748b; display: block; margin-bottom: 4px; font-weight: 700; }
+              .info-box span { font-weight: 700; font-size: 0.95rem; }
+              table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+              th { background: #4f46e5; color: white; padding: 10px 14px; text-align: left; font-size: 0.82rem; }
+              td { padding: 12px 14px; border-bottom: 1px solid #e2e8f0; font-size: 0.9rem; }
+              .total-row td { font-weight: 800; font-size: 1.05rem; background: #f8fafc; color: #4f46e5; }
+              .badge { display: inline-block; padding: 4px 12px; border-radius: 99px; font-size: 0.75rem; font-weight: 700; background: ${b.status === "Paid" ? "#dcfce7" : "#fee2e2"}; color: ${b.status === "Paid" ? "#166534" : "#991b1b"}; }
+              .footer { text-align: center; color: #94a3b8; font-size: 0.8rem; margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 16px; }
+              @media print { .no-print { display: none; } }
+            </style>
+          </head>
+          <body>
+            <div class="header">
+              <div class="logo">🏥 MediFlow Pro Hospital</div>
+              <div style="text-align:right">
+                <div class="invoice-title">Official Tax Invoice</div>
+                <div class="invoice-num">#INV-${String(b._id).slice(-6).toUpperCase()}</div>
+              </div>
+            </div>
+            <div class="info-grid">
+              <div class="info-box"><label>Patient Name</label><span>${b.patientName}</span></div>
+              <div class="info-box"><label>Attending Doctor</label><span>${b.doctorName}</span></div>
+              <div class="info-box"><label>Date Issued</label><span>${b.date}</span></div>
+              <div class="info-box"><label>Payment Status</label><span class="badge">${b.status}</span></div>
+            </div>
+            <table>
+              <thead><tr><th>Service / Description</th><th>Notes</th><th style="text-align:right;">Amount</th></tr></thead>
+              <tbody>
+                <tr><td><strong>${b.service}</strong></td><td>${b.notes || "Standard clinical care"}</td><td style="text-align:right;">$${Number(b.fee).toFixed(2)}</td></tr>
+                <tr class="total-row"><td colspan="2">Total Amount Payable</td><td style="text-align:right;">$${Number(b.fee).toFixed(2)}</td></tr>
+              </tbody>
+            </table>
+            <div style="text-align:center;margin:24px 0;" class="no-print">
+              <button onclick="window.print()" style="background:#4f46e5;color:white;border:none;padding:10px 24px;border-radius:10px;font-weight:700;font-size:0.95rem;cursor:pointer;">🖨️ Print Receipt</button>
+            </div>
+            <div class="footer">MediFlow Pro Healthcare System • Thank you for choosing our hospital.</div>
+          </body>
+          </html>
+        `);
+        w.document.close();
+      }
+
+      function filterBills() {
+        const q = document.getElementById("search-input").value.toLowerCase();
+        const status = document.getElementById("filter-status").value;
+
+        const filtered = billsList.filter(b => {
+          const matchQ = ((b.patientName || "").toLowerCase().includes(q)) ||
+                         ((b.doctorName || "").toLowerCase().includes(q)) ||
+                         ((b.service || "").toLowerCase().includes(q));
+          const matchS = status === "all" || b.status === status;
+          return matchQ && matchS;
+        });
+        renderTable(filtered);
+      }
+
+      function resetForm() {
+        document.getElementById("bill-form").reset();
+        document.getElementById("b-date").value = new Date().toISOString().split("T")[0];
+        document.getElementById("form-total-display").innerText = "$150.00";
+      }
+
+      function toggleForm() {
+        const card = document.getElementById("bill-form-card");
+        const btnText = document.getElementById("toggle-form-btn-text");
+        if (card.style.display === "none") {
+          card.style.display = "block";
+          btnText.innerText = "Hide Form";
+          card.scrollIntoView({ behavior: "smooth" });
+        } else {
+          card.style.display = "none";
+          btnText.innerText = "Generate New Invoice";
+        }
+      }
+
+      function showToast(msg) {
+        const t = document.getElementById("toast");
+        document.getElementById("toast-msg").innerText = msg;
+        t.classList.add("show");
+        setTimeout(() => t.classList.remove("show"), 3000);
+      }
+
+      function toggleTheme() {
+        const b = document.body;
+        b.setAttribute("data-theme", b.getAttribute("data-theme") === "dark" ? "light" : "dark");
+      }
+    </script>
+  </body>
+</html>
