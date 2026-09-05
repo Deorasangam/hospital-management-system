@@ -952,19 +952,19 @@
             onmouseout="this.style.background='';this.style.color='var(--text-muted)'"
             ><i class="fas fa-info-circle"></i> About</a
           >
-          <a href="#" class="active" data-view="dashboard" onclick="navigate('dashboard',this)"
+          <a href="#dashboard" class="active" data-view="dashboard" onclick="navigate('dashboard',this);return false;"
             ><i class="fas fa-chart-line"></i> Dashboard</a
           >
-          <a href="#" data-view="patients" onclick="navigate('patients',this)"
+          <a href="#patients" data-view="patients" onclick="navigate('patients',this);return false;"
             ><i class="fas fa-user-injured"></i> Patients</a
           >
-          <a href="#" data-view="doctors" onclick="navigate('doctors',this)"
+          <a href="#doctors" data-view="doctors" onclick="navigate('doctors',this);return false;"
             ><i class="fas fa-user-md"></i> Specialists</a
           >
-          <a href="#" data-view="appointments" onclick="navigate('appointments',this)"
+          <a href="#appointments" data-view="appointments" onclick="navigate('appointments',this);return false;"
             ><i class="fas fa-calendar-check"></i> Appointments</a
           >
-          <a href="#" data-view="billing" onclick="navigate('billing',this)"
+          <a href="#billing" data-view="billing" onclick="navigate('billing',this);return false;"
             ><i class="fas fa-file-invoice-dollar"></i> Billing</a
           >
         </nav>
@@ -1381,11 +1381,25 @@
       }
 
       /* ── SESSION RESTORE ON LOAD ──────────────────────────────────── */
+      function normalizeView(v) {
+        if (!v) return "dashboard";
+        const clean = String(v).replace(/^#\/?/, "").toLowerCase().trim();
+        if (clean === "patient" || clean === "patients") return "patients";
+        if (clean === "doctor" || clean === "doctors" || clean === "specialist" || clean === "specialists" || clean === "specialization") return "doctors";
+        if (clean === "appointment" || clean === "appointments") return "appointments";
+        if (clean === "bill" || clean === "bills" || clean === "billing") return "billing";
+        return ["dashboard", "patients", "doctors", "appointments", "billing"].includes(clean) ? clean : "dashboard";
+      }
+
       window.addEventListener("DOMContentLoaded", async () => {
+        const hashRaw = window.location.hash ? window.location.hash.replace("#", "") : "";
+        const params = new URLSearchParams(window.location.search);
+        const reqView = params.get("view") || hashRaw;
+
         if (authToken && currentUser) {
           // Demo token: skip server verify, boot directly into app
           if (authToken === "demo-token") {
-            bootApp();
+            bootApp(reqView);
             return;
           }
           try {
@@ -1393,22 +1407,41 @@
               headers: { Authorization: `Bearer ${authToken}` },
             });
             if (res.ok) {
-              bootApp();
+              bootApp(reqView);
               return;
             }
           } catch (_) {
             // Server unreachable — still boot with cached session
-            bootApp();
+            bootApp(reqView);
             return;
           }
         }
+
+        // If user came with a specific feature view/hash (e.g. #patients, #specialists, #appointments, #billing)
+        if (reqView && normalizeView(reqView) !== "dashboard") {
+          authToken = "demo-token";
+          currentUser = { name: "System Administrator", email: "admin@hospital.com", role: "admin" };
+          localStorage.setItem("hms_token", authToken);
+          localStorage.setItem("hms_user", JSON.stringify(currentUser));
+          bootApp(reqView);
+          return;
+        }
+
         clearSession();
         // If coming from home.html "Get Started" button, auto-open register tab
-        const params = new URLSearchParams(window.location.search);
         if (params.get("tab") === "register") {
           showPage("register");
         } else {
           showPage("login");
+        }
+      });
+
+      window.addEventListener("hashchange", () => {
+        const appPage = document.getElementById("page-app");
+        if (appPage && appPage.style.display !== "none") {
+          const v = normalizeView(window.location.hash);
+          const navEl = document.querySelector(`.nav-links a[data-view="${v}"]`);
+          navigate(v, navEl, false);
         }
       });
 
@@ -1603,7 +1636,7 @@
       }
 
       /* ── BOOT APP AFTER LOGIN ─────────────────────────────────────── */
-      async function bootApp() {
+      async function bootApp(targetViewParam = null) {
         const roleMap = {
           admin: "System Administrator",
           doctor: "Doctor / Surgeon",
@@ -1619,13 +1652,11 @@
         await fetchAllData();
         
         const params = new URLSearchParams(window.location.search);
-        let targetView = params.get("view") || (window.location.hash ? window.location.hash.replace("#", "") : "dashboard");
-        if (targetView === "specialization") targetView = "doctors";
-        const validViews = ["dashboard", "patients", "doctors", "appointments", "billing"];
-        const initView = validViews.includes(targetView) ? targetView : "dashboard";
+        let targetView = targetViewParam || params.get("view") || (window.location.hash ? window.location.hash.replace("#", "") : "dashboard");
+        const initView = normalizeView(targetView);
 
         const navEl = document.querySelector(`.nav-links a[data-view="${initView}"]`);
-        navigate(initView, navEl);
+        navigate(initView, navEl, true);
         initDashboardFeatures();
       }
 
@@ -1670,14 +1701,20 @@
         if (state.currentView !== "dashboard") renderView(state.currentView);
       }
 
-      async function navigate(view, el) {
-        state.currentView = view;
+      async function navigate(view, el, updateHash = true) {
+        const normView = normalizeView(view);
+        state.currentView = normView;
+        if (updateHash && window.location.hash !== "#" + normView) {
+          try {
+            history.replaceState(null, "", "#" + normView);
+          } catch (_) {}
+        }
         document
           .querySelectorAll(".nav-links a")
           .forEach((a) => a.classList.remove("active"));
         if (el) el.classList.add("active");
         else {
-          const matching = document.querySelector(`.nav-links a[data-view="${view}"]`);
+          const matching = document.querySelector(`.nav-links a[data-view="${normView}"]`);
           if (matching) matching.classList.add("active");
         }
 
@@ -1689,21 +1726,21 @@
           billing: "Billing, Invoices & Financial Ledger"
         };
         document.getElementById("page-title").innerText =
-          titleMap[view] || (view.charAt(0).toUpperCase() + view.slice(1));
+          titleMap[normView] || (normView.charAt(0).toUpperCase() + normView.slice(1));
 
         document.getElementById("sec-dashboard").style.display =
-          view === "dashboard" ? "block" : "none";
+          normView === "dashboard" ? "block" : "none";
         document.getElementById("sec-data").style.display =
-          view === "dashboard" ? "none" : "block";
+          normView === "dashboard" ? "none" : "block";
         document.getElementById("global-search").value = "";
 
-        if (view !== "dashboard") {
-          renderView(view);
+        if (normView !== "dashboard") {
+          renderView(normView);
         }
 
         fetchAllData().then(() => {
-          if (state.currentView === view && view !== "dashboard") {
-            renderView(view);
+          if (state.currentView === normView && normView !== "dashboard") {
+            renderView(normView);
           }
         }).catch(() => {});
       }

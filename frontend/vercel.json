@@ -6,6 +6,19 @@
     { "source": "/index", "destination": "/index.html" },
     { "source": "/dashboard", "destination": "/index.html" },
     { "source": "/about", "destination": "/about.html" },
+    { "source": "/patients", "destination": "/patients.html" },
+    { "source": "/patient", "destination": "/patients.html" },
+    { "source": "/specialization", "destination": "/specialization.html" },
+    { "source": "/specialists", "destination": "/specialization.html" },
+    { "source": "/specialist", "destination": "/specialization.html" },
+    { "source": "/doctors", "destination": "/specialization.html" },
+    { "source": "/doctor", "destination": "/specialization.html" },
+    { "source": "/appointments", "destination": "/appointments.html" },
+    { "source": "/appointment", "destination": "/appointments.html" },
+    { "source": "/billing", "destination": "/billing.html" },
+    { "source": "/bills", "destination": "/billing.html" },
+    { "source": "/bill", "destination": "/billing.html" },
     { "source": "/api/:path*", "destination": "https://hospital-management-system1-cmyf.onrender.com/api/:path*" }
   ]
 }
+
