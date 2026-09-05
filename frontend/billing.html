@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>MediFlow Pro | Billing, Invoicing & Receipts</title>
     <link
       rel="stylesheet"
@@ -47,6 +47,7 @@
         min-height: 100vh;
         display: flex;
         flex-direction: column;
+        overflow-x: hidden;
       }
       a {
         text-decoration: none;
@@ -57,7 +58,7 @@
         position: sticky;
         top: 0;
         z-index: 1000;
-        background: rgba(255, 255, 255, 0.95);
+        background: rgba(255, 255, 255, 0.96);
         backdrop-filter: blur(12px);
         border-bottom: 1px solid var(--border);
         padding: 0 5%;
@@ -67,20 +68,20 @@
         height: 70px;
       }
       [data-theme="dark"] nav {
-        background: rgba(30, 41, 59, 0.95);
+        background: rgba(30, 41, 59, 0.96);
       }
       .nav-logo {
         display: flex;
         align-items: center;
         gap: 10px;
-        font-size: 1.25rem;
+        font-size: 1.2rem;
         font-weight: 800;
         color: var(--primary);
       }
       .nav-links-bar {
         display: flex;
         align-items: center;
-        gap: 1.8rem;
+        gap: 1.5rem;
         list-style: none;
       }
       .nav-links-bar a {
@@ -91,20 +92,24 @@
         display: flex;
         align-items: center;
         gap: 6px;
+        padding: 0.4rem 0.6rem;
+        border-radius: 8px;
       }
       .nav-links-bar a:hover,
       .nav-links-bar a.active {
         color: var(--primary);
+        background: var(--primary-light);
       }
       .nav-cta {
         display: flex;
         align-items: center;
-        gap: 12px;
+        gap: 10px;
       }
 
       .btn {
         display: inline-flex;
         align-items: center;
+        justify-content: center;
         gap: 8px;
         padding: 0.65rem 1.25rem;
         border-radius: 10px;
@@ -114,6 +119,7 @@
         transition: all 0.2s;
         border: none;
         font-family: inherit;
+        white-space: nowrap;
       }
       .btn-primary {
         background: var(--primary);
@@ -137,7 +143,7 @@
       .main-container {
         max-width: 1280px;
         margin: 0 auto;
-        padding: 2rem 5%;
+        padding: 1.5rem 4%;
         flex: 1;
         width: 100%;
       }
@@ -148,56 +154,57 @@
         align-items: center;
         flex-wrap: wrap;
         gap: 1rem;
-        margin-bottom: 2rem;
+        margin-bottom: 1.5rem;
       }
       .page-title h1 {
-        font-size: 2rem;
+        font-size: 1.8rem;
         font-weight: 800;
         display: flex;
         align-items: center;
-        gap: 12px;
+        gap: 10px;
       }
       .page-title p {
         color: var(--muted);
-        font-size: 0.95rem;
+        font-size: 0.9rem;
         margin-top: 4px;
       }
 
       /* Stats */
       .stats-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        gap: 1.2rem;
-        margin-bottom: 2rem;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1.5rem;
       }
       .stat-card {
         background: var(--card);
         border: 1px solid var(--border);
         border-radius: 16px;
-        padding: 1.25rem;
+        padding: 1.1rem;
         display: flex;
         align-items: center;
         gap: 1rem;
         box-shadow: 0 2px 8px rgba(0,0,0,0.03);
       }
       .stat-icon {
-        width: 48px;
-        height: 48px;
+        width: 44px;
+        height: 44px;
         border-radius: 12px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.3rem;
+        font-size: 1.2rem;
+        flex-shrink: 0;
       }
       .stat-info h3 {
-        font-size: 1.6rem;
+        font-size: 1.45rem;
         font-weight: 800;
         line-height: 1.2;
       }
       .stat-info p {
         color: var(--muted);
-        font-size: 0.8rem;
-        font-weight: 600;
+        font-size: 0.75rem;
+        font-weight: 700;
         text-transform: uppercase;
       }
 
@@ -205,8 +212,8 @@
       .content-card {
         background: var(--card);
         border: 1px solid var(--border);
-        border-radius: 20px;
-        padding: 1.5rem;
+        border-radius: 18px;
+        padding: 1.25rem;
         box-shadow: 0 4px 20px rgba(0,0,0,0.04);
       }
       .toolbar {
@@ -214,14 +221,13 @@
         justify-content: space-between;
         align-items: center;
         flex-wrap: wrap;
-        gap: 1rem;
-        margin-bottom: 1.5rem;
+        gap: 0.8rem;
+        margin-bottom: 1.2rem;
       }
       .search-box {
         position: relative;
         flex: 1;
-        min-width: 250px;
-        max-width: 400px;
+        min-width: 220px;
       }
       .search-box i {
         position: absolute;
@@ -232,31 +238,37 @@
       }
       .search-box input {
         width: 100%;
-        padding: 0.75rem 1rem 0.75rem 40px;
+        padding: 0.7rem 1rem 0.7rem 38px;
         border-radius: 10px;
         border: 1px solid var(--border);
         background: var(--bg);
         color: var(--text);
         font-family: inherit;
         outline: none;
+        font-size: 0.9rem;
       }
       .filter-group {
         display: flex;
         align-items: center;
         gap: 8px;
+        flex-wrap: wrap;
       }
 
       .table-wrapper {
         overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        border-radius: 12px;
+        border: 1px solid var(--border);
       }
       table {
         width: 100%;
         border-collapse: collapse;
         text-align: left;
+        min-width: 700px;
       }
       th {
-        padding: 1rem;
-        font-size: 0.8rem;
+        padding: 0.85rem 1rem;
+        font-size: 0.75rem;
         text-transform: uppercase;
         letter-spacing: 0.05em;
         color: var(--muted);
@@ -264,9 +276,9 @@
         border-bottom: 2px solid var(--border);
       }
       td {
-        padding: 1rem;
+        padding: 0.9rem 1rem;
         border-bottom: 1px solid var(--border);
-        font-size: 0.92rem;
+        font-size: 0.88rem;
         vertical-align: middle;
       }
       tr:hover td {
@@ -277,9 +289,9 @@
         display: inline-flex;
         align-items: center;
         gap: 4px;
-        padding: 4px 10px;
+        padding: 3px 9px;
         border-radius: 99px;
-        font-size: 0.75rem;
+        font-size: 0.72rem;
         font-weight: 700;
         cursor: pointer;
         transition: transform 0.15s;
@@ -294,7 +306,7 @@
       .modal-backdrop {
         position: fixed;
         inset: 0;
-        background: rgba(15, 23, 42, 0.6);
+        background: rgba(15, 23, 42, 0.65);
         backdrop-filter: blur(8px);
         display: none;
         align-items: center;
@@ -310,7 +322,7 @@
         border: 1px solid var(--border);
         border-radius: 20px;
         width: 100%;
-        max-width: 680px;
+        max-width: 620px;
         max-height: 90vh;
         overflow-y: auto;
         box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
@@ -330,11 +342,11 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 1.5rem 1.8rem;
+        padding: 1.25rem 1.5rem;
         border-bottom: 1px solid var(--border);
       }
       .modal-header h2 {
-        font-size: 1.25rem;
+        font-size: 1.15rem;
         font-weight: 700;
         display: flex;
         align-items: center;
@@ -345,40 +357,37 @@
         background: transparent;
         border: none;
         color: var(--muted);
-        font-size: 1.4rem;
+        font-size: 1.3rem;
         cursor: pointer;
         padding: 4px;
         line-height: 1;
       }
-      .modal-close-btn:hover {
-        color: var(--danger);
-      }
       .modal-body {
-        padding: 1.8rem;
+        padding: 1.5rem;
       }
       .form-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        gap: 1.2rem;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
       }
       .form-group {
         display: flex;
         flex-direction: column;
-        gap: 6px;
+        gap: 5px;
       }
       .form-group label {
-        font-size: 0.85rem;
+        font-size: 0.82rem;
         font-weight: 600;
         color: var(--muted);
       }
       .form-control {
         width: 100%;
-        padding: 0.75rem 1rem;
+        padding: 0.7rem 0.9rem;
         border-radius: 10px;
         border: 1px solid var(--border);
         background: var(--bg);
         color: var(--text);
-        font-size: 0.92rem;
+        font-size: 0.9rem;
         font-family: inherit;
         outline: none;
       }
@@ -390,7 +399,7 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 1.2rem 1.8rem;
+        padding: 1rem 1.5rem;
         border-top: 1px solid var(--border);
         background: rgba(0,0,0,0.01);
       }
@@ -398,13 +407,14 @@
       /* Toast */
       #toast {
         position: fixed;
-        bottom: 24px;
-        right: 24px;
+        bottom: 20px;
+        right: 20px;
         background: var(--primary);
         color: white;
-        padding: 12px 24px;
+        padding: 10px 20px;
         border-radius: 12px;
         font-weight: 600;
+        font-size: 0.88rem;
         box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         transform: translateY(150%);
         transition: transform 0.3s ease;
@@ -412,22 +422,24 @@
         display: flex;
         align-items: center;
         gap: 10px;
+        max-width: 90vw;
       }
       #toast.show {
         transform: translateY(0);
       }
 
-      /* Responsive */
+      /* Mobile Optimizations */
       .menu-toggle {
         display: none;
         background: none;
         border: none;
-        font-size: 1.5rem;
+        font-size: 1.4rem;
         color: var(--primary);
         cursor: pointer;
+        padding: 6px;
       }
-      @media (max-width: 768px) {
-        .menu-toggle { display: block; }
+      @media (max-width: 868px) {
+        .menu-toggle { display: flex; align-items: center; justify-content: center; }
         .nav-links-bar {
           position: fixed;
           top: 70px;
@@ -435,12 +447,29 @@
           right: 0;
           background: var(--card);
           flex-direction: column;
-          padding: 1.5rem;
-          gap: 1rem;
-          border-bottom: 1px solid var(--border);
+          align-items: stretch;
+          padding: 1.25rem;
+          gap: 0.6rem;
+          border-bottom: 2px solid var(--border);
+          box-shadow: 0 10px 25px rgba(0,0,0,0.1);
           display: none;
         }
         .nav-links-bar.open { display: flex; }
+        .nav-links-bar a { padding: 0.75rem 1rem; font-size: 0.95rem; }
+        .page-header { flex-direction: column; align-items: stretch; }
+        .page-header .btn { width: 100%; }
+        .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      }
+      @media (max-width: 540px) {
+        nav { padding: 0 4%; }
+        .stats-grid { grid-template-columns: 1fr; }
+        .toolbar { flex-direction: column; align-items: stretch; }
+        .filter-group { width: 100%; }
+        .filter-group .form-control { flex: 1; }
+        .filter-group .btn { flex: 1; }
+        .form-grid { grid-template-columns: 1fr; }
+        .modal-footer { flex-direction: column; gap: 10px; align-items: stretch; }
+        .modal-footer .btn { width: 100%; }
       }
     </style>
   </head>
@@ -450,9 +479,12 @@
       <div class="nav-logo">
         <i class="fas fa-shield-virus"></i> MediFlow Pro
       </div>
-      <button class="menu-toggle" onclick="document.querySelector('.nav-links-bar').classList.toggle('open')">
-        <i class="fas fa-bars"></i>
-      </button>
+      <div class="nav-cta">
+        <button class="btn btn-outline" onclick="toggleTheme()" style="padding:0.5rem 0.8rem;"><i class="fas fa-moon"></i></button>
+        <button class="menu-toggle" onclick="document.querySelector('.nav-links-bar').classList.toggle('open')">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
       <ul class="nav-links-bar">
         <li><a href="home.html"><i class="fas fa-home"></i> Home</a></li>
         <li><a href="about.html"><i class="fas fa-info-circle"></i> About</a></li>
@@ -460,18 +492,15 @@
         <li><a href="specialization.html"><i class="fas fa-user-md"></i> Specialization</a></li>
         <li><a href="appointments.html"><i class="fas fa-calendar-check"></i> Appointments</a></li>
         <li><a href="billing.html" class="active"><i class="fas fa-file-invoice-dollar"></i> Billing</a></li>
+        <li><a href="index.html" style="background:var(--primary);color:#fff;"><i class="fas fa-chart-line"></i> Dashboard</a></li>
       </ul>
-      <div class="nav-cta">
-        <button class="btn btn-outline" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
-        <a href="index.html" class="btn btn-primary"><i class="fas fa-chart-line"></i> Dashboard</a>
-      </div>
     </nav>
 
     <div class="main-container">
       <div class="page-header">
         <div class="page-title">
           <h1><i class="fas fa-file-invoice-dollar" style="color: var(--primary)"></i> Billing & Patient Invoicing</h1>
-          <p>Issue patient invoices, collect payments, and print tax receipts instantly.</p>
+          <p>Issue patient invoices, collect medical fees, and print verified receipts instantly.</p>
         </div>
         <div>
           <button class="btn btn-primary" onclick="openBillModal()">
@@ -520,7 +549,7 @@
         </div>
       </div>
 
-      <!-- Invoices Table (Immediately Visible!) -->
+      <!-- Invoices Table -->
       <div class="content-card">
         <div class="toolbar">
           <div class="search-box">
@@ -528,12 +557,12 @@
             <input type="text" id="search-input" placeholder="Search by patient, doctor, service, or bill ID..." onkeyup="filterBills()" />
           </div>
           <div class="filter-group">
-            <select id="filter-status" class="form-control" style="width: 140px" onchange="filterBills()">
+            <select id="filter-status" class="form-control" style="width: auto; min-width: 120px;" onchange="filterBills()">
               <option value="all">All Invoices</option>
               <option value="Paid">Paid</option>
               <option value="Unpaid">Unpaid</option>
             </select>
-            <button class="btn btn-outline" onclick="loadBills()"><i class="fas fa-sync-alt"></i> Refresh</button>
+            <button class="btn btn-outline" onclick="loadBills(true)"><i class="fas fa-sync-alt"></i> Refresh</button>
             <button class="btn btn-primary" onclick="openBillModal()"><i class="fas fa-plus"></i> New Invoice</button>
           </div>
         </div>
@@ -574,10 +603,7 @@
                 <label>Patient Full Name *</label>
                 <input type="text" id="b-patient" class="form-control" list="patients-datalist" placeholder="Select or type patient..." required />
                 <datalist id="patients-datalist">
-                  <option value="John Doe"></option>
-                  <option value="Jane Smith"></option>
-                  <option value="Robert Taylor"></option>
-                  <option value="Sarah Williams"></option>
+                  <!-- Populated dynamically -->
                 </datalist>
               </div>
               <div class="form-group">
@@ -626,9 +652,9 @@
           </div>
           <div class="modal-footer">
             <div>
-              <span style="font-size: 0.9rem; color: var(--muted);">Estimated Total: <strong id="form-total-display" style="color: var(--success); font-size: 1.15rem;">$150.00</strong></span>
+              <span style="font-size: 0.88rem; color: var(--muted);">Estimated Total: <strong id="form-total-display" style="color: var(--success); font-size: 1.15rem;">$150.00</strong></span>
             </div>
-            <div style="display: flex; gap: 10px;">
+            <div style="display: flex; gap: 8px;">
               <button type="button" class="btn btn-outline" onclick="closeBillModal()"><i class="fas fa-times"></i> Cancel</button>
               <button type="submit" class="btn btn-primary" id="bill-submit-btn"><i class="fas fa-file-invoice"></i> Issue Invoice</button>
             </div>
@@ -645,17 +671,61 @@
           ? "/api"
           : "https://hospital-management-system1-cmyf.onrender.com/api";
 
-      let billsList = [
+      const DEFAULT_BILLS = [
         { _id: "b4001", patientName: "John Doe", doctorName: "Dr. Alexander Wright", service: "Consultation", fee: 150, date: new Date().toISOString().split("T")[0], status: "Paid", notes: "Cardiology consult" },
         { _id: "b4002", patientName: "Jane Smith", doctorName: "Dr. Emily Watson", service: "Lab Blood Panel", fee: 220, date: new Date().toISOString().split("T")[0], status: "Unpaid", notes: "Pediatric lab panel" },
         { _id: "b4003", patientName: "Robert Taylor", doctorName: "Dr. Robert Chen", service: "Follow-up Visit", fee: 80, date: new Date().toISOString().split("T")[0], status: "Paid", notes: "Routine follow-up" }
       ];
+
+      let billsList = (() => {
+        try {
+          const stored = localStorage.getItem("mf_bills");
+          if (stored) {
+            const parsed = JSON.parse(stored);
+            if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+          }
+        } catch(e) {}
+        return DEFAULT_BILLS;
+      })();
+
+      function saveLocal() {
+        try {
+          localStorage.setItem("mf_bills", JSON.stringify(billsList));
+        } catch(e) {}
+      }
+
+      function syncCrossPageDropdowns() {
+        // Patients
+        try {
+          const pStored = localStorage.getItem("mf_patients");
+          const pList = pStored ? JSON.parse(pStored) : [{ name: "John Doe" }, { name: "Jane Smith" }, { name: "Robert Taylor" }, { name: "Sarah Williams" }];
+          const datalist = document.getElementById("patients-datalist");
+          if (datalist && Array.isArray(pList)) {
+            datalist.innerHTML = pList.map(p => `<option value="${p.name}"></option>`).join("");
+          }
+        } catch(e) {}
+
+        // Doctors
+        try {
+          const dStored = localStorage.getItem("mf_doctors");
+          if (dStored) {
+            const dList = JSON.parse(dStored);
+            const docSelect = document.getElementById("b-doctor");
+            if (docSelect && Array.isArray(dList) && dList.length > 0) {
+              docSelect.innerHTML = dList.map(d => `<option value="${d.name}">${d.name} (${d.spec || 'General'})</option>`).join("");
+            }
+          }
+        } catch(e) {}
+      }
 
       window.addEventListener("DOMContentLoaded", () => {
         document.getElementById("b-date").value = new Date().toISOString().split("T")[0];
         document.getElementById("b-fee").addEventListener("input", (e) => {
           document.getElementById("form-total-display").innerText = "$" + Number(e.target.value || 0).toFixed(2);
         });
+        syncCrossPageDropdowns();
+        renderTable(billsList);
+        updateStats();
         loadBills();
       });
 
@@ -664,6 +734,7 @@
       });
 
       function openBillModal() {
+        syncCrossPageDropdowns();
         document.getElementById("bill-modal").classList.add("open");
         document.getElementById("b-patient").focus();
       }
@@ -683,24 +754,36 @@
         document.getElementById("form-total-display").innerText = "$" + Number(fee).toFixed(2);
       }
 
-      async function loadBills() {
+      async function loadBills(manual = false) {
+        if (manual) showToast("Syncing invoices...");
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 4500);
+
         try {
-          const res = await fetch(`${API}/billing`);
+          const res = await fetch(`${API}/billing`, { signal: controller.signal });
+          clearTimeout(timeoutId);
           if (res.ok) {
             const data = await res.json();
             if (Array.isArray(data) && data.length > 0) {
               billsList = data;
+              saveLocal();
+              renderTable(billsList);
+              updateStats();
+              if (manual) showToast("Billing ledger updated!");
+              return;
             }
           }
         } catch (e) {
-          console.log("Using cached/local billing data");
+          clearTimeout(timeoutId);
         }
         renderTable(billsList);
         updateStats();
+        if (manual) showToast("Displaying offline records.");
       }
 
       function renderTable(list) {
         const tbody = document.getElementById("bill-tbody");
+        if (!tbody) return;
         if (!list || list.length === 0) {
           tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:3.5rem;color:var(--muted);"><i class="fas fa-file-invoice-dollar" style="font-size:2.5rem;display:block;margin-bottom:0.8rem;opacity:0.4;"></i>No invoices found. <button class="btn btn-primary" style="margin-top:1rem;" onclick="openBillModal()"><i class="fas fa-plus"></i> Generate Invoice</button></td></tr>`;
           return;
@@ -723,7 +806,7 @@
                 </span>
               </td>
               <td>
-                <div style="display:flex;gap:6px;">
+                <div style="display:flex;gap:6px;align-items:center;">
                   <button class="btn btn-primary" style="padding:0.35rem 0.75rem;font-size:0.8rem;" onclick="printInvoice('${b._id || idx}')">
                     <i class="fas fa-print"></i> Print
                   </button>
@@ -741,10 +824,14 @@
         const total = billsList.length;
         const paidBills = billsList.filter(b => b.status === "Paid");
         const rev = paidBills.reduce((sum, b) => sum + Number(b.fee || 0), 0);
-        document.getElementById("stat-rev").innerText = "$" + rev.toLocaleString();
-        document.getElementById("stat-total").innerText = total;
-        document.getElementById("stat-unpaid").innerText = total - paidBills.length;
-        document.getElementById("stat-rate").innerText = total > 0 ? Math.round((paidBills.length / total) * 100) + "%" : "100%";
+        const rEl = document.getElementById("stat-rev");
+        if (rEl) rEl.innerText = "$" + rev.toLocaleString();
+        const tEl = document.getElementById("stat-total");
+        if (tEl) tEl.innerText = total;
+        const uEl = document.getElementById("stat-unpaid");
+        if (uEl) uEl.innerText = total - paidBills.length;
+        const rtEl = document.getElementById("stat-rate");
+        if (rtEl) rtEl.innerText = total > 0 ? Math.round((paidBills.length / total) * 100) + "%" : "100%";
       }
 
       async function handleBillSubmit(e) {
@@ -754,6 +841,7 @@
         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
 
         const billData = {
+          _id: "b_" + Date.now().toString().slice(-6),
           patientName: document.getElementById("b-patient").value.trim(),
           doctorName: document.getElementById("b-doctor").value,
           service: document.getElementById("b-service").value,
@@ -763,29 +851,30 @@
           notes: document.getElementById("b-notes").value.trim(),
         };
 
+        // Instant optimistic update (0ms lag)
+        billsList.unshift(billData);
+        saveLocal();
+        closeBillModal();
+        renderTable(billsList);
+        updateStats();
+        showToast("Invoice issued successfully!");
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-file-invoice"></i> Issue Invoice';
+
         try {
           const res = await fetch(`${API}/billing`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(billData)
           });
-
           if (res.ok) {
             const saved = await res.json();
-            billsList.unshift(saved);
-          } else {
-            billsList.unshift({ ...billData, _id: "local_" + Date.now() });
+            if (saved._id) {
+              billData._id = saved._id;
+              saveLocal();
+            }
           }
-        } catch (err) {
-          billsList.unshift({ ...billData, _id: "local_" + Date.now() });
-        }
-
-        closeBillModal();
-        renderTable(billsList);
-        updateStats();
-        showToast("Invoice generated successfully!");
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fas fa-file-invoice"></i> Issue Invoice';
+        } catch (err) {}
       }
 
       async function toggleStatus(id) {
@@ -793,6 +882,11 @@
         if (!b) return;
 
         b.status = b.status === "Paid" ? "Unpaid" : "Paid";
+        saveLocal();
+        renderTable(billsList);
+        updateStats();
+        showToast(`Invoice marked as ${b.status}!`);
+
         try {
           await fetch(`${API}/billing/${id}`, {
             method: "PUT",
@@ -800,21 +894,19 @@
             body: JSON.stringify({ status: b.status })
           });
         } catch (e) {}
-
-        renderTable(billsList);
-        updateStats();
-        showToast(`Invoice marked as ${b.status}!`);
       }
 
       async function deleteBill(id) {
         if (!confirm("Delete this invoice record?")) return;
-        try {
-          await fetch(`${API}/billing/${id}`, { method: "DELETE" });
-        } catch (e) {}
         billsList = billsList.filter(b => b._id !== id && String(b._id) !== String(id));
+        saveLocal();
         renderTable(billsList);
         updateStats();
         showToast("Invoice deleted.");
+
+        try {
+          await fetch(`${API}/billing/${id}`, { method: "DELETE" });
+        } catch (e) {}
       }
 
       function printInvoice(id) {
@@ -827,24 +919,25 @@
           <html>
           <head>
             <title>Invoice #${String(b._id).slice(-6).toUpperCase()}</title>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
             <style>
-              body { font-family: 'Plus Jakarta Sans', sans-serif; padding: 40px; color: #1e293b; max-width: 620px; margin: 0 auto; }
-              .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #4f46e5; padding-bottom: 20px; margin-bottom: 24px; }
-              .logo { font-size: 1.4rem; font-weight: 800; color: #4f46e5; }
-              .invoice-title { font-size: 0.8rem; text-transform: uppercase; color: #64748b; font-weight: 600; letter-spacing: 0.1em; }
-              .invoice-num { font-size: 1.25rem; font-weight: 800; }
-              .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
-              .info-box { background: #f8fafc; padding: 14px; border-radius: 12px; border: 1px solid #e2e8f0; }
-              .info-box label { font-size: 0.72rem; text-transform: uppercase; color: #64748b; display: block; margin-bottom: 4px; font-weight: 700; }
-              .info-box span { font-weight: 700; font-size: 0.95rem; }
+              body { font-family: 'Plus Jakarta Sans', sans-serif; padding: 24px; color: #1e293b; max-width: 620px; margin: 0 auto; }
+              .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #4f46e5; padding-bottom: 16px; margin-bottom: 20px; }
+              .logo { font-size: 1.3rem; font-weight: 800; color: #4f46e5; }
+              .invoice-title { font-size: 0.75rem; text-transform: uppercase; color: #64748b; font-weight: 600; letter-spacing: 0.1em; }
+              .invoice-num { font-size: 1.15rem; font-weight: 800; }
+              .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+              .info-box { background: #f8fafc; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0; }
+              .info-box label { font-size: 0.7rem; text-transform: uppercase; color: #64748b; display: block; margin-bottom: 2px; font-weight: 700; }
+              .info-box span { font-weight: 700; font-size: 0.9rem; }
               table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-              th { background: #4f46e5; color: white; padding: 10px 14px; text-align: left; font-size: 0.82rem; }
-              td { padding: 12px 14px; border-bottom: 1px solid #e2e8f0; font-size: 0.9rem; }
-              .total-row td { font-weight: 800; font-size: 1.05rem; background: #f8fafc; color: #4f46e5; }
-              .badge { display: inline-block; padding: 4px 12px; border-radius: 99px; font-size: 0.75rem; font-weight: 700; background: ${b.status === "Paid" ? "#dcfce7" : "#fee2e2"}; color: ${b.status === "Paid" ? "#166534" : "#991b1b"}; }
-              .footer { text-align: center; color: #94a3b8; font-size: 0.8rem; margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 16px; }
-              @media print { .no-print { display: none; } }
+              th { background: #4f46e5; color: white; padding: 8px 12px; text-align: left; font-size: 0.8rem; }
+              td { padding: 10px 12px; border-bottom: 1px solid #e2e8f0; font-size: 0.88rem; }
+              .total-row td { font-weight: 800; font-size: 1rem; background: #f8fafc; color: #4f46e5; }
+              .badge { display: inline-block; padding: 3px 10px; border-radius: 99px; font-size: 0.75rem; font-weight: 700; background: ${b.status === "Paid" ? "#dcfce7" : "#fee2e2"}; color: ${b.status === "Paid" ? "#166534" : "#991b1b"}; }
+              .footer { text-align: center; color: #94a3b8; font-size: 0.78rem; margin-top: 24px; border-top: 1px solid #e2e8f0; padding-top: 14px; }
+              @media print { .no-print { display: none; } body { padding: 0; } }
             </style>
           </head>
           <body>
@@ -868,7 +961,7 @@
                 <tr class="total-row"><td colspan="2">Total Amount Payable</td><td style="text-align:right;">$${Number(b.fee).toFixed(2)}</td></tr>
               </tbody>
             </table>
-            <div style="text-align:center;margin:24px 0;" class="no-print">
+            <div style="text-align:center;margin:20px 0;" class="no-print">
               <button onclick="window.print()" style="background:#4f46e5;color:white;border:none;padding:10px 24px;border-radius:10px;font-weight:700;font-size:0.95rem;cursor:pointer;">🖨️ Print Receipt</button>
             </div>
             <div class="footer">MediFlow Pro Healthcare System • Thank you for choosing our hospital.</div>
@@ -879,7 +972,7 @@
       }
 
       function filterBills() {
-        const q = document.getElementById("search-input").value.toLowerCase();
+        const q = (document.getElementById("search-input").value || "").toLowerCase();
         const status = document.getElementById("filter-status").value;
 
         const filtered = billsList.filter(b => {
