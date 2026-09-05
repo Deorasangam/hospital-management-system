@@ -1256,14 +1256,14 @@
             <!-- Dynamically populated -->
           </div>
 
-          <!-- Direct Interactive Form on Page -->
-          <div id="inline-form-card" style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 4px 16px rgba(0,0,0,0.03);">
+          <!-- Direct Interactive Form on Page (Collapsed by default) -->
+          <div id="inline-form-card" style="display: none; background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 4px 16px rgba(0,0,0,0.03);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 0.8rem; border-bottom: 1px solid var(--border);">
               <h3 id="inline-form-title" style="margin: 0; font-size: 1.1rem; color: var(--primary); display: flex; align-items: center; gap: 8px;">
                 <i class="fas fa-edit"></i> Record Entry Form
               </h3>
               <button class="btn btn-outline" onclick="toggleInlineForm()" style="padding: 0.35rem 0.8rem; font-size: 0.8rem;">
-                <i class="fas fa-chevron-up" id="inline-toggle-icon"></i> <span id="inline-toggle-text">Collapse Form</span>
+                <i class="fas fa-times" id="inline-toggle-icon"></i> <span id="inline-toggle-text">Close Form</span>
               </button>
             </div>
             <div id="inline-form-body">
@@ -1753,13 +1753,12 @@
 
         if (forceOpen || formCard.style.display === "none") {
           formCard.style.display = "block";
-          if (icon) icon.className = "fas fa-chevron-up";
-          if (txt) txt.innerText = "Collapse Form";
-          formCard.scrollIntoView({ behavior: "smooth", block: "start" });
+          if (icon) icon.className = "fas fa-times";
+          if (txt) txt.innerText = "Close Form";
         } else {
           formCard.style.display = "none";
-          if (icon) icon.className = "fas fa-chevron-down";
-          if (txt) txt.innerText = "Expand Form";
+          if (icon) icon.className = "fas fa-plus";
+          if (txt) txt.innerText = "Open Form";
         }
       }
 
