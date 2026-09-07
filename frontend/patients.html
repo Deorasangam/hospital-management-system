@@ -48,6 +48,41 @@
         display: flex;
         flex-direction: column;
         overflow-x: hidden;
+        overflow-y: auto;
+      }
+      /* Footer */
+      .site-footer {
+        background: var(--card);
+        border-top: 1px solid var(--border);
+        padding: 1.5rem 5%;
+        margin-top: auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        font-size: 0.82rem;
+        color: var(--muted);
+      }
+      .footer-brand {
+        font-weight: 700;
+        color: var(--primary);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .footer-links {
+        display: flex;
+        gap: 1rem;
+        list-style: none;
+        flex-wrap: wrap;
+      }
+      .footer-links a {
+        color: var(--muted);
+        transition: color 0.2s;
+      }
+      .footer-links a:hover {
+        color: var(--primary);
       }
       a {
         text-decoration: none;
@@ -516,12 +551,6 @@
       <div class="nav-logo">
         <i class="fas fa-shield-virus"></i> MediFlow Pro
       </div>
-      <div class="nav-cta">
-        <button class="btn btn-outline" onclick="toggleTheme()" style="padding:0.5rem 0.8rem;"><i class="fas fa-moon"></i></button>
-        <button class="menu-toggle" onclick="document.querySelector('.nav-links-bar').classList.toggle('open')">
-          <i class="fas fa-bars"></i>
-        </button>
-      </div>
       <ul class="nav-links-bar">
         <li><a href="home.html"><i class="fas fa-home"></i> Home</a></li>
         <li><a href="about.html"><i class="fas fa-info-circle"></i> About</a></li>
@@ -531,6 +560,12 @@
         <li><a href="billing.html"><i class="fas fa-file-invoice-dollar"></i> Billing</a></li>
         <li><a href="index.html" style="background:var(--primary);color:#fff;"><i class="fas fa-chart-line"></i> Dashboard</a></li>
       </ul>
+      <div class="nav-cta">
+        <button class="btn btn-outline" onclick="toggleTheme()" style="padding:0.5rem 0.8rem;"><i class="fas fa-moon"></i></button>
+        <button class="menu-toggle" onclick="document.querySelector('.nav-links-bar').classList.toggle('open')">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
     </nav>
 
     <div class="main-container">
@@ -626,6 +661,20 @@
         </div>
       </div>
     </div>
+
+    <!-- Site Footer -->
+    <footer class="site-footer">
+      <div class="footer-brand"><i class="fas fa-shield-virus"></i> MediFlow Pro</div>
+      <ul class="footer-links">
+        <li><a href="home.html">Home</a></li>
+        <li><a href="patients.html">Patients</a></li>
+        <li><a href="specialization.html">Specialists</a></li>
+        <li><a href="appointments.html">Appointments</a></li>
+        <li><a href="billing.html">Billing</a></li>
+        <li><a href="index.html">Dashboard</a></li>
+      </ul>
+      <span>&copy; 2026 MediFlow Pro. All rights reserved.</span>
+    </footer>
 
     <!-- Modal Dialog for Patient Intake -->
     <div class="modal-backdrop" id="patient-modal" onclick="if(event.target===this) closePatientModal()">

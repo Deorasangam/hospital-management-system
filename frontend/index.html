@@ -245,22 +245,29 @@
       #app {
         display: none;
         width: 100%;
+        min-height: 100vh;
       }
       aside {
-        width: var(--sidebar-width);
+        width: 260px;
+        min-width: 260px;
+        max-width: 260px;
         background: var(--bg-card);
         border-right: 1px solid var(--border);
         padding: 1.5rem;
         position: fixed;
+        left: 0;
+        top: 0;
+        bottom: 0;
         height: 100vh;
         display: flex;
         flex-direction: column;
         z-index: 100;
         transition: transform 0.3s ease;
+        overflow-y: auto;
       }
       .nav-links {
         list-style: none;
-        margin-top: 2rem;
+        margin-top: 1.5rem;
         flex-grow: 1;
       }
       .nav-links a {
@@ -273,6 +280,8 @@
         border-radius: 10px;
         margin-bottom: 5px;
         transition: 0.2s;
+        font-weight: 600;
+        font-size: 0.92rem;
       }
       .nav-links a.active,
       .nav-links a:hover {
@@ -281,16 +290,18 @@
         box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
       }
       main {
-        margin-left: var(--sidebar-width);
-        padding: 2rem;
+        margin-left: 260px;
+        padding: 2rem 2.5rem;
         min-height: 100vh;
-        width: calc(100% - var(--sidebar-width));
+        width: calc(100% - 260px);
+        max-width: calc(100% - 260px);
+        box-sizing: border-box;
       }
       .stats-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        gap: 1.5rem;
-        margin-bottom: 2.5rem;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.25rem;
+        margin-bottom: 2rem;
         width: 100%;
       }
       .stat-card {
@@ -543,31 +554,46 @@
       .modal {
         position: fixed;
         inset: 0;
-        background: rgba(15, 23, 42, 0.6);
-        backdrop-filter: blur(4px);
+        background: rgba(15, 23, 42, 0.7);
+        backdrop-filter: blur(8px);
         display: none;
         align-items: center;
         justify-content: center;
-        z-index: 1000;
+        z-index: 99999;
         padding: 1rem;
       }
       .modal-content {
         background: var(--bg-card);
-        padding: 2.5rem;
+        padding: 2rem;
         border-radius: 20px;
         width: 100%;
-        max-width: 500px;
+        max-width: 620px;
+        max-height: 90vh;
+        overflow-y: auto;
+        border: 1px solid var(--border);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+        animation: modalScaleIn 0.2s ease;
+      }
+      @keyframes modalScaleIn {
+        from { opacity: 0; transform: scale(0.95); }
+        to { opacity: 1; transform: scale(1); }
       }
       .modal-input {
         width: 100%;
-        padding: 0.8rem;
-        margin-bottom: 1rem;
+        padding: 0.8rem 1rem;
+        margin-bottom: 0.8rem;
         border-radius: 10px;
         border: 1px solid var(--border);
         background: var(--bg-main);
         color: var(--text-main);
         font-family: inherit;
         font-size: 0.9rem;
+        box-sizing: border-box;
+      }
+      .modal-input:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
       }
       .user-chip {
         display: flex;
@@ -602,7 +628,7 @@
         font-weight: 600;
         transform: translateY(200%);
         transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        z-index: 9999;
+        z-index: 999999;
         box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
       }
       /* Mobile menu button */
@@ -611,15 +637,15 @@
         position: fixed;
         top: 1rem;
         left: 1rem;
-        z-index: 101;
+        z-index: 10001;
         background: var(--primary);
         color: #fff;
-        padding: 0.6rem 1rem;
+        padding: 0.6rem 0.9rem;
         border-radius: 10px;
         border: none;
         cursor: pointer;
-        font-size: 1.2rem;
-        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        font-size: 1.15rem;
+        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.35);
       }
       .search-container {
         position: relative;
@@ -634,7 +660,7 @@
           grid-template-columns: 1fr;
         }
       }
-      @media (max-width: 768px) {
+      @media (max-width: 868px) {
         .auth-left {
           display: none;
         }
@@ -643,18 +669,28 @@
         }
         /* Sidebar responsive */
         aside {
+          position: fixed;
+          left: 0;
+          top: 0;
+          bottom: 0;
+          height: 100vh;
+          z-index: 10000;
           transform: translateX(-100%);
+          box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
         }
         aside.open {
           transform: translateX(0);
         }
         .menu-btn {
-          display: block;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
         main {
-          margin-left: 0;
-          width: 100%;
-          padding: 4rem 1rem 1rem 1rem;
+          margin-left: 0 !important;
+          width: 100% !important;
+          max-width: 100% !important;
+          padding: 4.5rem 1rem 1.5rem 1rem;
         }
         /* Header responsive */
         main header {
@@ -684,7 +720,7 @@
       }
       @media (max-width: 480px) {
         main {
-          padding: 4rem 0.75rem 0.75rem 0.75rem;
+          padding: 4.5rem 0.75rem 1rem 0.75rem;
         }
         .stat-card {
           flex-direction: column;
@@ -901,6 +937,8 @@
      PAGE 3 — DASHBOARD APP
 ══════════════════════════════════════════════ -->
     <div id="app">
+      <!-- Mobile Overlay -->
+      <div id="sidebar-overlay" onclick="toggleSidebar(false)" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:9999; backdrop-filter:blur(2px);"></div>
       <!-- Mobile Menu Button -->
       <button class="menu-btn" onclick="toggleSidebar()">
         <i class="fas fa-bars"></i>
@@ -1317,23 +1355,13 @@
     </div>
 
     <!-- Record Modal -->
-    <div class="modal" id="modal">
+    <div class="modal" id="modal" onclick="if(event.target===this) closeModal()">
       <div class="modal-content">
-        <h3 id="modal-title" style="margin-bottom: 1.5rem">Record Entry</h3>
-        <div id="modal-form"></div>
-        <div
-          style="
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-top: 2rem;
-          "
-        >
-          <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
-          <button class="btn btn-primary" id="save-btn">
-            Save to Database
-          </button>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; padding-bottom: 0.8rem; border-bottom: 1px solid var(--border);">
+          <h3 id="modal-title" style="margin: 0; font-size: 1.25rem; color: var(--text-main); font-weight: 700; display: flex; align-items: center; gap: 8px;">Record Entry</h3>
+          <button type="button" onclick="closeModal()" style="background: transparent; border: none; font-size: 1.6rem; color: var(--text-muted); cursor: pointer; line-height: 1; padding: 4px 8px; border-radius: 8px;">&times;</button>
         </div>
+        <div id="modal-form"></div>
       </div>
     </div>
 
@@ -1681,21 +1709,48 @@
         }
       }
 
-      /* ── DATA ─────────────────────────────────────────────────────── */
-      async function fetchAllData() {
+      /* ── LOCAL CACHING & STATE ──────────────────────────────────────── */
+      function loadCachedState() {
         try {
+          const p = localStorage.getItem("mf_patients");
+          if (p) { const parsed = JSON.parse(p); if (Array.isArray(parsed) && parsed.length) state.patients = parsed; }
+          const d = localStorage.getItem("mf_doctors");
+          if (d) { const parsed = JSON.parse(d); if (Array.isArray(parsed) && parsed.length) state.doctors = parsed; }
+          const a = localStorage.getItem("mf_appointments");
+          if (a) { const parsed = JSON.parse(a); if (Array.isArray(parsed) && parsed.length) state.appointments = parsed; }
+          const b = localStorage.getItem("mf_bills");
+          if (b) { const parsed = JSON.parse(b); if (Array.isArray(parsed) && parsed.length) state.bills = parsed; }
+        } catch (_) {}
+      }
+
+      function saveCachedState(key) {
+        try {
+          if (!key || key === "patients") localStorage.setItem("mf_patients", JSON.stringify(state.patients));
+          if (!key || key === "doctors") localStorage.setItem("mf_doctors", JSON.stringify(state.doctors));
+          if (!key || key === "appointments") localStorage.setItem("mf_appointments", JSON.stringify(state.appointments));
+          if (!key || key === "bills" || key === "billing") localStorage.setItem("mf_bills", JSON.stringify(state.bills));
+        } catch (_) {}
+      }
+
+      /* ── DATA FETCHING ─────────────────────────────────────────────── */
+      async function fetchAllData() {
+        loadCachedState();
+        try {
+          const controller = new AbortController();
+          const timer = setTimeout(() => controller.abort(), 4000);
           const [pR, dR, aR, bR] = await Promise.all([
-            authFetch(`${API}/patients`),
-            authFetch(`${API}/doctors`),
-            authFetch(`${API}/appointments`),
-            authFetch(`${API}/billing`),
+            authFetch(`${API}/patients`, { signal: controller.signal }),
+            authFetch(`${API}/doctors`, { signal: controller.signal }),
+            authFetch(`${API}/appointments`, { signal: controller.signal }),
+            authFetch(`${API}/billing`, { signal: controller.signal }),
           ]);
-          if (pR && pR.ok) { const d = await pR.json(); if (Array.isArray(d)) state.patients = d; }
-          if (dR && dR.ok) { const d = await dR.json(); if (Array.isArray(d)) state.doctors = d; }
-          if (aR && aR.ok) { const d = await aR.json(); if (Array.isArray(d)) state.appointments = d; }
-          if (bR && bR.ok) { const d = await bR.json(); if (Array.isArray(d)) state.bills = d; }
+          clearTimeout(timer);
+          if (pR && pR.ok) { const d = await pR.json(); if (Array.isArray(d) && d.length) { state.patients = d; saveCachedState("patients"); } }
+          if (dR && dR.ok) { const d = await dR.json(); if (Array.isArray(d) && d.length) { state.doctors = d; saveCachedState("doctors"); } }
+          if (aR && aR.ok) { const d = await aR.json(); if (Array.isArray(d) && d.length) { state.appointments = d; saveCachedState("appointments"); } }
+          if (bR && bR.ok) { const d = await bR.json(); if (Array.isArray(d) && d.length) { state.bills = d; saveCachedState("bills"); } }
         } catch (e) {
-          console.log("Server not reachable — displaying local data");
+          console.log("Using cached local data");
         }
         updateStats();
         if (state.currentView !== "dashboard") renderView(state.currentView);
@@ -1745,21 +1800,296 @@
         }).catch(() => {});
       }
 
-      function toggleInlineForm(forceOpen = false) {
-        const formCard = document.getElementById("inline-form-card");
-        const icon = document.getElementById("inline-toggle-icon");
-        const txt = document.getElementById("inline-toggle-text");
-        if (!formCard) return;
+      /* ── MODAL FORM DIALOG ────────────────────────────────────────── */
+      function openRecordModal(view = state.currentView) {
+        const norm = normalizeView(view);
+        const modal = document.getElementById("modal");
+        const modalTitle = document.getElementById("modal-title");
+        const modalForm = document.getElementById("modal-form");
+        if (!modal || !modalTitle || !modalForm) return;
 
-        if (forceOpen || formCard.style.display === "none") {
-          formCard.style.display = "block";
-          if (icon) icon.className = "fas fa-times";
-          if (txt) txt.innerText = "Close Form";
-        } else {
-          formCard.style.display = "none";
-          if (icon) icon.className = "fas fa-plus";
-          if (txt) txt.innerText = "Open Form";
+        let pOpts = (state.patients && state.patients.length)
+          ? state.patients.map(p => `<option value="${p.name}">${p.name}</option>`).join("")
+          : `<option value="John Doe">John Doe</option><option value="Jane Smith">Jane Smith</option>`;
+
+        let dOpts = (state.doctors && state.doctors.length)
+          ? state.doctors.map(d => `<option value="${d.name}">${d.name} (${d.spec || "General"})</option>`).join("")
+          : `<option value="Dr. Alexander Wright">Dr. Alexander Wright (Cardiology)</option>`;
+
+        if (norm === "patients") {
+          modalTitle.innerHTML = `<i class="fas fa-user-plus" style="color:var(--primary);"></i> Register New Patient`;
+          modalForm.innerHTML = `
+            <form onsubmit="handleModalSubmit(event, 'patients')">
+              <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));gap:14px;">
+                <div>
+                  <label style="font-size:0.8rem;font-weight:700;color:var(--text-muted);display:block;margin-bottom:6px;">PATIENT FULL NAME *</label>
+                  <input id="m-p-name" class="modal-input" placeholder="e.g. John Doe" required autofocus style="margin-bottom:0;">
+                </div>
+                <div>
+                  <label style="font-size:0.8rem;font-weight:700;color:var(--text-muted);display:block;margin-bottom:6px;">AGE (YEARS) *</label>
+                  <input id="m-p-age" type="number" min="0" max="130" class="modal-input" placeholder="e.g. 35" required style="margin-bottom:0;">
+                </div>
+                <div>
+                  <label style="font-size:0.8rem;font-weight:700;color:var(--text-muted);display:block;margin-bottom:6px;">GENDER *</label>
+                  <select id="m-p-gender" class="modal-input" style="margin-bottom:0;">
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+                <div>
+                  <label style="font-size:0.8rem;font-weight:700;color:var(--text-muted);display:block;margin-bottom:6px;">CONTACT PHONE *</label>
+                  <input id="m-p-phone" class="modal-input" placeholder="e.g. 555-0199" required style="margin-bottom:0;">
+                </div>
+                <div>
+                  <label style="font-size:0.8rem;font-weight:700;color:var(--text-muted);display:block;margin-bottom:6px;">PRIMARY CONDITION / DIAGNOSIS *</label>
+                  <input id="m-p-disease" class="modal-input" placeholder="e.g. Hypertension, Fever" required style="margin-bottom:0;">
+                </div>
+                <div>
+                  <label style="font-size:0.8rem;font-weight:700;color:var(--text-muted);display:block;margin-bottom:6px;">WARD / ROOM / ADDRESS</label>
+                  <input id="m-p-address" class="modal-input" placeholder="e.g. Ward 3B, Bed 12" style="margin-bottom:0;">
+                </div>
+              </div>
+              <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:1.8rem;padding-top:1rem;border-top:1px solid var(--border);">
+                <button type="button" class="btn btn-outline" onclick="closeModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary" id="m-submit-btn"><i class="fas fa-check"></i> Register Patient</button>
+              </div>
+            </form>
+          `;
+        } else if (norm === "doctors") {
+          modalTitle.innerHTML = `<i class="fas fa-user-md" style="color:var(--primary);"></i> Add Specialist / Doctor`;
+          modalForm.innerHTML = `
+            <form onsubmit="handleModalSubmit(event, 'doctors')">
+              <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));gap:14px;">
+                <div>
+                  <label style="font-size:0.8rem;font-weight:700;color:var(--text-muted);display:block;margin-bottom:6px;">DOCTOR FULL NAME *</label>
+                  <input id="m-d-name" class="modal-input" placeholder="e.g. Dr. Emily Watson" required autofocus style="margin-bottom:0;">
+                </div>
+                <div>
+                  <label style="font-size:0.8rem;font-weight:700;color:var(--text-muted);display:block;margin-bottom:6px;">SPECIALIZATION / DEPT *</label>
+                  <select id="m-d-spec" class="modal-input" style="margin-bottom:0;">
+                    <option value="Cardiology">Cardiology</option>
+                    <option value="Pediatrics">Pediatrics</option>
+                    <option value="Neurology">Neurology</option>
+                    <option value="Orthopedics">Orthopedics</option>
+                    <option value="General Medicine">General Medicine</option>
+                    <option value="Dermatology">Dermatology</option>
+                    <option value="Oncology">Oncology</option>
+                    <option value="Emergency Care">Emergency Care</option>
+                    <option value="ENT">ENT</option>
+                    <option value="Ophthalmology">Ophthalmology</option>
+                    <option value="Gynecology">Gynecology</option>
+                  </select>
+                </div>
+                <div>
+                  <label style="font-size:0.8rem;font-weight:700;color:var(--text-muted);display:block;margin-bottom:6px;">CONTACT PHONE *</label>
+                  <input id="m-d-phone" class="modal-input" placeholder="e.g. 555-1002" required style="margin-bottom:0;">
+                </div>
+                <div>
+                  <label style="font-size:0.8rem;font-weight:700;color:var(--text-muted);display:block;margin-bottom:6px;">EMAIL ADDRESS</label>
+                  <input id="m-d-email" type="email" class="modal-input" placeholder="doctor@hospital.com" style="margin-bottom:0;">
+                </div>
+                <div>
+                  <label style="font-size:0.8rem;font-weight:700;color:var(--text-muted);display:block;margin-bottom:6px;">DUTY STATUS</label>
+                  <select id="m-d-status" class="modal-input" style="margin-bottom:0;">
+                    <option value="Available">Available (On Duty)</option>
+                    <option value="Busy">Busy (In Consult)</option>
+                    <option value="Off Duty">Off Duty</option>
+                  </select>
+                </div>
+              </div>
+              <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:1.8rem;padding-top:1rem;border-top:1px solid var(--border);">
+                <button type="button" class="btn btn-outline" onclick="closeModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary" id="m-submit-btn"><i class="fas fa-check"></i> Save Specialist</button>
+              </div>
+            </form>
+          `;
+        } else if (norm === "appointments") {
+          modalTitle.innerHTML = `<i class="fas fa-calendar-plus" style="color:var(--primary);"></i> Schedule Appointment`;
+          modalForm.innerHTML = `
+            <form onsubmit="handleModalSubmit(event, 'appointments')">
+              <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));gap:14px;">
+                <div>
+                  <label style="font-size:0.8rem;font-weight:700;color:var(--text-muted);display:block;margin-bottom:6px;">PATIENT NAME *</label>
+                  <input id="m-a-patient" list="m-patient-list" class="modal-input" placeholder="Select or type patient..." required autofocus style="margin-bottom:0;">
+                  <datalist id="m-patient-list">${pOpts}</datalist>
+                </div>
+                <div>
+                  <label style="font-size:0.8rem;font-weight:700;color:var(--text-muted);display:block;margin-bottom:6px;">ATTENDING SPECIALIST *</label>
+                  <select id="m-a-doctor" class="modal-input" style="margin-bottom:0;">${dOpts}</select>
+                </div>
+                <div>
+                  <label style="font-size:0.8rem;font-weight:700;color:var(--text-muted);display:block;margin-bottom:6px;">APPOINTMENT DATE *</label>
+                  <input id="m-a-date" type="date" class="modal-input" value="${new Date().toISOString().split("T")[0]}" required style="margin-bottom:0;">
+                </div>
+                <div>
+                  <label style="font-size:0.8rem;font-weight:700;color:var(--text-muted);display:block;margin-bottom:6px;">CONSULTATION STATUS</label>
+                  <select id="m-a-status" class="modal-input" style="margin-bottom:0;">
+                    <option value="Pending">Pending</option>
+                    <option value="Completed">Completed</option>
+                  </select>
+                </div>
+                <div>
+                  <label style="font-size:0.8rem;font-weight:700;color:var(--text-muted);display:block;margin-bottom:6px;">PAYMENT STATUS</label>
+                  <select id="m-a-payment" class="modal-input" style="margin-bottom:0;">
+                    <option value="Unpaid">Unpaid</option>
+                    <option value="Paid">Paid</option>
+                  </select>
+                </div>
+              </div>
+              <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:1.8rem;padding-top:1rem;border-top:1px solid var(--border);">
+                <button type="button" class="btn btn-outline" onclick="closeModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary" id="m-submit-btn"><i class="fas fa-check"></i> Book Appointment</button>
+              </div>
+            </form>
+          `;
+        } else if (norm === "billing") {
+          modalTitle.innerHTML = `<i class="fas fa-file-invoice-dollar" style="color:var(--primary);"></i> Generate Invoice / Bill`;
+          modalForm.innerHTML = `
+            <form onsubmit="handleModalSubmit(event, 'billing')">
+              <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));gap:14px;">
+                <div>
+                  <label style="font-size:0.8rem;font-weight:700;color:var(--text-muted);display:block;margin-bottom:6px;">PATIENT *</label>
+                  <select id="m-b-patient" class="modal-input" style="margin-bottom:0;">${pOpts}</select>
+                </div>
+                <div>
+                  <label style="font-size:0.8rem;font-weight:700;color:var(--text-muted);display:block;margin-bottom:6px;">ATTENDING DOCTOR *</label>
+                  <select id="m-b-doctor" class="modal-input" style="margin-bottom:0;">${dOpts}</select>
+                </div>
+                <div>
+                  <label style="font-size:0.8rem;font-weight:700;color:var(--text-muted);display:block;margin-bottom:6px;">SERVICE / TREATMENT *</label>
+                  <select id="m-b-service" class="modal-input" style="margin-bottom:0;">
+                    <option value="Consultation">Consultation</option>
+                    <option value="Lab Test">Lab Test</option>
+                    <option value="Follow-up Visit">Follow-up Visit</option>
+                    <option value="Surgery">Surgery</option>
+                    <option value="X-Ray / Scan">X-Ray / Scan</option>
+                    <option value="Pharmacy">Pharmacy</option>
+                    <option value="Emergency Care">Emergency Care</option>
+                  </select>
+                </div>
+                <div>
+                  <label style="font-size:0.8rem;font-weight:700;color:var(--text-muted);display:block;margin-bottom:6px;">FEE AMOUNT ($) *</label>
+                  <input id="m-b-fee" type="number" min="1" step="0.01" class="modal-input" value="150" required style="margin-bottom:0;">
+                </div>
+                <div>
+                  <label style="font-size:0.8rem;font-weight:700;color:var(--text-muted);display:block;margin-bottom:6px;">PAYMENT STATUS</label>
+                  <select id="m-b-status" class="modal-input" style="margin-bottom:0;">
+                    <option value="Paid">Paid</option>
+                    <option value="Unpaid">Unpaid</option>
+                  </select>
+                </div>
+              </div>
+              <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:1.8rem;padding-top:1rem;border-top:1px solid var(--border);">
+                <button type="button" class="btn btn-outline" onclick="closeModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary" id="m-submit-btn"><i class="fas fa-check"></i> Issue Invoice</button>
+              </div>
+            </form>
+          `;
         }
+
+        modal.style.display = "flex";
+      }
+
+      const closeModal = () => {
+        const m = document.getElementById("modal");
+        if (m) m.style.display = "none";
+      };
+
+      async function handleModalSubmit(e, route) {
+        e.preventDefault();
+        const submitBtn = document.getElementById("m-submit-btn");
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Saving...`;
+        }
+
+        let data = {};
+        const tempId = "local_" + Date.now();
+
+        if (route === "patients") {
+          data = {
+            _id: tempId,
+            name: val("m-p-name"),
+            age: Number(val("m-p-age")),
+            gender: val("m-p-gender"),
+            phone: val("m-p-phone"),
+            disease: val("m-p-disease"),
+            address: val("m-p-address") || "General Ward",
+          };
+          if (!state.patients) state.patients = [];
+          state.patients.unshift(data);
+          saveCachedState("patients");
+        } else if (route === "doctors") {
+          data = {
+            _id: tempId,
+            name: val("m-d-name"),
+            spec: val("m-d-spec"),
+            phone: val("m-d-phone"),
+            email: val("m-d-email") || "doctor@hospital.com",
+            status: val("m-d-status"),
+          };
+          if (!state.doctors) state.doctors = [];
+          state.doctors.unshift(data);
+          saveCachedState("doctors");
+        } else if (route === "appointments") {
+          data = {
+            _id: tempId,
+            pName: val("m-a-patient"),
+            patientName: val("m-a-patient"),
+            dName: val("m-a-doctor"),
+            doctorName: val("m-a-doctor"),
+            date: new Date(val("m-a-date")).toISOString(),
+            status: val("m-a-status"),
+            payment: val("m-a-payment"),
+          };
+          if (!state.appointments) state.appointments = [];
+          state.appointments.unshift(data);
+          saveCachedState("appointments");
+        } else if (route === "billing") {
+          data = {
+            _id: tempId,
+            patientName: val("m-b-patient"),
+            doctorName: val("m-b-doctor"),
+            service: val("m-b-service"),
+            fee: Number(val("m-b-fee")),
+            date: new Date().toISOString().split("T")[0],
+            status: val("m-b-status"),
+          };
+          if (!state.bills) state.bills = [];
+          state.bills.unshift(data);
+          saveCachedState("bills");
+        }
+
+        closeModal();
+        updateStats();
+        renderView(route);
+        showToast("✓ Record saved successfully!");
+
+        // Background server sync
+        try {
+          const apiData = { ...data };
+          delete apiData._id;
+          authFetch(`${API}/${route}`, {
+            method: "POST",
+            body: JSON.stringify(apiData),
+          }).then(res => {
+            if (res && res.ok) {
+              res.json().then(saved => {
+                if (saved && saved._id) {
+                  const arr = route === "billing" ? state.bills : state[route];
+                  const item = arr.find(x => x._id === tempId);
+                  if (item) item._id = saved._id;
+                  saveCachedState(route === "billing" ? "bills" : route);
+                }
+              }).catch(() => {});
+            }
+          }).catch(() => {});
+        } catch (_) {}
+      }
+
+      function toggleInlineForm(forceOpen = false) {
+        openRecordModal(state.currentView);
       }
 
       function renderSectionStats(view) {
@@ -1835,244 +2165,11 @@
       }
 
       function renderInlineForm(view) {
-        const formBody = document.getElementById("inline-form-body");
-        const formTitle = document.getElementById("inline-form-title");
-        if (!formBody || !formTitle) return;
-
-        if (view === "patients") {
-          formTitle.innerHTML = `<i class="fas fa-user-plus"></i> Register New Patient`;
-          formBody.innerHTML = `
-            <form onsubmit="handleInlineSubmit(event, 'patients')">
-              <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:12px;">
-                <div>
-                  <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Full Name *</label>
-                  <input id="inf-p-name" class="modal-input" placeholder="e.g. John Doe" required style="margin-bottom:0;">
-                </div>
-                <div>
-                  <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Age *</label>
-                  <input id="inf-p-age" type="number" min="0" max="130" class="modal-input" placeholder="e.g. 35" required style="margin-bottom:0;">
-                </div>
-                <div>
-                  <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Gender *</label>
-                  <select id="inf-p-gender" class="modal-input" style="margin-bottom:0;">
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                    <option value="Other">Other</option>
-                  </select>
-                </div>
-                <div>
-                  <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Contact Phone *</label>
-                  <input id="inf-p-phone" class="modal-input" placeholder="e.g. 555-0199" required style="margin-bottom:0;">
-                </div>
-                <div>
-                  <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Medical Condition *</label>
-                  <input id="inf-p-disease" class="modal-input" placeholder="e.g. Hypertension, Fever" required style="margin-bottom:0;">
-                </div>
-                <div>
-                  <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Address / Ward</label>
-                  <input id="inf-p-address" class="modal-input" placeholder="e.g. 123 Health Ave" style="margin-bottom:0;">
-                </div>
-              </div>
-              <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:1rem;">
-                <button type="reset" class="btn btn-outline" style="font-size:0.85rem;"><i class="fas fa-undo"></i> Clear</button>
-                <button type="submit" class="btn btn-primary" id="inf-submit-btn" style="font-size:0.85rem;"><i class="fas fa-check"></i> Register Patient</button>
-              </div>
-            </form>
-          `;
-        } else if (view === "doctors") {
-          formTitle.innerHTML = `<i class="fas fa-user-md"></i> Add New Doctor / Specialist`;
-          formBody.innerHTML = `
-            <form onsubmit="handleInlineSubmit(event, 'doctors')">
-              <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:12px;">
-                <div>
-                  <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Doctor Name *</label>
-                  <input id="inf-d-name" class="modal-input" placeholder="e.g. Dr. Emily Watson" required style="margin-bottom:0;">
-                </div>
-                <div>
-                  <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Specialization / Dept *</label>
-                  <select id="inf-d-spec" class="modal-input" style="margin-bottom:0;">
-                    <option value="Cardiology">Cardiology</option>
-                    <option value="Pediatrics">Pediatrics</option>
-                    <option value="Neurology">Neurology</option>
-                    <option value="Orthopedics">Orthopedics</option>
-                    <option value="General Medicine">General Medicine</option>
-                    <option value="Dermatology">Dermatology</option>
-                    <option value="Oncology">Oncology</option>
-                    <option value="Emergency Care">Emergency Care</option>
-                  </select>
-                </div>
-                <div>
-                  <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Phone Number *</label>
-                  <input id="inf-d-phone" class="modal-input" placeholder="e.g. 555-1002" required style="margin-bottom:0;">
-                </div>
-                <div>
-                  <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Email Address</label>
-                  <input id="inf-d-email" type="email" class="modal-input" placeholder="doctor@hospital.com" style="margin-bottom:0;">
-                </div>
-                <div>
-                  <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Status</label>
-                  <select id="inf-d-status" class="modal-input" style="margin-bottom:0;">
-                    <option value="Available">Available (On Duty)</option>
-                    <option value="Busy">Busy (In Consult)</option>
-                    <option value="Off Duty">Off Duty</option>
-                  </select>
-                </div>
-              </div>
-              <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:1rem;">
-                <button type="reset" class="btn btn-outline" style="font-size:0.85rem;"><i class="fas fa-undo"></i> Clear</button>
-                <button type="submit" class="btn btn-primary" id="inf-submit-btn" style="font-size:0.85rem;"><i class="fas fa-check"></i> Save Specialist</button>
-              </div>
-            </form>
-          `;
-        } else if (view === "appointments") {
-          formTitle.innerHTML = `<i class="fas fa-calendar-plus"></i> Schedule New Appointment`;
-          let pOpts = state.patients.map(p => `<option value="${p.name}">${p.name}</option>`).join("");
-          if (!pOpts) pOpts = `<option value="John Doe">John Doe</option><option value="Jane Smith">Jane Smith</option>`;
-          let dOpts = state.doctors.map(d => `<option value="${d.name}">${d.name} (${d.spec})</option>`).join("");
-          if (!dOpts) dOpts = `<option value="Dr. Alexander Wright">Dr. Alexander Wright</option>`;
-
-          formBody.innerHTML = `
-            <form onsubmit="handleInlineSubmit(event, 'appointments')">
-              <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:12px;">
-                <div>
-                  <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Select Patient *</label>
-                  <input id="inf-a-patient" list="inf-patient-list" class="modal-input" placeholder="Select / type patient..." required style="margin-bottom:0;">
-                  <datalist id="inf-patient-list">${pOpts}</datalist>
-                </div>
-                <div>
-                  <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Attending Specialist *</label>
-                  <select id="inf-a-doctor" class="modal-input" style="margin-bottom:0;">${dOpts}</select>
-                </div>
-                <div>
-                  <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Date *</label>
-                  <input id="inf-a-date" type="date" class="modal-input" value="${new Date().toISOString().split("T")[0]}" required style="margin-bottom:0;">
-                </div>
-                <div>
-                  <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Consultation Status</label>
-                  <select id="inf-a-status" class="modal-input" style="margin-bottom:0;">
-                    <option value="Pending">Pending</option>
-                    <option value="Completed">Completed</option>
-                  </select>
-                </div>
-                <div>
-                  <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Payment Status</label>
-                  <select id="inf-a-payment" class="modal-input" style="margin-bottom:0;">
-                    <option value="Unpaid">Unpaid</option>
-                    <option value="Paid">Paid</option>
-                  </select>
-                </div>
-              </div>
-              <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:1rem;">
-                <button type="reset" class="btn btn-outline" style="font-size:0.85rem;"><i class="fas fa-undo"></i> Clear</button>
-                <button type="submit" class="btn btn-primary" id="inf-submit-btn" style="font-size:0.85rem;"><i class="fas fa-check"></i> Book Appointment</button>
-              </div>
-            </form>
-          `;
-        } else if (view === "billing") {
-          formTitle.innerHTML = `<i class="fas fa-file-invoice-dollar"></i> Generate Patient Invoice`;
-          let pOpts = state.patients.map(p => `<option value="${p.name}">${p.name}</option>`).join("");
-          if (!pOpts) pOpts = `<option value="John Doe">John Doe</option>`;
-          let dOpts = state.doctors.map(d => `<option value="${d.name}">${d.name}</option>`).join("");
-          if (!dOpts) dOpts = `<option value="Dr. Alexander Wright">Dr. Alexander Wright</option>`;
-
-          formBody.innerHTML = `
-            <form onsubmit="handleInlineSubmit(event, 'billing')">
-              <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:12px;">
-                <div>
-                  <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Patient *</label>
-                  <select id="inf-b-patient" class="modal-input" style="margin-bottom:0;">${pOpts}</select>
-                </div>
-                <div>
-                  <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Doctor *</label>
-                  <select id="inf-b-doctor" class="modal-input" style="margin-bottom:0;">${dOpts}</select>
-                </div>
-                <div>
-                  <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Service *</label>
-                  <select id="inf-b-service" class="modal-input" style="margin-bottom:0;">
-                    <option value="Consultation">Consultation</option>
-                    <option value="Lab Test">Lab Test</option>
-                    <option value="Follow-up Visit">Follow-up Visit</option>
-                    <option value="Surgery">Surgery</option>
-                    <option value="X-Ray / Scan">X-Ray / Scan</option>
-                    <option value="Pharmacy">Pharmacy</option>
-                    <option value="Emergency Care">Emergency Care</option>
-                  </select>
-                </div>
-                <div>
-                  <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Fee Amount ($) *</label>
-                  <input id="inf-b-fee" type="number" min="1" step="0.01" class="modal-input" value="150" required style="margin-bottom:0;">
-                </div>
-                <div>
-                  <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;">Status</label>
-                  <select id="inf-b-status" class="modal-input" style="margin-bottom:0;">
-                    <option value="Paid">Paid</option>
-                    <option value="Unpaid">Unpaid</option>
-                  </select>
-                </div>
-              </div>
-              <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:1rem;">
-                <button type="reset" class="btn btn-outline" style="font-size:0.85rem;"><i class="fas fa-undo"></i> Clear</button>
-                <button type="submit" class="btn btn-primary" id="inf-submit-btn" style="font-size:0.85rem;"><i class="fas fa-check"></i> Issue Invoice</button>
-              </div>
-            </form>
-          `;
-        }
-      }
-
-      async function handleInlineSubmit(e, route) {
-        e.preventDefault();
-        const submitBtn = document.getElementById("inf-submit-btn");
-        if (submitBtn) {
-          submitBtn.disabled = true;
-          submitBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Saving...`;
-        }
-
-        let data = {};
-        if (route === "patients") {
-          data = {
-            name: val("inf-p-name"),
-            age: Number(val("inf-p-age")),
-            gender: val("inf-p-gender"),
-            phone: val("inf-p-phone"),
-            disease: val("inf-p-disease"),
-            address: val("inf-p-address") || "General Ward",
-          };
-        } else if (route === "doctors") {
-          data = {
-            name: val("inf-d-name"),
-            spec: val("inf-d-spec"),
-            phone: val("inf-d-phone"),
-            email: val("inf-d-email") || "doctor@hospital.com",
-            status: val("inf-d-status"),
-          };
-        } else if (route === "appointments") {
-          data = {
-            pName: val("inf-a-patient"),
-            dName: val("inf-a-doctor"),
-            date: new Date(val("inf-a-date")).toISOString(),
-            status: val("inf-a-status"),
-            payment: val("inf-a-payment"),
-          };
-        } else if (route === "billing") {
-          data = {
-            patientName: val("inf-b-patient"),
-            doctorName: val("inf-b-doctor"),
-            service: val("inf-b-service"),
-            fee: Number(val("inf-b-fee")),
-            date: new Date().toISOString().split("T")[0],
-            status: val("inf-b-status"),
-          };
-        }
-
-        await sendData(route, data);
-        await fetchAllData();
-        renderView(route);
-        showToast("Record successfully created & saved!");
+        // Kept for backward compatibility
       }
 
       function renderView(view) {
         renderSectionStats(view);
-        renderInlineForm(view);
 
         const head = document.getElementById("table-head");
         const body = document.getElementById("table-body");
@@ -2083,11 +2180,11 @@
 
         if (view === "patients") {
           head.innerHTML = `<tr><th>ID</th><th>Name</th><th>Age</th><th>Condition</th><th>Phone</th><th>Actions</th></tr>`;
-          addBtn.innerText = "+ Register Patient";
-          addBtn.onclick = () => toggleInlineForm(true);
+          addBtn.innerHTML = `<i class="fas fa-plus"></i> Register Patient`;
+          addBtn.onclick = () => openRecordModal("patients");
 
           if (!state.patients || state.patients.length === 0) {
-            body.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:3rem;color:var(--text-muted)"><i class="fas fa-user-injured" style="font-size:2.5rem;display:block;margin-bottom:0.8rem;opacity:.4"></i>No patients recorded yet.<br><button class="btn btn-primary" style="margin-top:1rem;" onclick="toggleInlineForm(true)"><i class="fas fa-plus"></i> Register First Patient</button></td></tr>`;
+            body.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:3rem;color:var(--text-muted)"><i class="fas fa-user-injured" style="font-size:2.5rem;display:block;margin-bottom:0.8rem;opacity:.4"></i>No patients recorded yet.<br><button class="btn btn-primary" style="margin-top:1rem;" onclick="openRecordModal('patients')"><i class="fas fa-plus"></i> Register First Patient</button></td></tr>`;
           } else {
             state.patients.forEach((p, idx) => {
               const pid = p._id ? String(p._id).slice(-5) : String(idx + 1).padStart(3, "0");
@@ -2107,11 +2204,11 @@
           }
         } else if (view === "doctors") {
           head.innerHTML = `<tr><th>ID</th><th>Specialist</th><th>Department</th><th>Status</th><th>Contact</th><th>Actions</th></tr>`;
-          addBtn.innerText = "+ Add Specialist";
-          addBtn.onclick = () => toggleInlineForm(true);
+          addBtn.innerHTML = `<i class="fas fa-plus"></i> Add Specialist`;
+          addBtn.onclick = () => openRecordModal("doctors");
 
           if (!state.doctors || state.doctors.length === 0) {
-            body.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:3rem;color:var(--text-muted)"><i class="fas fa-user-md" style="font-size:2.5rem;display:block;margin-bottom:0.8rem;opacity:.4"></i>No specialists listed yet.<br><button class="btn btn-primary" style="margin-top:1rem;" onclick="toggleInlineForm(true)"><i class="fas fa-plus"></i> Add First Specialist</button></td></tr>`;
+            body.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:3rem;color:var(--text-muted)"><i class="fas fa-user-md" style="font-size:2.5rem;display:block;margin-bottom:0.8rem;opacity:.4"></i>No specialists listed yet.<br><button class="btn btn-primary" style="margin-top:1rem;" onclick="openRecordModal('doctors')"><i class="fas fa-plus"></i> Add First Specialist</button></td></tr>`;
           } else {
             state.doctors.forEach((d, idx) => {
               const did = d._id ? String(d._id).slice(-5) : String(idx + 1).padStart(3, "0");
@@ -2132,11 +2229,11 @@
           }
         } else if (view === "appointments") {
           head.innerHTML = `<tr><th>Patient</th><th>Specialist</th><th>Date</th><th>Status</th><th>Payment</th><th>Actions</th></tr>`;
-          addBtn.innerText = "+ Schedule Visit";
-          addBtn.onclick = () => toggleInlineForm(true);
+          addBtn.innerHTML = `<i class="fas fa-plus"></i> Schedule Visit`;
+          addBtn.onclick = () => openRecordModal("appointments");
 
           if (!state.appointments || state.appointments.length === 0) {
-            body.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:3rem;color:var(--text-muted)"><i class="fas fa-calendar-check" style="font-size:2.5rem;display:block;margin-bottom:0.8rem;opacity:.4"></i>No appointments scheduled yet.<br><button class="btn btn-primary" style="margin-top:1rem;" onclick="toggleInlineForm(true)"><i class="fas fa-plus"></i> Schedule Appointment</button></td></tr>`;
+            body.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:3rem;color:var(--text-muted)"><i class="fas fa-calendar-check" style="font-size:2.5rem;display:block;margin-bottom:0.8rem;opacity:.4"></i>No appointments scheduled yet.<br><button class="btn btn-primary" style="margin-top:1rem;" onclick="openRecordModal('appointments')"><i class="fas fa-plus"></i> Schedule Appointment</button></td></tr>`;
           } else {
             state.appointments.forEach((a, idx) => {
               const rawDate = a.date ? (typeof a.date === 'string' && a.date.includes('T') ? a.date.split('T')[0] : String(a.date)) : 'Today';
@@ -2156,11 +2253,11 @@
           }
         } else if (view === "billing") {
           head.innerHTML = `<tr><th>#</th><th>Patient</th><th>Doctor</th><th>Service</th><th>Date</th><th>Fee</th><th>Status</th><th>Actions</th></tr>`;
-          addBtn.innerText = "+ Add Bill";
-          addBtn.onclick = () => toggleInlineForm(true);
+          addBtn.innerHTML = `<i class="fas fa-plus"></i> Add Bill`;
+          addBtn.onclick = () => openRecordModal("billing");
 
           if (!state.bills || state.bills.length === 0) {
-            body.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:3rem;color:var(--text-muted)"><i class="fas fa-file-invoice-dollar" style="font-size:2.5rem;display:block;margin-bottom:0.8rem;opacity:.4"></i>No bills yet.<br><button class="btn btn-primary" style="margin-top:1rem;" onclick="toggleInlineForm(true)"><i class="fas fa-plus"></i> Create Invoice</button></td></tr>`;
+            body.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:3rem;color:var(--text-muted)"><i class="fas fa-file-invoice-dollar" style="font-size:2.5rem;display:block;margin-bottom:0.8rem;opacity:.4"></i>No bills yet.<br><button class="btn btn-primary" style="margin-top:1rem;" onclick="openRecordModal('billing')"><i class="fas fa-plus"></i> Create Invoice</button></td></tr>`;
           } else {
             state.bills.forEach((b, i) => {
               body.innerHTML += `<tr>
@@ -2182,188 +2279,81 @@
       }
 
       function openForm(type) {
-        toggleInlineForm(true);
+        if (type === "patient" || type === "patients") openRecordModal("patients");
+        else if (type === "doctor" || type === "doctors" || type === "specialist" || type === "specialists") openRecordModal("doctors");
+        else if (type === "appointment" || type === "appointments") openRecordModal("appointments");
+        else if (type === "bill" || type === "billing") openRecordModal("billing");
+        else openRecordModal(state.currentView);
       }
 
-      async function sendData(route, data) {
-        try {
-          const res = await authFetch(`${API}/${route}`, {
-            method: "POST",
-            body: JSON.stringify(data),
-          });
-          if (!res || !res.ok) {
-            // Local fallback
-            const newItem = { ...data, _id: "local_" + Date.now() };
-            if (route === "patients") state.patients.unshift(newItem);
-            if (route === "doctors") state.doctors.unshift(newItem);
-            if (route === "appointments") state.appointments.unshift(newItem);
-            if (route === "billing") state.bills.unshift(newItem);
-          }
-        } catch (e) {
-          console.error("Local store fallback for", route, e);
-          const newItem = { ...data, _id: "local_" + Date.now() };
-          if (route === "patients") state.patients.unshift(newItem);
-          if (route === "doctors") state.doctors.unshift(newItem);
-          if (route === "appointments") state.appointments.unshift(newItem);
-          if (route === "billing") state.bills.unshift(newItem);
-        }
-      }
-      const val = (id) => document.getElementById(id).value;
-      const closeModal = () =>
-        (document.getElementById("modal").style.display = "none");
-      async function finishAction(view) {
-        await fetchAllData();
-        closeModal();
-        renderView(view);
-        showToast("Database Updated Successfully");
-      }
-
-      function updateStats() {
-        document.getElementById("count-p").innerText = state.patients.length;
-        const rev = state.bills
-          .filter((b) => b.status === "Paid")
-          .reduce((sum, b) => sum + Number(b.fee), 0);
-        document.getElementById("revenue-count").innerText =
-          "$" + rev.toLocaleString();
-        document.getElementById("count-completed").innerText =
-          state.appointments.filter((a) => a.status === "Completed").length;
-        document.getElementById("count-pending").innerText =
-          state.appointments.filter((a) => a.status === "Pending").length;
-        document.getElementById("count-paid").innerText =
-          state.appointments.filter((a) => a.payment === "Paid").length;
-        document.getElementById("count-unpaid").innerText =
-          state.appointments.filter((a) => a.payment === "Unpaid").length;
-        renderRecentActivity();
-      }
-      
-      function renderRecentActivity() {
-        const activityContainer = document.getElementById("recent-activity");
-        const activities = [];
-        
-        // Add appointments
-        state.appointments.forEach(a => {
-          activities.push({
-            type: "appointment",
-            text: `Appointment with Dr. ${a.dName} for ${a.pName}`,
-            date: a.date,
-            status: a.status
-          });
-        });
-        
-        // Add bills
-        state.bills.forEach(b => {
-          activities.push({
-            type: "bill",
-            text: `Bill created for ${b.patientName} - $${Number(b.fee).toLocaleString()}`,
-            date: b.date,
-            status: b.status
-          });
-        });
-        
-        // Add patients
-        state.patients.forEach(p => {
-          activities.push({
-            type: "patient",
-            text: `New patient registered: ${p.name}`,
-            date: new Date().toISOString().split('T')[0],
-            status: "Registered"
-          });
-        });
-        
-        // Sort by date (newest first) and take first 5
-        activities.sort((a, b) => new Date(b.date) - new Date(a.date));
-        const recentActivities = activities.slice(0, 5);
-        
-        if (recentActivities.length === 0) {
-          activityContainer.innerHTML = `<div style="text-align:center;color:var(--text-muted);padding:1.5rem;"><i class="fas fa-inbox" style="font-size:2rem;display:block;margin-bottom:0.5rem;opacity:0.4;"></i>No recent activity yet.</div>`;
-          return;
-        }
-        
-        activityContainer.innerHTML = recentActivities.map(activity => {
-          let icon, iconColor;
-          if (activity.type === "appointment") {
-            icon = "fa-calendar-check";
-            iconColor = activity.status === "Completed" ? "var(--success)" : "var(--warning)";
-          } else if (activity.type === "bill") {
-            icon = "fa-file-invoice-dollar";
-            iconColor = activity.status === "Paid" ? "var(--success)" : "var(--danger)";
-          } else {
-            icon = "fa-user-plus";
-            iconColor = "var(--primary)";
-          }
-          
-          return `
-            <div class="activity-item">
-              <div class="activity-icon" style="background: ${iconColor}20; color: ${iconColor};">
-                <i class="fas ${icon}"></i>
-              </div>
-              <div class="activity-content">
-                <p>${activity.text}</p>
-                <span>${activity.date}</span>
-              </div>
-            </div>
-          `;
-        }).join('');
-      }
+      const val = (id) => {
+        const el = document.getElementById(id);
+        return el ? el.value : "";
+      };
 
       async function deleteItem(route, id) {
         if (!confirm("Delete this record?")) return;
+        const arr = route === "billing" ? state.bills : state[route];
+        const idx = arr.findIndex(x => (x._id === id || String(x._id) === String(id)));
+        if (idx !== -1) arr.splice(idx, 1);
+        saveCachedState(route === "billing" ? "bills" : route);
+        updateStats();
+        renderView(route);
+        showToast("Record Deleted");
+
         try {
           await authFetch(`${API}/${route}/${id}`, { method: "DELETE" });
-          await fetchAllData();
-          renderView(route);
-          showToast("Record Deleted");
         } catch (e) {
           console.error(e);
         }
       }
 
       async function toggleStatus(id, field) {
-        let item = state.appointments.find((a) => a._id === id);
+        let item = state.appointments.find((a) => (a._id === id || String(a._id) === String(id)));
         if (!item) return;
         const u = {};
-        if (field === "status")
-          u.status = item.status === "Pending" ? "Completed" : "Pending";
-        if (field === "payment")
-          u.payment = item.payment === "Unpaid" ? "Paid" : "Unpaid";
+        if (field === "status") {
+          item.status = item.status === "Pending" ? "Completed" : "Pending";
+          u.status = item.status;
+        }
+        if (field === "payment") {
+          item.payment = item.payment === "Unpaid" ? "Paid" : "Unpaid";
+          u.payment = item.payment;
+        }
+        saveCachedState("appointments");
+        updateStats();
+        renderView("appointments");
+
         try {
           await authFetch(`${API}/appointments/${id}`, {
             method: "PUT",
             body: JSON.stringify(u),
           });
-          await fetchAllData();
-          renderView("appointments");
         } catch (e) {
           console.error(e);
         }
       }
 
-      function handleSearch() {
-        const q = document.getElementById("global-search").value.toLowerCase();
-        document.querySelectorAll("#table-body tr").forEach((r) => {
-          r.style.display = r.innerText.toLowerCase().includes(q) ? "" : "none";
-        });
-      }
-      function toggleTheme() {
-        const b = document.body;
-        b.setAttribute(
-          "data-theme",
-          b.getAttribute("data-theme") === "dark" ? "light" : "dark"
-        );
-      }
-      
-      function toggleSidebar() {
+      function toggleSidebar(forceState) {
         const sidebar = document.getElementById("sidebar");
-        sidebar.classList.toggle("open");
-        
-        // Close sidebar when clicking a link
-        const navLinks = document.querySelectorAll(".nav-links a");
-        navLinks.forEach(link => {
-          link.addEventListener("click", () => {
-            sidebar.classList.remove("open");
-          });
-        });
+        const overlay = document.getElementById("sidebar-overlay");
+        if (!sidebar) return;
+        const isOpen = forceState !== undefined ? forceState : !sidebar.classList.contains("open");
+        if (isOpen) {
+          sidebar.classList.add("open");
+          if (overlay) overlay.style.display = "block";
+        } else {
+          sidebar.classList.remove("open");
+          if (overlay) overlay.style.display = "none";
+        }
       }
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          closeModal();
+          toggleSidebar(false);
+        }
+      });
       
       async function toggleBillStatus(id, currentStatus) {
         const newStatus = currentStatus === "Paid" ? "Unpaid" : "Paid";
