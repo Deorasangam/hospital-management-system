@@ -40,29 +40,6 @@ app.get("/api/health", (req, res) => {
 });
 
 // ─── Direct Route Handlers for Frontend Pages ──────────────────────────────────
-app.get(["/patients", "/patients.html"], (req, res) => {
-  const p = path.join(__dirname, "..", "frontend", "patients.html");
-  if (require("fs").existsSync(p)) return res.sendFile(p);
-  res.redirect("/index.html?view=patients");
-});
-
-app.get(["/specialization", "/specialization.html", "/doctors", "/doctors.html"], (req, res) => {
-  const p = path.join(__dirname, "..", "frontend", "specialization.html");
-  if (require("fs").existsSync(p)) return res.sendFile(p);
-  res.redirect("/index.html?view=doctors");
-});
-
-app.get(["/appointments", "/appointments.html"], (req, res) => {
-  const p = path.join(__dirname, "..", "frontend", "appointments.html");
-  if (require("fs").existsSync(p)) return res.sendFile(p);
-  res.redirect("/index.html?view=appointments");
-});
-
-app.get(["/billing", "/billing.html"], (req, res) => {
-  const p = path.join(__dirname, "..", "frontend", "billing.html");
-  if (require("fs").existsSync(p)) return res.sendFile(p);
-  res.redirect("/index.html?view=billing");
-});
 
 app.get(["/about", "/about.html"], (req, res) => {
   res.sendFile(path.join(__dirname, "..", "frontend", "about.html"));
