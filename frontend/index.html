@@ -291,7 +291,7 @@
       }
       main {
         margin-left: 260px;
-        padding: 2rem 2.5rem;
+        padding: 1.5rem 2rem;
         min-height: 100vh;
         width: calc(100% - 260px);
         max-width: calc(100% - 260px);
@@ -1030,11 +1030,12 @@
 
       <main>
         <header
+          id="main-header"
           style="
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
           "
         >
           <div>
@@ -1290,12 +1291,12 @@
         <!-- Data Table & Direct Form Section -->
         <section id="sec-data" style="display: none">
           <!-- Section Specific Stats Banner -->
-          <div id="section-stats-banner" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+          <div id="section-stats-banner" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.75rem; margin-bottom: 1rem;">
             <!-- Dynamically populated -->
           </div>
 
           <!-- Direct Interactive Form on Page (Collapsed by default) -->
-          <div id="inline-form-card" style="display: none; background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 4px 16px rgba(0,0,0,0.03);">
+          <div id="inline-form-card" style="display: none; background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem 1.5rem; margin-bottom: 0.75rem; box-shadow: 0 4px 16px rgba(0,0,0,0.03);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 0.8rem; border-bottom: 1px solid var(--border);">
               <h3 id="inline-form-title" style="margin: 0; font-size: 1.1rem; color: var(--primary); display: flex; align-items: center; gap: 8px;">
                 <i class="fas fa-edit"></i> Record Entry Form
@@ -1782,6 +1783,17 @@
         };
         document.getElementById("page-title").innerText =
           titleMap[normView] || (normView.charAt(0).toUpperCase() + normView.slice(1));
+
+        // Tighter header margin for data sections, more breathing room for dashboard
+        const hdr = document.getElementById("main-header");
+        const sub = document.getElementById("page-subtitle");
+        if (normView === "dashboard") {
+          if (hdr) hdr.style.marginBottom = "1.5rem";
+          if (sub) sub.style.display = "block";
+        } else {
+          if (hdr) hdr.style.marginBottom = "0.75rem";
+          if (sub) sub.style.display = "none";
+        }
 
         document.getElementById("sec-dashboard").style.display =
           normView === "dashboard" ? "block" : "none";
